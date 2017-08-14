@@ -13,6 +13,28 @@ export const REACT_FORMCTL = {
     }
 }
 
+export class FormEventDispatcher {
+    static dispatchRegisterForm(form, initialValues) {
+        document.dispatchEvent(new CustomEvent(REACT_FORMCTL.EVENTS.REGISTER_FORM, {detail: {form, initialValues}}))
+    }
+
+    static dispatchUnregisterForm(form) {
+        document.dispatchEvent(new CustomEvent(REACT_FORMCTL.EVENTS.UNREGISTER_FORM, {detail: {form}}))
+    }
+
+    static dispatchRegisterField(form, field) {
+        document.dispatchEvent(new CustomEvent(REACT_FORMCTL.EVENTS.REGISTER_FIELD, {detail: {form, field}}))
+    }
+
+    static dispatchUnregisterField(form, field) {
+        document.dispatchEvent(new CustomEvent(REACT_FORMCTL.EVENTS.UNREGISTER_FIELD, {detail: {form, field}}))
+    }
+
+    static dispatchFieldChanged(form, field, ctrl) {
+        document.dispatchEvent(new CustomEvent(REACT_FORMCTL.EVENTS.FIELD_CHANGED, {detail: {form, field, ctrl}}))
+    }
+}
+
 export class FormProvider extends React.Component {
 
     constructor(props) {
@@ -95,6 +117,29 @@ export class FormProvider extends React.Component {
             }
         }
         this.setState({forms})
+    }
+
+    registerField(formName, fieldName) {
+        const forms = {...this.state.forms}
+        const form = forms[formName]
+        if(form) {
+            if(!form.fields[fieldName]) {
+                form.fields[fieldName] = {
+                    valid: true,
+                    invalid: false,
+                    untouched: true,
+                    touched: false,
+                    pristine: true,
+                    dirty: false,
+                    unchanged: true,
+                    changed: false,
+                    value: form.values && form.values[fieldName]
+                }
+            }
+
+        } else {
+            console.warn(`No form instance with name "${formName}" to register field "${fieldName}".`)
+        }
     }
 
     unsubscribe() {

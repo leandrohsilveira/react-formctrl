@@ -15,11 +15,11 @@ module.exports = {
     ],
     output:  {
         filename:   "bundle.js", // the output bundle
-        path:       resolve(__dirname, "dist"),
+        path:       resolve(__dirname, "example/dist"),
         publicPath: "/" // necessary for HMR to know where to load the hot update chunks
     },
 
-    context: resolve(__dirname, 'src'),
+    context: resolve(__dirname, 'example'),
     devtool: "inline-source-map",
 
     devServer: {
@@ -35,21 +35,6 @@ module.exports = {
                 use:     ["babel-loader"],
                 exclude: /node_modules/
             },
-            // {
-            //     test: /\.css$/,
-            //     use:  ["style-loader", "css-loader?modules", "postcss-loader",],
-            // },
-            // {
-            //     test:    /\.scss$/,
-            //     loaders: ["style-loader", "css-loader?modules", "postcss-loader", "sass-loader"]
-            // },
-            // {
-            //     test:    /\.(jpe?g|png|gif|svg)$/i,
-            //     loaders: [
-            //         'file-loader?hash=sha512&digest=hex&name=[hash].[ext]',
-            //         'image-webpack-loader?bypassOnDebug&optipng.optimizationLevel=7&gifsicle.interlaced=false'
-            //     ]
-            // }
         ],
     },
 
@@ -63,10 +48,6 @@ module.exports = {
             inject: 'body'
         })
     ],
-    // externals:   {
-    //     "react":     "React",
-    //     "react-dom": "ReactDOM"
-    // },
     performance: {
         hints: false
     }
