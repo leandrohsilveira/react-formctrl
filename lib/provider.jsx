@@ -99,12 +99,15 @@ export class FormProvider extends React.Component {
     registerForm(formName, initialValues) {
         const forms = {...this.state.forms}
         if(forms[formName]) {
+            const form = forms[formName]
+            form.__instances++
             if(initialValues) {
                 console.warn(`One or more instances of the same form found while registering the form "${form}" with initial values: `, initialValues)
-                forms[formName].values = initialValues
+                form.values = initialValues
             }
         } else {
             forms[formName] = {
+                __instances: 1,
                 valid: true,
                 invalid: false,
                 untouched: true,
@@ -123,8 +126,11 @@ export class FormProvider extends React.Component {
         const forms = {...this.state.forms}
         const form = forms[formName]
         if(form) {
-            if(!form.fields[fieldName]) {
+            if(form.fields[fieldName]) {
+                form.fields[fieldName].__instances++
+            } else {
                 form.fields[fieldName] = {
+                    __instances: 1,
                     valid: true,
                     invalid: false,
                     untouched: true,
@@ -136,9 +142,37 @@ export class FormProvider extends React.Component {
                     value: form.values && form.values[fieldName]
                 }
             }
-
+            this.setState({forms})
         } else {
             console.warn(`No form instance with name "${formName}" to register field "${fieldName}".`)
+        }
+    }
+
+    unregisterForm(formName) {
+        const forms = {...this.state.forms}
+        const form = forms[formName]
+        if(form) {
+            if(form.__instances > 1) {
+                form.__instances--
+            } else {
+                delete forms[formName]
+            }
+        }
+    }
+
+    unregisterField(formName, fieldName) {
+        const forms = {...this.state.forms}
+        const form = forms[formName]
+        if(form) {
+            const field = form.fields[fieldName]
+            if(field) {
+                if(field.__instances > 1) {
+                    field.__instances--
+                } else {
+                    delete form.fields[fieldName]
+                }
+                this.setState({forms})
+            }
         }
     }
 
@@ -151,7 +185,8 @@ export class FormProvider extends React.Component {
     }
 
     render() {
-        const {props} = this
+        const {children} = this.props
+        return children;
     }
 
 }
