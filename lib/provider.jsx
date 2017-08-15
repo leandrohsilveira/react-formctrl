@@ -10,6 +10,7 @@ export const REACT_FORMCTRL = {
         UNREGISTER_FORM: `${REACT_FORMCTRL_NAME}.unregisterForm`,
         REGISTER_FIELD: `${REACT_FORMCTRL_NAME}.registerField`,
         UNREGISTER_FIELD: `${REACT_FORMCTRL_NAME}.unregisterField`,
+        FORM_CHANGED: `${REACT_FORMCTRL_NAME}.formChanged`,
         FIELD_CHANGED: `${REACT_FORMCTRL_NAME}.fieldChanged`,
         FORM_SUBMITED: `${REACT_FORMCTRL_NAME}.formSubmited`,
         FORM_RESETED: `${REACT_FORMCTRL_NAME}.formReseted`,
@@ -68,6 +69,12 @@ export class FormEventDispatcher {
     static forwardFieldChangedEvent(form, field, fieldCtrl) {
         const payload = {detail: {form, field, fieldCtrl}}
         const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, payload)
+        document.dispatchEvent(event)
+    }
+    
+    static forwardFormChangedEvent(form, formCtrl) {
+        const payload = {detail: {form, formCtrl}}
+        const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_CHANGED}#${form}`, payload)
         document.dispatchEvent(event)
     }
 
@@ -185,6 +192,7 @@ export class FormProvider extends React.Component {
                 const forms = {...state.forms}
                 const form = forms[formName]
                 form.fields[fieldName] = fieldCtrl
+                this.updateFormCtrl(formName, form)
                 const field = form.fields[fieldName]
                 if(field.__instances) {
                     field.__instances++
@@ -244,7 +252,7 @@ export class FormProvider extends React.Component {
                     if(!form.values) form.values = {}
                     form.values[fieldName] = fieldCtrl.value
                     form.fields[fieldName] = {...fieldCtrl}
-                    this.updateFormCtrl(form)
+                    this.updateFormCtrl(formName, form)
                     FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, form.fields[fieldName])
                     return {forms}
                 }
@@ -252,8 +260,8 @@ export class FormProvider extends React.Component {
             return state
         })
     }
-
-    updateFormCtrl(form) {
+    
+    updateFormCtrl(formName, form) {
         form.valid = true
         form.invalid = false
         form.untouched = true
@@ -273,6 +281,7 @@ export class FormProvider extends React.Component {
             if(!field.unchanged) form.unchanged = false
             if(field.changed) form.changed = true
         })
+        FormEventDispatcher.forwardFormChangedEvent(formName, form)
     }
 
     onFormSubmited(formName) {
