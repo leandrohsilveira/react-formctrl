@@ -1,7 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import {FormProvider, Form, Field} from '../'
+import {FormProvider, Form, FormControl, Field} from '../'
 
 export function FieldWrapper({label, className = 'field', type, ctrl, name, onChange, onBlur, value, required}) {
     return (
@@ -45,6 +45,11 @@ export function BasicForm({formName = 'basic'}) {
                     </Field>
                 </li>
             </ul>
+            <div>
+                <FormControl form={formName} transformProps={formCtrl => ({disabled: formCtrl.invalid || formCtrl.unchanged})}>
+                    <button type="submit">Submit</button>
+                </FormControl>
+            </div>
         </Form>
     )
 }
