@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {FormEventDispatcher, REACT_FORMCTL} from './provider'
+import {FormEventDispatcher, REACT_FORMCTRL} from './provider'
 
 export class Form extends React.Component {
 
@@ -8,26 +8,28 @@ export class Form extends React.Component {
         super(props)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleReset = this.handleReset.bind(this)
-        this.forwardSubmit = this.forwardSubmit.bind(this)
+        this.handleFormSubmitForward = this.handleFormSubmitForward.bind(this)
     }
 
     handleSubmit(event) {
         event.preventDefault()
-        FormEventDispatcher.dispatchSubmitForm(props.name)
+        FormEventDispatcher.dispatchSubmitForm(name)
         
     }
 
     handleReset(event) {
+        const {name} = this.props
         event.preventDefault()
-        FormEventDispatcher.dispatchResetForm(props.name)
+        FormEventDispatcher.dispatchResetForm(name)
     }
 
     componentWillMount() {
-        FormEventDispatcher.dispatchRegisterForm(props.name, props.initialValues)
-        document.addEventListener(`${REACT_FORMCTL.EVENTS.FORM_SUBMITTED}#${props.name}`, this.forwardSubmit)
+        const {name, initialValues} = this.props
+        document.addEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITTED}#${name}`, this.handleFormSubmitForward)
+        FormEventDispatcher.dispatchRegisterForm(name, initialValues)
     }
 
-    forwardSubmit(event) {
+    handleFormSubmitForward(event) {
         if(typeof props.onSubmit === 'function') {
             const payload = event.detail
             const values = payload.values
@@ -37,15 +39,15 @@ export class Form extends React.Component {
     }
 
     componentWillUnmount() {
+        document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITTED}#${props.name}`, this.handleFormSubmitForward)
         FormEventDispatcher.dispatchUnregisterForm(props.name)
-        document.removeEventListener(`${REACT_FORMCTL.EVENTS.FORM_SUBMITTED}#${props.name}`, this.forwardSubmit)
     }
 
     render() {
         const {handleSubmit, handleReset} = this
-        const {name, children} = this.props
+        const {name, children, className} = this.props
         return (
-            <form id={name} name={name} onSubmit={handleSubmit} onReset={handleReset}>
+            <form id={name} name={name} className={className} onSubmit={handleSubmit} onReset={handleReset} noValidate>
                 {children}
             </form>
         )

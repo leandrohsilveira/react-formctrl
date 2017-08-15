@@ -1,79 +1,80 @@
 import React from 'react'
 
-const PROVIDER_FLAG = 'react-formctl.FormProvider'
+const REACT_FORMCTRL_NAME = 'react-formctl'
 
-export const REACT_FORMCTL = {
+const PROVIDER_FLAG = `${REACT_FORMCTRL_NAME}.FormProvider`
+
+export const REACT_FORMCTRL = {
     EVENTS: {
-        PREFIX: 'react-formctl',
-        REGISTER_FORM: `${REACT_FORMCTL.EVENTS.PREFIX}.registerForm`,
-        UNREGISTER_FORM: `${REACT_FORMCTL.EVENTS.PREFIX}.unregisterForm`,
-        REGISTER_FIELD: `${REACT_FORMCTL.EVENTS.PREFIX}.registerField`,
-        UNREGISTER_FIELD: `${REACT_FORMCTL.EVENTS.PREFIX}.unregisterField`,
-        FIELD_CHANGED: `${REACT_FORMCTL.EVENTS.PREFIX}.fieldChanged`,
-        FORM_SUBMITED: `${REACT_FORMCTL.EVENTS.PREFIX}.formSubmited`,
-        FORM_RESETED: `${REACT_FORMCTL.EVENTS.PREFIX}.formReseted`,
+        REGISTER_FORM: `${REACT_FORMCTRL_NAME}.registerForm`,
+        UNREGISTER_FORM: `${REACT_FORMCTRL_NAME}.unregisterForm`,
+        REGISTER_FIELD: `${REACT_FORMCTRL_NAME}.registerField`,
+        UNREGISTER_FIELD: `${REACT_FORMCTRL_NAME}.unregisterField`,
+        FIELD_CHANGED: `${REACT_FORMCTRL_NAME}.fieldChanged`,
+        FORM_SUBMITED: `${REACT_FORMCTRL_NAME}.formSubmited`,
+        FORM_RESETED: `${REACT_FORMCTRL_NAME}.formReseted`,
     }
 }
 
 export class FormEventDispatcher {
-    static dispatchRegisterForm(form, initialValues) {
-        const payload = {detail: {form, initialValues}}
-        const event = new CustomEvent(REACT_FORMCTL.EVENTS.REGISTER_FORM, payload)
+    static dispatchRegisterForm(form) {
+        const payload = {detail: {form}}
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.REGISTER_FORM, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchUnregisterForm(form) {
         const payload = {detail: {form}}
-        const event = new CustomEvent(REACT_FORMCTL.EVENTS.UNREGISTER_FORM, payload)
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchSubmitForm(form) {
         const payload = {detail: {form}}
-        const event = new CustomEvent(REACT_FORMCTL.EVENTS.FORM_SUBMITED, payload)
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchResetForm(form) {
         const payload = {detail: {form}}
-        const event = new CustomEvent(REACT_FORMCTL.EVENTS.FORM_RESETED, payload)
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FORM_RESETED, payload)
         document.dispatchEvent(event)
     }
 
-    static dispatchRegisterField(form, field) {
-        const payload = {detail: {form, field}}
-        const event = new CustomEvent(REACT_FORMCTL.EVENTS.REGISTER_FIELD, payload)
+    static dispatchRegisterField(form, field, fieldCtrl) {
+        const payload = {detail: {form, field, fieldCtrl}}
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.REGISTER_FIELD, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchUnregisterField(form, field) {
         const payload = {detail: {form, field}}
-        const event = new CustomEvent(REACT_FORMCTL.EVENTS.UNREGISTER_FIELD, payload)
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchFieldChanged(form, field, fieldCtrl) {
         const payload = {detail: {form, field, fieldCtrl}}
-        const event = new CustomEvent(REACT_FORMCTL.EVENTS.FIELD_CHANGED, payload)
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, payload)
         document.dispatchEvent(event)
     }
 
     static forwardSubmitFormEvent(form, values, formCtrl) {
         const payload = {detail: {values, formCtrl}}
-        const event = new CustomEvent(`${REACT_FORMCTL.EVENTS.FORM_SUBMITED}#${form}`, payload)
+        const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${form}`, payload)
         document.dispatchEvent(event)
     }
 
-    static forwardFieldChanged(form, field, fieldCtrl) {
+    static forwardFieldChangedEvent(form, field, fieldCtrl) {
         const payload = {detail: {form, field, fieldCtrl}}
-        const event = new CustomEvent(`${REACT_FORMCTL.EVENTS.FORM_SUBMITED}#${form}#${field}`, payload)
+        const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, payload)
         document.dispatchEvent(event)
     }
 
     static forwardFormValues(form, fields) {
         Object.keys(fields).forEach(fieldName => {
             const field = fields[fieldName]
-            FormEventDispatcher.forwardFieldChanged(form, fieldName, field)
+            FormEventDispatcher.forwardFieldChangedEvent(form, fieldName, field)
         })
     }
 
@@ -83,7 +84,9 @@ export class FormProvider extends React.Component {
 
     constructor(props) {
         super(props)
-        this.state.forms = {}
+        this.state = {
+            forms: {}
+        }
         this.subscribe = this.subscribe.bind(this)
         this.unsubscribe = this.unsubscribe.bind(this)
         this.onEvent = this.onEvent.bind(this)
@@ -98,41 +101,41 @@ export class FormProvider extends React.Component {
     }
 
     componentWillMount() {
-        if (window.sessionStorage.getItem(PROVIDER_FLAG)) {
-            throw 'Two instances of FormProvided found, only one instance can exists because events erros may occur.'
-        }
-        window.sessionStorage.setItem(PROVIDER_FLAG, 'true')
-        subscribe()
+        // if (window.sessionStorage.getItem(PROVIDER_FLAG)) {
+        //     throw 'Two instances of FormProvided found, only one instance can exists because events erros may occur.'
+        // }
+        // window.sessionStorage.setItem(PROVIDER_FLAG, 'true')
+        this.subscribe()
     }
 
     componentWillUnmount() {
-        window.sessionStorage.removeItem(PROVIDER_FLAG)
-        unsubscribe()
+        // window.sessionStorage.removeItem(PROVIDER_FLAG)
+        this.unsubscribe()
     }
 
     subscribe() {
-        document.addEventListener(REACT_FORMCTL.EVENTS.REGISTER_FORM, this.onEvent)
-        document.addEventListener(REACT_FORMCTL.EVENTS.REGISTER_FIELD, this.onEvent)
-        document.addEventListener(REACT_FORMCTL.EVENTS.UNREGISTER_FORM, this.onEvent)
-        document.addEventListener(REACT_FORMCTL.EVENTS.UNREGISTER_FIELD, this.onEvent)
-        document.addEventListener(REACT_FORMCTL.EVENTS.FIELD_CHANGED, this.onEvent)
-        document.addEventListener(REACT_FORMCTL.EVENTS.FORM_SUBMITED, this.onEvent)
-        document.addEventListener(REACT_FORMCTL.EVENTS.FORM_RESETED, this.onEvent)
+        document.addEventListener(REACT_FORMCTRL.EVENTS.REGISTER_FORM, this.onEvent)
+        document.addEventListener(REACT_FORMCTRL.EVENTS.REGISTER_FIELD, this.onEvent)
+        document.addEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, this.onEvent)
+        document.addEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, this.onEvent)
+        document.addEventListener(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, this.onEvent)
+        document.addEventListener(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, this.onEvent)
+        document.addEventListener(REACT_FORMCTRL.EVENTS.FORM_RESETED, this.onEvent)
     }
 
     onEvent(event) {
         const type = event.type
         const payload = event.detail
-        const EVENTS = REACT_FORMCTL.EVENTS
+        const EVENTS = REACT_FORMCTRL.EVENTS
         switch(type) {
             case EVENTS.REGISTER_FORM:
-                this.onRegisterForm(payload.form, payload.initialValues)
+                this.onRegisterForm(payload.form)
                 break
             case EVENTS.UNREGISTER_FORM:
                 this.onUnregisterForm(payload.form)
                 break
             case EVENTS.REGISTER_FIELD:
-                this.onRegisterField(payload.form, payload.field)
+                this.onRegisterField(payload.form, payload.field, payload.fieldCtrl)
                 break
             case EVENTS.UNREGISTER_FIELD:
                 this.onUnregisterField(payload.form, payload.field)
@@ -151,42 +154,14 @@ export class FormProvider extends React.Component {
         }
     }
 
-    onRegisterForm(formName, initialValues) {
-        const forms = {...this.state.forms}
-        if(forms[formName]) {
-            const form = forms[formName]
-            form.__instances++
-            if(initialValues) {
-                console.warn(`One or more instances of the same form found while registering the form "${form}" with initial values: `, initialValues)
-                form.values = initialValues
-                form.initialValues = initialValues
-            }
-        } else {
-            forms[formName] = {
-                __instances: 1,
-                valid: true,
-                invalid: false,
-                untouched: true,
-                touched: false,
-                pristine: true,
-                dirty: false,
-                unchanged: true,
-                changed: false,
-                values: initialValues,
-                initialValues
-            }
-        }
-        this.setState({forms})
-    }
-
-    onRegisterField(formName, fieldName) {
-        if(this.state.forms[formName]) {
-            const forms = {...this.state.forms}
-            const form = forms[formName]
-            if(form.fields[fieldName]) {
-                form.fields[fieldName].__instances++
+    onRegisterForm(formName) {
+        this.setState((state) => {
+            const forms = {...state.forms}
+            if(forms[formName]) {
+                const form = forms[formName]
+                form.__instances++
             } else {
-                form.fields[fieldName] = {
+                forms[formName] = {
                     __instances: 1,
                     valid: true,
                     invalid: false,
@@ -196,60 +171,86 @@ export class FormProvider extends React.Component {
                     dirty: false,
                     unchanged: true,
                     changed: false,
-                    value: form.values && form.values[fieldName]
+                    fields: {},
+                    values: {}
                 }
             }
-            const fieldValue = form.fields[fieldName].value
-            if(fieldValue) {
-                FormEventDispatcher.forwardFieldChanged(formName, fieldName, fieldValue)
+            return {forms}
+        })
+    }
+
+    onRegisterField(formName, fieldName, fieldCtrl) {
+        this.setState((state) => {
+            if(state.forms[formName]) {
+                const forms = {...state.forms}
+                const form = forms[formName]
+                form.fields[fieldName] = fieldCtrl
+                const field = form.fields[fieldName]
+                if(field.__instances) {
+                    field.__instances++
+                } else {
+                    field.__instances = 1
+                }
+                FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, field)
+                return {forms}
+            } else {
+                console.warn(`No form instance with name "${formName}" to register field "${fieldName}".`)
             }
-            this.setState({forms})
-        } else {
-            console.warn(`No form instance with name "${formName}" to register field "${fieldName}".`)
-        }
+            return state
+        })
     }
 
     onUnregisterForm(formName) {
-        if(this.state.forms[formName]) {
-            const forms = {...this.state.forms}
-            const form = forms[formName]
-            if(form.__instances > 1) {
-                form.__instances--
-            } else {
-                delete forms[formName]
+        this.setState((state) => {
+            if(state.forms[formName]) {
+                const forms = {...state.forms}
+                const form = forms[formName]
+                if(form.__instances > 1) {
+                    form.__instances--
+                } else {
+                    delete forms[formName]
+                }
+                return {forms}
             }
-        }
+            return state
+        })
     }
 
     onUnregisterField(formName, fieldName) {
-        if(this.state.forms[formName]) {
-            if(this.state.forms[formName].fields[fieldName]) {
-                const forms = {...this.state.forms}
-                const form = forms[formName]
-                const field = form.fields[fieldName]
-                if(field.__instances > 1) {
-                    field.__instances--
-                } else {
-                    delete form.fields[fieldName]
+        this.setState((state) => {
+            if(state.forms[formName]) {
+                if(state.forms[formName].fields[fieldName]) {
+                    const forms = {...state.forms}
+                    const form = forms[formName]
+                    const field = form.fields[fieldName]
+                    if(field.__instances > 1) {
+                        field.__instances--
+                    } else {
+                        delete form.fields[fieldName]
+                    }
+                    return {forms}
                 }
-                this.setState({forms})
             }
-        }
+            return state
+        })
     }
 
     onFieldChanged(formName, fieldName, fieldCtrl) {
-        if(this.state.forms[formName]) {
-            if(this.state.forms[formName].fields[fieldName]) {
-                const forms = {...this.state.forms}
-                const form = forms[formName]
-                if(!form.values) form.values = {}
-                form.values[fieldName] = fieldCtrl.value
-                form.fields[fieldName] = {...fieldCtrl}
-                this.updateFormCtrl(form)
-                FormEventDispatcher.forwardFieldChanged(formName, fieldName, form.fields[fieldName])
-                this.setState({forms})
+        this.setState((state) => {
+            if(state.forms[formName]) {
+                if(state.forms[formName].fields[fieldName]) {
+                    const forms = {...state.forms}
+                    const form = forms[formName]
+                    if(!form.values) form.values = {}
+                    form.values[fieldName] = fieldCtrl.value
+                    form.fields[fieldName] = {...fieldCtrl}
+                    this.updateFormCtrl(form)
+                    FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, form.fields[fieldName])
+                    return {forms}
+                }
             }
-        }
+            return state
+        })
     }
 
     updateFormCtrl(form) {
@@ -269,43 +270,46 @@ export class FormProvider extends React.Component {
             if(field.touched) form.touched = true
             if(!field.pristine) form.pristine = false
             if(field.dirty) form.dirty = true
-            const initialValue = form.initialValues[fieldName]
-            field.unchanged = field.value === initialValue 
-            field.changed = field.value !== initialValue
             if(!field.unchanged) form.unchanged = false
             if(field.changed) form.changed = true
         })
     }
 
     onFormSubmited(formName) {
-        const form = this.state.forms[formName]
-        if(form) {
-            FormEventDispatcher.forwardSubmitFormEvent(formName, form.values, form)
-        }
+        this.setState((state) => {
+            const form = state.forms[formName]
+            if(form) {
+                FormEventDispatcher.forwardSubmitFormEvent(formName, form.values, form)
+            }
+            return state
+        })
     }
 
     onFormReseted(formName) {
-        if(this.state.forms[formName]) {
-            const forms = {...this.state.forms}
-            const form = forms[formName]
-            form.values = form.initialValues
-            Object.keys(form.fields).forEach(fieldName => {
-                const field = form.fields[fieldName]
-                field.value = form.initialValues && form.initialValues[fieldName]
-            })
-            FormEventDispatcher.forwardFormValues(formName, form.fields)
-            this.setState({forms})
-        }
+        this.setState((state) => {
+            if(state.forms[formName]) {
+                const forms = {...state.forms}
+                const form = forms[formName]
+                Object.keys(form.fields).forEach(fieldName => {
+                    const field = form.fields[fieldName]
+                    form.values[fieldName] = field.initialValue
+                    field.value = field.initialValue
+                })
+                FormEventDispatcher.forwardFormValues(formName, form.fields)
+                return {forms}
+            }
+            return state
+        })
     }
 
     unsubscribe() {
-        document.removeEventListener(REACT_FORMCTL.EVENTS.REGISTER_FORM, this.onEvent)
-        document.removeEventListener(REACT_FORMCTL.EVENTS.REGISTER_FIELD, this.onEvent)
-        document.removeEventListener(REACT_FORMCTL.EVENTS.UNREGISTER_FORM, this.onEvent)
-        document.removeEventListener(REACT_FORMCTL.EVENTS.UNREGISTER_FIELD, this.onEvent)
-        document.removeEventListener(REACT_FORMCTL.EVENTS.FIELD_CHANGED, this.onEvent)
-        document.removeEventListener(REACT_FORMCTL.EVENTS.FORM_SUBMITED, this.onEvent)
-        document.removeEventListener(REACT_FORMCTL.EVENTS.FORM_RESETED, this.onEvent)
+        document.removeEventListener(REACT_FORMCTRL.EVENTS.REGISTER_FORM, this.onEvent)
+        document.removeEventListener(REACT_FORMCTRL.EVENTS.REGISTER_FIELD, this.onEvent)
+        document.removeEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, this.onEvent)
+        document.removeEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, this.onEvent)
+        document.removeEventListener(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, this.onEvent)
+        document.removeEventListener(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, this.onEvent)
+        document.removeEventListener(REACT_FORMCTRL.EVENTS.FORM_RESETED, this.onEvent)
     }
 
     render() {
