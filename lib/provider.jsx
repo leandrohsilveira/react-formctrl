@@ -6,10 +6,11 @@ export const REACT_FORMCTL = {
     EVENTS: {
         PREFIX: 'react-formctl',
         REGISTER_FORM: `${REACT_FORMCTL.EVENTS.PREFIX}.registerForm`,
-        REGISTER_FIELD: `${REACT_FORMCTL.EVENTS.PREFIX}.registerField`,
         UNREGISTER_FORM: `${REACT_FORMCTL.EVENTS.PREFIX}.unregisterForm`,
+        REGISTER_FIELD: `${REACT_FORMCTL.EVENTS.PREFIX}.registerField`,
         UNREGISTER_FIELD: `${REACT_FORMCTL.EVENTS.PREFIX}.unregisterField`,
         FIELD_CHANGED: `${REACT_FORMCTL.EVENTS.PREFIX}.fieldChanged`,
+        FORM_SUBMITTED: `${REACT_FORMCTL.EVENTS.PREFIX}.formSubmitted`,
     }
 }
 
@@ -17,9 +18,13 @@ export class FormEventDispatcher {
     static dispatchRegisterForm(form, initialValues) {
         document.dispatchEvent(new CustomEvent(REACT_FORMCTL.EVENTS.REGISTER_FORM, {detail: {form, initialValues}}))
     }
-
+    
     static dispatchUnregisterForm(form) {
         document.dispatchEvent(new CustomEvent(REACT_FORMCTL.EVENTS.UNREGISTER_FORM, {detail: {form}}))
+    }
+    
+    static dispatchSubmitForm(form) {
+        document.dispatchEvent(new CustomEvent(REACT_FORMCTL.EVENTS.FORM_SUBMITTED, {detail: {form}}))
     }
 
     static dispatchRegisterField(form, field) {
@@ -33,6 +38,11 @@ export class FormEventDispatcher {
     static dispatchFieldChanged(form, field, ctrl) {
         document.dispatchEvent(new CustomEvent(REACT_FORMCTL.EVENTS.FIELD_CHANGED, {detail: {form, field, ctrl}}))
     }
+
+    static forwardSubmitFormEvent(formName, values, formCtrl) {
+        document.dispatchEvent(new CustomEvent(`${REACT_FORMCTL.EVENTS.FORM_SUBMITTED}#${formName}`, {detail: {values, formCtrl}}))
+    }
+
 }
 
 export class FormProvider extends React.Component {
@@ -48,6 +58,7 @@ export class FormProvider extends React.Component {
         this.onRegisterField = this.onRegisterField.bind(this)
         this.onUnregisterField = this.onUnregisterField.bind(this)
         this.onFieldChanged = this.onFieldChanged.bind(this)
+        this.onFormSubmitted = this.onFormSubmitted.bind(this)
     }
 
     componentWillMount() {
@@ -91,12 +102,15 @@ export class FormProvider extends React.Component {
             case EVENTS.FIELD_CHANGED:
                 this.onFieldChanged(payload.form, payload.field, payload.ctrl)
                 break
+            case EVENTS.FORM_SUBMITTED:
+                this.onFormSubmitted(payload.form)
+                break
             default:
                 break
         }
     }
 
-    registerForm(formName, initialValues) {
+    onRegisterForm(formName, initialValues) {
         const forms = {...this.state.forms}
         if(forms[formName]) {
             const form = forms[formName]
@@ -122,10 +136,10 @@ export class FormProvider extends React.Component {
         this.setState({forms})
     }
 
-    registerField(formName, fieldName) {
-        const forms = {...this.state.forms}
-        const form = forms[formName]
-        if(form) {
+    onRegisterField(formName, fieldName) {
+        if(this.state.forms[formName]) {
+            const forms = {...this.state.forms}
+            const form = forms[formName]
             if(form.fields[fieldName]) {
                 form.fields[fieldName].__instances++
             } else {
@@ -148,10 +162,10 @@ export class FormProvider extends React.Component {
         }
     }
 
-    unregisterForm(formName) {
-        const forms = {...this.state.forms}
-        const form = forms[formName]
-        if(form) {
+    onUnregisterForm(formName) {
+        if(this.state.forms[formName]) {
+            const forms = {...this.state.forms}
+            const form = forms[formName]
             if(form.__instances > 1) {
                 form.__instances--
             } else {
@@ -160,12 +174,12 @@ export class FormProvider extends React.Component {
         }
     }
 
-    unregisterField(formName, fieldName) {
-        const forms = {...this.state.forms}
-        const form = forms[formName]
-        if(form) {
-            const field = form.fields[fieldName]
-            if(field) {
+    onUnregisterField(formName, fieldName) {
+        if(this.state.forms[formName]) {
+            if(this.state.forms[formName].fields[fieldName]) {
+                const forms = {...this.state.forms}
+                const form = forms[formName]
+                const field = form.fields[fieldName]
                 if(field.__instances > 1) {
                     field.__instances--
                 } else {
@@ -173,6 +187,24 @@ export class FormProvider extends React.Component {
                 }
                 this.setState({forms})
             }
+        }
+    }
+
+    onFieldChanged(formName, fieldName, ctrl) {
+        if(this.state.forms[formName]) {
+            if(this.state.forms[formName].fields[fieldName]) {
+                const forms = {...this.state.forms}
+                const form = forms[formName]
+                form.fields[fieldName] = {...ctrl}
+                this.setState({forms})
+            }
+        }
+    }
+
+    onFormSubmitted(formName) {
+        const form = this.state.forms[formName]
+        if(form) {
+            FormEventDispatcher.forwardSubmitFormEvent(formName, form.values, form)
         }
     }
 
