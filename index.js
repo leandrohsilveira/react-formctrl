@@ -4,5 +4,5 @@ export {
     FormProvider
 } from './lib/provider'
 
-export {Form} from './lib/form'
+export {Form, FormControl} from './lib/form'
 export {Field} from './lib/field'
