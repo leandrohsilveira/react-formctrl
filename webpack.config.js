@@ -6,9 +6,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 module.exports = {
     resolve: {
         extensions: [".webpack.js", ".web.js", ".js", ".jsx"],
+        alias: {
+            modules: __dirname + '/node_modules'
+        }
     },
     entry: {
-        vendor: ['react', 'react-dom'],
+        vendor: ['react', 'react-dom', 'jquery'],
         bundle: './app.jsx',
     },
     output:  {
@@ -32,6 +35,10 @@ module.exports = {
                 use:     ["babel-loader"],
                 exclude: /node_modules/
             },
+            {
+                test:    /\.(css)$/,
+                use:     ["style-loader", "css-loader"],
+            },
         ],
     },
 
@@ -40,7 +47,7 @@ module.exports = {
         new webpack.HotModuleReplacementPlugin(), // enable HMR globally
         // new webpack.NamedModulesPlugin(), // prints more readable module names in the browser console on HMR updates
         new webpack.optimize.CommonsChunkPlugin({
-            name: 'react',
+            name: 'vendor',
         }),
         // new webpack.optimize.UglifyJsPlugin(),
         new HtmlWebpackPlugin({
