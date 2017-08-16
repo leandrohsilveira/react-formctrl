@@ -30,8 +30,8 @@ export class FormEventDispatcher {
         document.dispatchEvent(event)
     }
     
-    static dispatchSubmitForm(form) {
-        const payload = {detail: {form}}
+    static dispatchSubmitForm(form, formRef) {
+        const payload = {detail: {form, formRef}}
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, payload)
         document.dispatchEvent(event)
     }
@@ -60,9 +60,14 @@ export class FormEventDispatcher {
         document.dispatchEvent(event)
     }
 
-    static forwardSubmitFormEvent(form, values, formCtrl) {
-        const payload = {detail: {values, formCtrl}}
+    static forwardSubmitFormEvent(form, values, formCtrl, formRef) {
+        const payload = {detail: {values, formCtrl, formRef}}
         const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${form}`, payload)
+        document.dispatchEvent(event)
+    }
+    
+    static forwardResetFormEvent(form) {
+        const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_RESETED}#${form}`)
         document.dispatchEvent(event)
     }
 
@@ -76,13 +81,6 @@ export class FormEventDispatcher {
         const payload = {detail: {form, formCtrl}}
         const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_CHANGED}#${form}`, payload)
         document.dispatchEvent(event)
-    }
-
-    static forwardFormValues(form, fields) {
-        Object.keys(fields).forEach(fieldName => {
-            const field = fields[fieldName]
-            FormEventDispatcher.forwardFieldChangedEvent(form, fieldName, field)
-        })
     }
 
 }
@@ -151,7 +149,7 @@ export class FormProvider extends React.Component {
                 this.onFieldChanged(payload.form, payload.field, payload.fieldCtrl)
                 break
             case EVENTS.FORM_SUBMITED:
-                this.onFormSubmited(payload.form)
+                this.onFormSubmited(payload.form, payload.formRef)
                 break
             case EVENTS.FORM_RESETED:
                 this.onFormReseted(payload.form)
@@ -284,31 +282,18 @@ export class FormProvider extends React.Component {
         FormEventDispatcher.forwardFormChangedEvent(formName, form)
     }
 
-    onFormSubmited(formName) {
+    onFormSubmited(formName, formRef) {
         this.setState((state) => {
             const form = state.forms[formName]
             if(form) {
-                FormEventDispatcher.forwardSubmitFormEvent(formName, form.values, form)
+                FormEventDispatcher.forwardSubmitFormEvent(formName, form.values, form, formRef)
             }
             return state
         })
     }
 
     onFormReseted(formName) {
-        this.setState((state) => {
-            if(state.forms[formName]) {
-                const forms = {...state.forms}
-                const form = forms[formName]
-                Object.keys(form.fields).forEach(fieldName => {
-                    const field = form.fields[fieldName]
-                    form.values[fieldName] = field.initialValue
-                    field.value = field.initialValue
-                })
-                FormEventDispatcher.forwardFormValues(formName, form.fields)
-                return {forms}
-            }
-            return state
-        })
+        FormEventDispatcher.forwardResetFormEvent(formName)
     }
 
     unsubscribe() {

@@ -12,9 +12,9 @@ export class Form extends React.Component {
     }
 
     handleSubmit(event) {
+        const {name} = this.props
         event.preventDefault()
-        FormEventDispatcher.dispatchSubmitForm(name)
-        
+        FormEventDispatcher.dispatchSubmitForm(name, this)
     }
 
     handleReset(event) {
@@ -25,21 +25,22 @@ export class Form extends React.Component {
 
     componentWillMount() {
         const {name, initialValues} = this.props
-        document.addEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITTED}#${name}`, this.handleFormSubmitForward)
+        document.addEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${name}`, this.handleFormSubmitForward)
         FormEventDispatcher.dispatchRegisterForm(name, initialValues)
     }
 
     handleFormSubmitForward(event) {
-        if(typeof props.onSubmit === 'function') {
-            const payload = event.detail
-            const values = payload.values
-            const formCtrl = payload.formCtrl
-            props.onSubmit(values, formCtrl)
+        const {onSubmit} = this.props
+        if(typeof onSubmit === 'function') {
+            const {values, formCtrl, formRef} = event.detail
+            if(formRef == this) {
+                onSubmit(values, formCtrl)
+            }
         }
     }
 
     componentWillUnmount() {
-        document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITTED}#${props.name}`, this.handleFormSubmitForward)
+        document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${props.name}`, this.handleFormSubmitForward)
         FormEventDispatcher.dispatchUnregisterForm(props.name)
     }
 
@@ -72,6 +73,7 @@ export class FormControl extends React.Component {
         }
         this.handleFormChanged = this.handleFormChanged.bind(this)
         this.sync = this.sync.bind(this)
+        this.transformProps = this.transformProps.bind(this)
     }
 
     componentWillMount() {

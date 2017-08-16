@@ -25,10 +25,12 @@ export class Field extends React.Component {
         }
 
         this.handleFieldChangeForward = this.handleFieldChangeForward.bind(this)
+        this.handleFormResetForward = this.handleFormResetForward.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleBlur = this.handleBlur.bind(this)
         this.updateFieldCtrl = this.updateFieldCtrl.bind(this)
         this.getChildProps = this.getChildProps.bind(this)
+        this.transformProps = this.transformProps.bind(this)
         this.sync = this.sync.bind(this)
     }
 
@@ -38,6 +40,7 @@ export class Field extends React.Component {
             throw `The Field component for "${form}#${name}" should have only one child, but has ${children.length}.`
         }
         document.addEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${name}`, this.handleFieldChangeForward)
+        document.addEventListener(`${REACT_FORMCTRL.EVENTS.FORM_RESETED}#${form}`, this.handleFormResetForward)
 
         const fieldCtrl = this.updateFieldCtrl(initialValue)
         fieldCtrl.value = initialValue
@@ -47,6 +50,7 @@ export class Field extends React.Component {
     componentWillUnmount() {
         const {form, name} = this.props
         document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${name}`, this.handleFieldChangeForward)
+        document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FORM_RESETED}#${form}`, this.handleFormResetForward)
         FormEventDispatcher.dispatchUnregisterField(form, name)
     }
 
@@ -64,7 +68,7 @@ export class Field extends React.Component {
             max,
             minLength,
             maxLength,
-            initialValue
+            initialValue = ''
         } = this.props
         if(required && !value) errors.push('required')
         else if(pattern && !new RegExp(pattern).test(value)) errors.push('pattern')
@@ -97,6 +101,17 @@ export class Field extends React.Component {
         if(Object.keys(syncState).length) {
             this.setState(syncState)
         }
+    }
+
+    handleFormResetForward(event) {
+        const {form, name, children, initialValue = ''} = this.props
+        const fieldCtrl = this.updateFieldCtrl(initialValue)
+        fieldCtrl.value = initialValue
+        fieldCtrl.pristine = true
+        fieldCtrl.dirty = false
+        fieldCtrl.untouched = true
+        fieldCtrl.touched = false
+        FormEventDispatcher.dispatchFieldChanged(form, name, fieldCtrl)
     }
 
     handleChange(event) {
@@ -135,8 +150,8 @@ export class Field extends React.Component {
         return syncState
     }
 
-    getChildProps(child) {
-        const props = {...child.props}
+    getChildProps() {
+        const props = {}
         props.name = this.props.name
         props.ctrl = {
             valid: this.state.valid,
@@ -159,13 +174,22 @@ export class Field extends React.Component {
         return props
     }
 
+    transformProps(childProps) {
+        const {transformProps} = this.props
+        const props = this.getChildProps()
+        if(typeof transformProps === 'function') {
+            return transformProps(props)
+        }
+        return props
+    }
+
     render() {
-        const {getChildProps} = this
+        const {getChildProps, transformProps} = this
         const {children} = this.props
         let child = children
         if(Array.isArray(children)) {
             child = children[0]
         }
-        return React.cloneElement(child, getChildProps(child))
+        return React.cloneElement(child, {...child.props, ...transformProps()})
     }
 }
