@@ -30,9 +30,9 @@ export function FieldWrapper({label, className = 'field', type, ctrl, name, onCh
     )
 }
 
-export function BasicForm({formName = 'basic'}) {
+export function ExampleForm({formName = 'basic', onSubmit}) {
     return (
-        <Form className="form" name={formName}>
+        <Form className="form" name={formName} onSubmit={onSubmit}>
             <ul className="field-list">
                 <li className="field-list-item">
                     <Field form={formName} name="firstName" className="field" required minLength={2}>
@@ -44,10 +44,19 @@ export function BasicForm({formName = 'basic'}) {
                         <FieldWrapper label="Last name"></FieldWrapper>
                     </Field>
                 </li>
+                <li className="field-list-item">
+                    <Field form={formName} name="email" className="field" type="email" required>
+                        <FieldWrapper label="E-mail"></FieldWrapper>
+                    </Field>
+                </li>
             </ul>
             <div>
                 <FormControl form={formName} transformProps={formCtrl => ({disabled: formCtrl.invalid || formCtrl.unchanged})}>
                     <button type="submit">Submit</button>
+                </FormControl>
+                &nbsp;
+                <FormControl form={formName} transformProps={formCtrl => ({disabled: formCtrl.unchanged})}>
+                    <button type="reset">Reset</button>
                 </FormControl>
             </div>
         </Form>
@@ -65,16 +74,16 @@ export function App(props) {
                 <h3>Basic form</h3>
                 <p>This is a basic example of Form usage</p>
                 <div>
-                    <BasicForm />
+                    <ExampleForm onSubmit={values => console.log('Basic form submit event', values)} />
                 </div>
                 <hr/>
                 <h3>Synchronized forms</h3>
                 <p>If there is two instances of forms with the same name, they will be synchronized!</p>
                 <div>
                     <h4>Form 1</h4>
-                    <BasicForm formName="syncedForms" />
+                    <ExampleForm formName="syncedForms" onSubmit={values => console.log('Synchronized form 1 submit event', values)} />
                     <h4>Form 2</h4>
-                    <BasicForm formName="syncedForms" />
+                    <ExampleForm formName="syncedForms" onSubmit={values => console.log('Synchronized form 2 submit event', values)} />
                 </div>
             </div>
         </FormProvider>
