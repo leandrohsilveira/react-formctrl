@@ -192,6 +192,7 @@ export class FormProvider extends React.Component {
                 form.fields[fieldName] = fieldCtrl
                 this.updateFormCtrl(formName, form)
                 const field = form.fields[fieldName]
+                form.values[fieldName] = field.value
                 if(field.__instances) {
                     field.__instances++
                 } else {
