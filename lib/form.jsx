@@ -119,7 +119,7 @@ export class FormControl extends React.Component {
         if(typeof transformProps === 'function') {
             return transformProps(this.state)
         }
-        return {}
+        return this.state
     }
 
     render() {
