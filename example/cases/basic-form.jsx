@@ -5,7 +5,7 @@ import {SubmitValuesPopup} from '../submit-values'
 
 function Input({name, value, onChange}) {
     return (
-        <input name={name} value={value} onChange={onChange} />
+        <input name={name} value={value} onChange={onChange}></input>
     )
 }
 
@@ -22,7 +22,7 @@ export function BasicForm(props) {
                         <label htmlFor="simple">Simple:</label>
                         <div>
                             <Field form={formName} name="simple">
-                                <Input />
+                                <Input></Input>
                             </Field>
                         </div>
                     </div>
