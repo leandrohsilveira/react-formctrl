@@ -56,7 +56,10 @@ module.exports = (env) => {
                 'react', 
                 'react-dom', 
                 'axios', 
-                'react-highlight', 
+                'react-syntax-highlighter/dist/light', 
+                'react-syntax-highlighter/dist/styles',
+                'react-syntax-highlighter/dist/languages/javascript',
+                'react-syntax-highlighter/dist/languages/json'
             ],
         };
         configs.devtool = "source-map";
