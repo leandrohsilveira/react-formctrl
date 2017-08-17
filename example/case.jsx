@@ -32,8 +32,8 @@ export class Case extends React.Component {
 
     componentWillMount() {
         const {url} = this.props
-        axios.get(url).then(code => {
-            this.setState(state => ({code}))
+        axios.get(url).then(response => {
+            this.setState(state => ({code: response.data}))
         })
     }
 
