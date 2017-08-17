@@ -1,5 +1,5 @@
 import React from 'react'
-import {get} from 'jquery'
+import axios from 'axios'
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/light';
 import { tomorrowNight as theme } from 'react-syntax-highlighter/dist/styles';
 
@@ -32,7 +32,7 @@ export class Case extends React.Component {
 
     componentWillMount() {
         const {url} = this.props
-        get(url).then(code => {
+        axios.get(url).then(code => {
             this.setState(state => ({code}))
         })
     }
