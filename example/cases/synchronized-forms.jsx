@@ -78,7 +78,6 @@ export function SynchronizedForms(props) {
                 <h4>Form 2</h4>
                 <PeopleForm formName="syncForm" onSubmit={makeSubmitEvent('Sync form 2')} />
             </div>
-            <hr/>
         </div>
     )
 }

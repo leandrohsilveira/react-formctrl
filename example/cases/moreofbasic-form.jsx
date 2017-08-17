@@ -35,7 +35,6 @@ export function MoreOfBasicForm(props) {
                     </div>
                 </Form>
             </div>
-            <hr/>
         </div>
     )
 }

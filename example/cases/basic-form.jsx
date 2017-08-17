@@ -31,7 +31,6 @@ export function BasicForm(props) {
                     </div>
                 </Form>
             </div>
-            <hr/>
         </div>
     )
 }

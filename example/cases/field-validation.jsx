@@ -2,18 +2,20 @@ import React from 'react'
 
 import {Form, Field} from '../../'
 import {SubmitValuesPopup} from '../submit-values'
+import {Json} from '../case'
 
 function Input({label, name, value, onChange, onBlur, ctrl}) {
     return (
-        <div>
-            <label htmlFor={name}>{label}:</label>
+        <Json title="Field controller" json={ctrl}>
             <div>
-                <input name={name} value={value} onChange={onChange} onBlur={onBlur} />
+                <label htmlFor={name}>{label}:</label>
+                <div>
+                    <input name={name} value={value} onChange={onChange} onBlur={onBlur} />
+                </div>
+                <div>
+                </div>
             </div>
-            <div style={{whiteSpace: 'pre'}}>
-                Field controller: {JSON.stringify(ctrl, null, 4)}
-            </div>
-        </div>
+        </Json> 
     )
 }
 
@@ -38,7 +40,6 @@ export function FieldValidationForm(props) {
                     </div>
                 </Form>
             </div>
-            <hr/>
         </div>
     )
 }

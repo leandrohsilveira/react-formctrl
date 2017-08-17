@@ -49,18 +49,8 @@ export class SubmitValuesPopup extends React.Component {
 
     render() {
         const {show, name, values} = this.state
-        const style = {
-            display: show ? 'block' : 'none',
-            position: 'fixed',
-            right: 0,
-            top: 0,
-            border: '1px solid black',
-            backgroundColor: 'white',
-            padding: 10
-        }
-
         return (
-            <div style={style}>
+            <div className={`submit-values${show ? ' show' : ''}`}>
                 <h3>Submited form: {name}</h3>
                 <ul>
                     {(!values || values.length === 0) && (

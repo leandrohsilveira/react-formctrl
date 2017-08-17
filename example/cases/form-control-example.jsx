@@ -2,6 +2,7 @@ import React from 'react'
 
 import {Form, Field, FormControl} from '../../'
 import {SubmitValuesPopup} from '../submit-values'
+import {Json} from '../case'
 
 function Input({label, name, value, onChange, onBlur, ctrl: {invalid, errors}}) {
     return (
@@ -14,7 +15,7 @@ function Input({label, name, value, onChange, onBlur, ctrl: {invalid, errors}}) 
                 <div>
                     <ul>
                         {errors.map(error => (
-                            <span>{error}</span>
+                            <span key={error}>{error}</span>
                         ))}
                     </ul>
                 </div>
@@ -25,9 +26,7 @@ function Input({label, name, value, onChange, onBlur, ctrl: {invalid, errors}}) 
 
 function FormControlDisplay(props) {
     return (
-        <div style={{whiteSpace: 'pre'}}>
-            Form controller: {JSON.stringify(props, null, 4)}
-        </div>
+        <Json title="Form controller" json={props} />
     )
 }
 
@@ -54,12 +53,12 @@ export function FormControlExample(props) {
                             <button type="reset">Reset</button>
                         </FormControl>
                     </div>
+                    <br/>
                     <FormControl form={formName}>
                         <FormControlDisplay />
                     </FormControl>
                 </Form>
             </div>
-            <hr/>
         </div>
     )
 }
