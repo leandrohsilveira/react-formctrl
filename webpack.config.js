@@ -55,6 +55,7 @@ module.exports = (env) => {
             'vendor': [
                 'react', 
                 'react-dom', 
+                'react-router-dom',
                 'axios', 
                 'react-syntax-highlighter/dist/light', 
                 'react-syntax-highlighter/dist/styles',

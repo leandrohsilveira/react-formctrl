@@ -107,9 +107,45 @@ hr.inserted {
     }
 }
 
+a {
+    &,
+    &:active,
+    &:hover,
+    &:visited {
+        color: white;
+    }
+}
+
+.case-display,
+.case-code {
+    width: 100%;
+    padding: 5px;
+}
+
+/* 
+Com uma largura mínima de 992 pixels. Monitores por exemplo.
+*/
+@media screen and (min-width: 992px) {
+    .case-display {
+        float: left;
+        width: 30%;
+    }
+    .case-code {
+        float: left;
+        width: 70%;
+    }
+}
+
+.clearfix:after {
+    display: block;
+    content: "";
+    clear: both;
+}
+
 .json-code {
     border: 1px solid rgb(125, 138, 149);
     margin-bottom: 10px;
+
     .json-children {
         background: rgb(29, 31, 33);
         padding: 10px;

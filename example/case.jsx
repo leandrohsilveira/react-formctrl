@@ -41,18 +41,18 @@ export class Case extends React.Component {
         const {children, fileName} = this.props
         const {code} = this.state
         return (
-            <div className="case">
-                <div className="case-display">
-                    {children}
-                </div>
-                {code !== '' && (
-                    <div className="case-code">
-                        <h4>Code: <small>{fileName}</small></h4>
+            <div className="case clearfix">
+                <div className="case-code">
+                    <h4>Code: <small>{fileName}</small></h4>
+                    {code !== '' && (
                         <SyntaxHighlighter showLineNumbers={true} language="javascript" style={theme}>
                             {code}
                         </SyntaxHighlighter>
-                    </div>
-                )}
+                    )}
+                </div>
+                <div className="case-display">
+                    {children}
+                </div>
             </div>
         )
     }

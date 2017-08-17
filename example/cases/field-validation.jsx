@@ -12,8 +12,6 @@ function Input({label, name, value, onChange, onBlur, ctrl}) {
                 <div>
                     <input name={name} value={value} onChange={onChange} onBlur={onBlur} />
                 </div>
-                <div>
-                </div>
             </div>
         </Json> 
     )
