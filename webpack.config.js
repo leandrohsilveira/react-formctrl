@@ -11,12 +11,20 @@ module.exports = {
         }
     },
     entry: {
-        vendor: ['react', 'react-dom', 'jquery'],
-        bundle: './app.jsx',
+        'bundle': './app.jsx',
+        'vendor': [
+            'react', 
+            'react-dom', 
+            'axios', 
+            'react-syntax-highlighter/dist/light', 
+            'react-syntax-highlighter/dist/styles',
+            'react-syntax-highlighter/dist/languages/javascript',
+            'react-syntax-highlighter/dist/languages/json'
+        ],
     },
     output:  {
         filename:   "[name].js", // the output bundle
-        path:       resolve(__dirname, "example/dist")
+        path:       resolve(__dirname, "docs")
     },
 // 
     context: resolve(__dirname, "example"),
@@ -44,12 +52,15 @@ module.exports = {
 
     plugins:     [
         // new StyleLintPlugin(),
-        new webpack.HotModuleReplacementPlugin(), // enable HMR globally
+        // new webpack.HotModuleReplacementPlugin(), // enable HMR globally
         // new webpack.NamedModulesPlugin(), // prints more readable module names in the browser console on HMR updates
         new webpack.optimize.CommonsChunkPlugin({
             name: 'vendor',
         }),
-        // new webpack.optimize.UglifyJsPlugin(),
+        // new webpack.optimize.CommonsChunkPlugin({
+        //     name: 'react-formctrl',
+        // }),
+        new webpack.optimize.UglifyJsPlugin(),
         new HtmlWebpackPlugin({
             template: 'index.html',
             filename: 'index.html',

@@ -8,15 +8,15 @@ export class SubmitValuesPopup extends React.Component {
         super(props)
         this.state = {
             show: false,
-            name: null,
+            formName: null,
             values: {},
             timeout: null
         }
         this.handleShowSubmitValuesPopupEvent = this.handleShowSubmitValuesPopupEvent.bind(this)
     }
 
-    static dispatchShowSubmitValuesPopupEvent(name, values) {
-        const detail = {name, values}
+    static dispatchShowSubmitValuesPopupEvent(formName, values) {
+        const detail = {formName, values}
         const event = new CustomEvent(EVENT_NAME, {detail})
         document.dispatchEvent(event)
     }
@@ -30,7 +30,7 @@ export class SubmitValuesPopup extends React.Component {
     }
 
     handleShowSubmitValuesPopupEvent(event) {
-        const {name, values} = event.detail
+        const {formName, values} = event.detail
         if(this.state.timeout) {
             clearTimeout(this.state.timeout)
         }
@@ -38,20 +38,20 @@ export class SubmitValuesPopup extends React.Component {
         const timeout = setTimeout(() => {
             this.setState(state => ({
                 show: false,
-                name: null,
+                formName: null,
                 values: {},
                 timeout: null
             }))
         }, 5000);
 
-        this.setState({show: true, name, values, timeout})
+        this.setState({show: true, formName, values, timeout})
     }
 
     render() {
-        const {show, name, values} = this.state
+        const {show, formName, values} = this.state
         return (
             <div className={`submit-values${show ? ' show' : ''}`}>
-                <h3>Submited form: {name}</h3>
+                <h3>Submited form: {formName}</h3>
                 <ul>
                     {(!values || values.length === 0) && (
                         <li>No values sent in submission</li>
