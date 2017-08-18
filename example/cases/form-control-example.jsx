@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {Form, Field, FormControl} from '../../'
+import {Form, Field, FormControl} from 'react-formctrl'
 import {SubmitValuesPopup} from '../submit-values'
 import {Json} from '../case'
 

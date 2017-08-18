@@ -190,9 +190,9 @@ export class FormProvider extends React.Component {
                 const forms = {...state.forms}
                 const form = forms[formName]
                 form.fields[fieldName] = fieldCtrl
-                this.updateFormCtrl(formName, form)
                 const field = form.fields[fieldName]
                 form.values[fieldName] = field.value
+                this.updateFormCtrl(formName, form)
                 if(field.__instances) {
                     field.__instances++
                 } else {

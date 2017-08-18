@@ -1,5 +1,5 @@
 import React from 'react'
-import {Form, FormControl, Field} from '../../'
+import {Form, FormControl, Field} from 'react-formctrl'
 import {SubmitValuesPopup} from '../submit-values'
 
 function Input({label, className = 'field', type, ctrl, name, onChange, onBlur, value, required}) {

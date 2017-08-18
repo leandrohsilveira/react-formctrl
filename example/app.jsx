@@ -6,7 +6,7 @@ import javascript from 'react-syntax-highlighter/dist/languages/javascript';
 import json from 'react-syntax-highlighter/dist/languages/json';
 import { registerLanguage } from "react-syntax-highlighter/dist/light"
 
-import {FormProvider} from '../'
+import {FormProvider} from 'react-formctrl'
 import {SubmitValuesPopup} from './submit-values'
 import {Routes} from './routes'
 
