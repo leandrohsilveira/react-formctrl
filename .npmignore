@@ -1,0 +1,15 @@
+.babelrc
+src
+example
+docs
+spec
+public
+.*rc
+.eslintignore
+.csscomb.json
+.*.yml
+.editorconfig
+karma.conf.js
+webpack.config.*
+CODE_OF_CONDUCT.md
+

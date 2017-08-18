@@ -1,22 +1,50 @@
 {
   "name": "react-formctrl",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.1.0",
+  "description": "A lightweight ReactJS forms controller",
+  "license": "MIT",
+  "homepage": "https://github.com/leandrohsilveira/react-formctrl",
+  "author": {
+    "name": "Leandro Hinckel Silveira",
+    "email": "leandro.hinckel@gmail.com",
+    "url": "https://facebook.com/leandro.hinckel"
+  },
+  "keywords": [
+    "react",
+    "react-component",
+    "react-form",
+    "react-forms",
+    "form",
+    "forms"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leandrohsilveira/react-formctrl.git"
+  },
+  "bugs": {
+    "email": "leandro.hinckel@gmail.com",
+    "url": "https://github.com/leandrohsilveira/react-formctrl/issues"
+  },
+  "main": "./lib",
+  "module": "./src",
+  "engines": {
+    "node": ">= 6"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+
     "dev": "webpack-dev-server --progress --env.profile=dev",
     "docs": "webpack --progress -p --env.profile=docs",
-    "lib": "webpack --progress -p --env.profile=lib"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "react": "^15.6.1"
+
+    "clean": "rimraf ./lib",
+    "prebuild": "npm run clean",
+    "build": "babel ./src --out-dir ./lib",
+
+    "prepublish": "npm run build"
   },
   "devDependencies": {
     "axios": "^0.16.2",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.25.0",
     "babel-loader": "^7.1.1",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
@@ -29,9 +57,14 @@
     "react-dom": "^15.6.1",
     "react-router-dom": "^4.1.2",
     "react-syntax-highlighter": "^5.6.3",
+    "rimraf": "^2.6.1",
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
     "webpack": "^3.5.4",
     "webpack-dev-server": "^2.7.1"
+  },
+  "peerDependencies": {
+    "prop-types": "^15.5.7",
+    "react": "^15.5.0"
   }
 }

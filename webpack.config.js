@@ -13,7 +13,6 @@ module.exports = (env) => {
 
     var isDev = env.profile === 'dev';
     var isDocs = env.profile === 'docs';
-    var isLib = env.profile === 'lib';
     var isExample = isDev || isDocs;
 
     // Global configs
@@ -24,33 +23,8 @@ module.exports = (env) => {
                 modules: __dirname + '/node_modules'
             }
         },
-        output: {
-            filename: "[name].js", 
-            sourceMapFilename: '[name].map'
-        },
-
-        module: {
-            rules: [
-                {
-                    test:    /\.(js|jsx)$/,
-                    use:     ["babel-loader"],
-                    exclude: /node_modules/
-                },
-            ]
-        },
-
-        plugins: [
-            // new StyleLintPlugin(),
-        ],
-        performance: {
-            hints: false
-        }
-    };
-
-    if(isExample) {
-        // commons example build configs, activated if is DEV or DOCS.
-        configs.context = resolve(__dirname, "example");
-        configs.entry = {
+        context: resolve(__dirname, "example"),
+        entry: {
             'bundle': './app.jsx',
             'vendor': [
                 'react', 
@@ -62,60 +36,61 @@ module.exports = (env) => {
                 'react-syntax-highlighter/dist/languages/javascript',
                 'react-syntax-highlighter/dist/languages/json'
             ],
-        };
-        configs.devtool = "source-map";
-        configs.target = 'web';
-        configs.module.rules.push({
-            test:    /\.(css|scss|sass)$/,
-            use:     ["style-loader", "css-loader", "sass-loader"],
-        });
-        configs.plugins.push(new webpack.optimize.CommonsChunkPlugin({
-            name: 'vendor',
-        }));
-        configs.plugins.push(new HtmlWebpackPlugin({
-            template: 'index.html',
-            filename: 'index.html',
-            inject: 'body'
-        }));
-        
-        if(isDev) {
-            // DEV build configs
-            configs.output.path = resolve(__dirname, "public");
+        },
+        output: {
+            filename: "[name].js", 
+            sourceMapFilename: '[name].map'
+        },
+        devtool: "source-map",
+        module: {
+            rules: [
+                {
+                    test:    /\.(js|jsx)$/,
+                    use:     ["babel-loader"],
+                    exclude: /node_modules/
+                },
+                {
+                    test:    /\.(css|scss|sass)$/,
+                    use:     ["style-loader", "css-loader", "sass-loader"],
+                }
+            ]
+        },
 
-            configs.devServer = {
-                hot: true, // enable HMR on the server
-                contentBase: resolve(__dirname, "public"), // match the output path
-                publicPath: "/" // match the output `publicPath`
-            };
-
-            configs.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable HMR globally
-            configs.plugins.push(new webpack.NamedModulesPlugin()); // prints more readable module names in the browser console on HMR updates
-        } else {
-            // DOCS build configs
-            configs.output.path = resolve(__dirname, "docs");
-
-            configs.plugins.push(new CleanWebpackPlugin(['docs/*'], cleanOptions));
-            configs.plugins.push(new webpack.optimize.UglifyJsPlugin({sourceMap: true}));
+        plugins: [
+            // new StyleLintPlugin(),
+            new webpack.optimize.CommonsChunkPlugin({
+                name: 'vendor',
+            }),
+            new HtmlWebpackPlugin({
+                template: 'index.html',
+                filename: 'index.html',
+                inject: 'body'
+            }),
+        ],
+        performance: {
+            hints: false
         }
-        
-    } else if(isLib) {
-        configs.context = resolve(__dirname, "src");
-        configs.entry = {
-            'index': './index.js'
+    };
+    if(isDev) {
+        // DEV build configs
+        configs.output.path = resolve(__dirname, "public");
+
+        configs.devServer = {
+            hot: true, // enable HMR on the server
+            contentBase: resolve(__dirname, "public"), // match the output path
+            publicPath: "/" // match the output `publicPath`
         };
-        configs.target = 'node';
-        configs.externals = ['react'];
 
-        configs.output.path = __dirname;
-        configs.output.library = "react-formctrl";
-        configs.output.libraryTarget = "umd";
-
-        configs.plugins.push(new CleanWebpackPlugin(['index.js'], cleanOptions));
-        configs.plugins.push(new webpack.optimize.UglifyJsPlugin());
+        configs.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable HMR globally
+        configs.plugins.push(new webpack.NamedModulesPlugin()); // prints more readable module names in the browser console on HMR updates
+    } else if(isDocs) {
+        // DOCS build configs
+        configs.output.path = resolve(__dirname, "docs");
+        configs.plugins.push(new CleanWebpackPlugin(['docs/*'], cleanOptions));
+        configs.plugins.push(new webpack.optimize.UglifyJsPlugin({sourceMap: true}));
     } else {
-        throw "unknown webpack runtime profile"
+        throw "ERROR: Unknown webpack build profile: " + env.profile;
     }
-
 
     return configs;
 
