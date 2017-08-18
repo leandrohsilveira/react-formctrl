@@ -1,6 +1,6 @@
 {
   "name": "react-formctrl",
-  "version": "0.1.0-alpha01",
+  "version": "0.1.0-alpha06",
   "description": "A lightweight ReactJS forms controller",
   "license": "MIT",
   "homepage": "https://github.com/leandrohsilveira/react-formctrl",
@@ -43,7 +43,7 @@
     "prepublish": "npm run build"
   },
   "devDependencies": {
-    "react-formctrl": "0.1.0-alpha01",
+    "react-formctrl": "0.1.0-alpha06",
     "axios": "^0.16.2",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.25.0",
