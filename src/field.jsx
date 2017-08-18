@@ -147,6 +147,7 @@ export class Field extends React.Component {
         if(this.state.unchanged !== fieldCtrl.unchanged) syncState.unchanged = fieldCtrl.unchanged
         if(this.state.changed !== fieldCtrl.changed) syncState.changed = fieldCtrl.changed
         if(this.state.value !== fieldCtrl.value) syncState.value = fieldCtrl.value
+        if(this.state.__instances != fieldCtrl.__instances) syncState.__instances = fieldCtrl.__instances
         return syncState
     }
 
