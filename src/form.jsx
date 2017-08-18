@@ -102,8 +102,8 @@ export class FormControl extends React.Component {
 
     sync(formCtrl) {
         const syncState = {}
-        if(JSON.stringify(this.state.values) !== JSON.stringify(formCtrl.values)) syncState.values = formCtrl.values
-        if(JSON.stringify(this.state.fields) !== JSON.stringify(formCtrl.fields)) syncState.fields = formCtrl.fields
+        if(JSON.stringify(this.state.values) !== JSON.stringify(formCtrl.values)) syncState.values = {...formCtrl.values}
+        if(JSON.stringify(this.state.fields) !== JSON.stringify(formCtrl.fields)) syncState.fields = {...formCtrl.fields}
         if(this.state.valid !== formCtrl.valid) syncState.valid = formCtrl.valid
         if(this.state.invalid !== formCtrl.invalid) syncState.invalid = formCtrl.invalid
         if(this.state.untouched !== formCtrl.untouched) syncState.untouched = formCtrl.untouched
