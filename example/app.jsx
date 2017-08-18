@@ -43,7 +43,7 @@ export function App(props) {
                             &nbsp;
                             -
                             &nbsp;
-                            <Link to="/sync-form">Synchronized forms</Link>
+                            <Link to="/sync-forms">Synchronized forms</Link>
                         </div>
                         <Routes />
                     </div>
