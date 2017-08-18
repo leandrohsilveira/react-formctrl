@@ -57,7 +57,7 @@ export class SubmitValuesPopup extends React.Component {
                         <li>No values sent in submission</li>
                     )}
                     {values && Object.keys(values).map(field => (
-                        <li>
+                        <li key={field}>
                             <strong>{field}</strong>: {values[field]}
                         </li>
                     ))}
