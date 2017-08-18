@@ -3,9 +3,9 @@ import axios from 'axios'
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/light';
 import { tomorrowNight as theme } from 'react-syntax-highlighter/dist/styles';
 
-export function Json({json, title, children}) {
+export function Json({ json, title, children }) {
     let content = json
-    if(typeof content === 'object') content = JSON.stringify(content, null, 4)
+    if (typeof content === 'object') content = JSON.stringify(content, null, 4)
     return (
         <div className="json-code">
             {children !== undefined && (
@@ -26,20 +26,36 @@ export class Case extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            code: ''
+            code: '',
+            cancelTokenSource: axios.CancelToken.source()
         }
     }
 
     componentWillMount() {
-        const {url} = this.props
-        axios.get(url).then(response => {
-            this.setState(state => ({code: response.data}))
-        })
+        const { url } = this.props
+        const requestConfig = {
+            cancelToken: this.state.cancelTokenSource.token
+        }
+        axios.get(url, requestConfig)
+            .then(response => {
+                this.setState(state => ({ code: response.data }))
+            })
+            .catch(thrown => {
+                if (axios.isCancel(thrown)) {
+                    console.debug('Request canceled: ', thrown.message)
+                } else {
+                    console.error(thrown)
+                }
+            })
+    }
+
+    componentWillUnmount() {
+        this.state.cancelTokenSource.cancel('Component\'s request source unmounted.')
     }
 
     render() {
-        const {children, fileName} = this.props
-        const {code} = this.state
+        const { children, fileName } = this.props
+        const { code } = this.state
         return (
             <div className="case clearfix">
                 <div className="case-code">
