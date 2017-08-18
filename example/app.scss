@@ -116,24 +116,24 @@ a {
     }
 }
 
+.menu {
+    background: rgb(59, 65, 70);
+    padding: 20px 5px;
+    
+    a {
+        text-decoration: none;
+        padding: 15px;
+        &:hover,
+        &.active {
+            background: rgb(29, 31, 33);
+        }
+    }
+}
+
 .case-display,
 .case-code {
     width: 100%;
     padding: 5px;
-}
-
-/* 
-Com uma largura mínima de 992 pixels. Monitores por exemplo.
-*/
-@media screen and (min-width: 992px) {
-    .case-display {
-        float: left;
-        width: 30%;
-    }
-    .case-code {
-        float: left;
-        width: 70%;
-    }
 }
 
 .clearfix:after {

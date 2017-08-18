@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {HashRouter, Link} from 'react-router-dom'
+import {HashRouter, NavLink} from 'react-router-dom'
 
 import javascript from 'react-syntax-highlighter/dist/languages/javascript';
 import json from 'react-syntax-highlighter/dist/languages/json';
@@ -27,23 +27,11 @@ export function App(props) {
                 <HashRouter>
                     <div>
                         <div className="menu">
-                            <Link to="/">Basic</Link>
-                            &nbsp;
-                            -
-                            &nbsp;
-                            <Link to="/more">More of basics</Link>
-                            &nbsp;
-                            -
-                            &nbsp;
-                            <Link to="/validation">Field validation</Link>
-                            &nbsp;
-                            -
-                            &nbsp;
-                            <Link to="/form-control">Form control</Link>
-                            &nbsp;
-                            -
-                            &nbsp;
-                            <Link to="/sync-forms">Synchronized forms</Link>
+                            <NavLink activeClassName="active" exact to="/">Basic</NavLink>
+                            <NavLink activeClassName="active" to="/more">More of basics</NavLink>
+                            <NavLink activeClassName="active" to="/validation">Field validation</NavLink>
+                            <NavLink activeClassName="active" to="/form-control">Form control</NavLink>
+                            <NavLink activeClassName="active" to="/sync-forms">Synchronized forms</NavLink>
                         </div>
                         <Routes />
                     </div>
