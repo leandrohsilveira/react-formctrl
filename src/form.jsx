@@ -24,11 +24,11 @@ export class Form extends React.Component {
     }
 
     componentWillMount() {
-        const {name, initialValues} = this.props
+        const {name} = this.props
         document.addEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${name}`, this.handleFormSubmitForward)
-        FormEventDispatcher.dispatchRegisterForm(name, initialValues)
+        FormEventDispatcher.dispatchRegisterForm(name)
     }
-
+    
     handleFormSubmitForward(event) {
         const {onSubmit} = this.props
         if(typeof onSubmit === 'function') {
@@ -38,12 +38,13 @@ export class Form extends React.Component {
             }
         }
     }
-
+    
     componentWillUnmount() {
-        document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${props.name}`, this.handleFormSubmitForward)
-        FormEventDispatcher.dispatchUnregisterForm(props.name)
+        const {name} = this.props
+        document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${name}`, this.handleFormSubmitForward)
+        FormEventDispatcher.dispatchUnregisterForm(name)
     }
-
+    
     render() {
         const {handleSubmit, handleReset} = this
         const {name, children, className} = this.props
