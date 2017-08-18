@@ -8,7 +8,7 @@ function Input({label, name, value, onChange}) {
         <div>
             <label htmlFor={name}>{label}:</label>
             <div>
-                <input name={name} value={value} onChange={onChange} />
+                <input name={name} value={value} onChange={onChange}></input>
             </div>
         </div>
     )
@@ -24,10 +24,10 @@ export function MoreOfBasicForm(props) {
             <div>
                 <Form name={formName} onSubmit={onSubmit}>
                     <Field form={formName} name="simple">
-                        <Input label="Simple" />
+                        <Input label="Simple" ></Input>
                     </Field>
                     <Field form={formName} name="withInitialValue" initialValue="Initial value">
-                        <Input label="With initial value" />
+                        <Input label="With initial value" ></Input>
                     </Field>
                     <div>
                         <button type="submit">Submit</button>

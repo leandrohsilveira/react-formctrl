@@ -9,7 +9,7 @@ function Input({label, name, value, onChange, onBlur, ctrl: {invalid, errors}}) 
         <div>
             <label htmlFor={name}>{label}:</label>
             <div>
-                <input name={name} value={value} onChange={onChange} onBlur={onBlur} />
+                <input name={name} value={value} onChange={onChange} onBlur={onBlur}></input>
             </div>
             {invalid && (
                 <div>
@@ -26,7 +26,7 @@ function Input({label, name, value, onChange, onBlur, ctrl: {invalid, errors}}) 
 
 function FormControlDisplay(props) {
     return (
-        <Json title="Form controller" json={props} />
+        <Json title="Form controller" json={props}></Json>
     )
 }
 
@@ -40,10 +40,10 @@ export function FormControlExample(props) {
             <div>
                 <Form name={formName} onSubmit={onSubmit}>
                     <Field form={formName} name="name" required>
-                        <Input label="Name (required)" />
+                        <Input label="Name (required)"></Input>
                     </Field>
                     <Field form={formName} name="email" type="email" required>
-                        <Input label="E-mail (email and required)" />
+                        <Input label="E-mail (email and required)"></Input>
                     </Field>
                     <div>
                         <FormControl form={formName} transformProps={ctrl => ({disabled: ctrl.invalid})}>
@@ -55,7 +55,7 @@ export function FormControlExample(props) {
                     </div>
                     <br/>
                     <FormControl form={formName}>
-                        <FormControlDisplay />
+                        <FormControlDisplay></FormControlDisplay>
                     </FormControl>
                 </Form>
             </div>

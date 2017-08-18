@@ -2,7 +2,7 @@ import React from 'react'
 import {Form, FormControl, Field} from '../../'
 import {SubmitValuesPopup} from '../submit-values'
 
-function FieldWrapper({label, className = 'field', type, ctrl, name, onChange, onBlur, value, required}) {
+function Input({label, className = 'field', type, ctrl, name, onChange, onBlur, value, required}) {
     return (
         <div className={className}>
             <label htmlFor={name}>{label}</label>
@@ -13,7 +13,8 @@ function FieldWrapper({label, className = 'field', type, ctrl, name, onChange, o
                         required={required} 
                         value={value} 
                         onChange={onChange}
-                        onBlur={onBlur} />
+                        onBlur={onBlur}>
+                </input>
             </div>
 
             {ctrl.invalid && ctrl.touched && (
@@ -35,17 +36,17 @@ function PeopleForm({formName = 'people', onSubmit}) {
             <ul className="field-list">
                 <li className="field-list-item">
                     <Field form={formName} name="firstName" className="field" required minLength={2}>
-                        <FieldWrapper label="First name"></FieldWrapper>
+                        <Input label="First name"></Input>
                     </Field>
                 </li>
                 <li className="field-list-item">
                     <Field form={formName} name="lastName" className="field" required minLength={2}>
-                        <FieldWrapper label="Last name"></FieldWrapper>
+                        <Input label="Last name"></Input>
                     </Field>
                 </li>
                 <li className="field-list-item">
                     <Field form={formName} name="email" className="field" type="email" required>
-                        <FieldWrapper label="E-mail"></FieldWrapper>
+                        <Input label="E-mail"></Input>
                     </Field>
                 </li>
             </ul>
@@ -74,9 +75,9 @@ export function SynchronizedForms(props) {
             <p>If there is two instances of forms with the same name, they will be synchronized!</p>
             <div>
                 <h4>Form 1</h4>
-                <PeopleForm formName="syncForm" onSubmit={makeSubmitEvent('Sync form 1')} />
+                <PeopleForm formName="syncForm" onSubmit={makeSubmitEvent('Sync form 1')}></PeopleForm>
                 <h4>Form 2</h4>
-                <PeopleForm formName="syncForm" onSubmit={makeSubmitEvent('Sync form 2')} />
+                <PeopleForm formName="syncForm" onSubmit={makeSubmitEvent('Sync form 2')}></PeopleForm>
             </div>
         </div>
     )

@@ -10,7 +10,7 @@ function Input({label, name, value, onChange, onBlur, ctrl}) {
             <div>
                 <label htmlFor={name}>{label}:</label>
                 <div>
-                    <input name={name} value={value} onChange={onChange} onBlur={onBlur} />
+                    <input name={name} value={value} onChange={onChange} onBlur={onBlur}></input>
                 </div>
             </div>
         </Json> 
@@ -27,10 +27,10 @@ export function FieldValidationForm(props) {
             <div>
                 <Form name={formName} onSubmit={onSubmit}>
                     <Field form={formName} name="name" required>
-                        <Input label="Name (required)" />
+                        <Input label="Name (required)"></Input>
                     </Field>
                     <Field form={formName} name="email" type="email" required>
-                        <Input label="E-mail (email and required)" />
+                        <Input label="E-mail (email and required)"></Input>
                     </Field>
                     <div>
                         <button type="submit">Submit</button>
