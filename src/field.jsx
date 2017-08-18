@@ -24,6 +24,7 @@ export class Field extends React.Component {
             initialValue: props.initialValue
         }
 
+        this.onChange = this.onChange.bind(this)
         this.handleFieldChangeForward = this.handleFieldChangeForward.bind(this)
         this.handleFormResetForward = this.handleFormResetForward.bind(this)
         this.handleChange = this.handleChange.bind(this)
@@ -94,12 +95,20 @@ export class Field extends React.Component {
         }
     }
 
+    onChange(fieldCtrl) {
+        const {onChange} = this.props
+        if(typeof onChange === 'function') {
+            onChange(fieldCtrl)
+        }
+    }
+
     handleFieldChangeForward(event) {
         const payload = event.detail
         const fieldCtrl = payload.fieldCtrl
         const syncState = this.sync(fieldCtrl)
         if(Object.keys(syncState).length) {
             this.setState(syncState)
+            this.onChange(fieldCtrl)
         }
     }
 

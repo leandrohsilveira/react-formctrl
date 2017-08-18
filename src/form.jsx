@@ -72,6 +72,7 @@ export class FormControl extends React.Component {
             fields: {},
             values: {}
         }
+        this.onChange = this.onChange.bind(this)
         this.handleFormChanged = this.handleFormChanged.bind(this)
         this.sync = this.sync.bind(this)
         this.transformProps = this.transformProps.bind(this)
@@ -90,6 +91,13 @@ export class FormControl extends React.Component {
         document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FORM_CHANGED}#${form}`, this.handleFormChanged)
     }
 
+    onChange(formCtrl) {
+        const {onChange} = this.props
+        if(typeof onChange === 'function') {
+            onChange(formCtrl)
+        }
+    }
+
     handleFormChanged(event) {
         const payload = event.detail
         const {form} = this.props
@@ -97,6 +105,7 @@ export class FormControl extends React.Component {
         const syncState = this.sync(formCtrl)
         if(Object.keys(syncState).length > 0) {
             this.setState(syncState)
+            this.onChange(formCtrl)
         }
     }
 
