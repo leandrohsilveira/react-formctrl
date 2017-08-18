@@ -18,51 +18,56 @@ export const REACT_FORMCTRL = {
 }
 
 export class FormEventDispatcher {
+
+    static copy(payload) {
+        return JSON.parse(JSON.stringify(payload))
+    }
+
     static dispatchRegisterForm(form) {
-        const payload = {detail: {form}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.REGISTER_FORM, {...payload})
+        const payload = FormEventDispatcher.copy({detail: {form}})
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.REGISTER_FORM, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchUnregisterForm(form) {
-        const payload = {detail: {form}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, {...payload})
+        const payload = FormEventDispatcher.copy({detail: {form}})
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchSubmitForm(form, formRef) {
-        const payload = {detail: {form, formRef}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, {...payload})
+        const payload = FormEventDispatcher.copy({detail: {form, formRef}})
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchResetForm(form) {
-        const payload = {detail: {form}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FORM_RESETED, {...payload})
+        const payload = FormEventDispatcher.copy({detail: {form}})
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FORM_RESETED, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchRegisterField(form, field, fieldCtrl) {
-        const payload = {detail: {form, field, fieldCtrl}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.REGISTER_FIELD, {...payload})
+        const payload = FormEventDispatcher.copy({detail: {form, field, fieldCtrl}})
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.REGISTER_FIELD, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchUnregisterField(form, field) {
-        const payload = {detail: {form, field}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, {...payload})
+        const payload = FormEventDispatcher.copy({detail: {form, field}})
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchFieldChanged(form, field, fieldCtrl) {
-        const payload = {detail: {form, field, fieldCtrl}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, {...payload})
+        const payload = FormEventDispatcher.copy({detail: {form, field, fieldCtrl}})
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, payload)
         document.dispatchEvent(event)
     }
 
     static forwardSubmitFormEvent(form, values, formCtrl, formRef) {
-        const payload = {detail: {values, formCtrl, formRef}}
-        const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${form}`, {...payload})
+        const payload = FormEventDispatcher.copy({detail: {values, formCtrl, formRef}})
+        const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${form}`, payload)
         document.dispatchEvent(event)
     }
     
@@ -72,14 +77,14 @@ export class FormEventDispatcher {
     }
 
     static forwardFieldChangedEvent(form, field, fieldCtrl) {
-        const payload = {detail: {form, field, fieldCtrl}}
-        const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, {...payload})
+        const payload = FormEventDispatcher.copy({detail: {form, field, fieldCtrl}})
+        const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, payload)
         document.dispatchEvent(event)
     }
     
     static forwardFormChangedEvent(form, formCtrl) {
-        const payload = {detail: {form, formCtrl}}
-        const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_CHANGED}#${form}`, {...payload})
+        const payload = FormEventDispatcher.copy({detail: {form, formCtrl}})
+        const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_CHANGED}#${form}`, payload)
         document.dispatchEvent(event)
     }
 
