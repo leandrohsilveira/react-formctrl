@@ -1,72 +1,29 @@
 {
   "name": "react-formctrl",
-  "version": "0.1.0-alpha08",
-  "description": "A lightweight ReactJS forms controller",
-  "license": "MIT",
-  "homepage": "https://github.com/leandrohsilveira/react-formctrl",
-  "author": {
-    "name": "Leandro Hinckel Silveira",
-    "email": "leandro.hinckel@gmail.com",
-    "url": "https://facebook.com/leandro.hinckel"
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "lerna bootstrap",
+    "predev": "npm run build",
+    "dev": "cd ./packages/react-formctrl-examples && npm run dev",
+    "predocs": "npm run build",
+    "docs": "cd ./packages/react-formctrl-examples && npm run docs"
   },
-  "keywords": [
-    "react",
-    "react-component",
-    "react-form",
-    "react-forms",
-    "form",
-    "forms"
-  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/leandrohsilveira/react-formctrl.git"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "bugs": {
-    "email": "leandro.hinckel@gmail.com",
     "url": "https://github.com/leandrohsilveira/react-formctrl/issues"
   },
-  "main": "./lib",
-  "module": "./src",
-  "engines": {
-    "node": ">= 6"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "predevbuild": "rimraf ./node_modules/react-formctrl",
-    "devbuild": "npm run build",
-    "postdevbuild": "node ./cplib.js",
-    "predev": "npm run devbuild",
-    "dev": "webpack-dev-server --progress --env.profile=dev",
-    "docs": "webpack --progress -p --env.profile=docs",
-    "clean": "rimraf ./lib",
-    "prebuild": "npm run clean",
-    "build": "babel ./src --out-dir ./lib",
-    "prepublish": "npm run build"
-  },
+  "homepage": "https://github.com/leandrohsilveira/react-formctrl#readme",
   "devDependencies": {
-    "axios": "^0.16.2",
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.25.0",
-    "babel-loader": "^7.1.1",
-    "babel-plugin-transform-object-rest-spread": "^6.23.0",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-react": "^6.24.1",
-    "clean-webpack-plugin": "^0.1.16",
-    "copy": "^0.3.1",
-    "css-loader": "^0.28.4",
-    "html-webpack-plugin": "^2.30.1",
-    "node-sass": "^4.5.3",
-    "react-dom": "^15.6.1",
-    "react-router-dom": "^4.1.2",
-    "react-syntax-highlighter": "^5.6.3",
-    "rimraf": "^2.6.1",
-    "sass-loader": "^6.0.6",
-    "style-loader": "^0.18.2",
-    "webpack": "^3.5.4",
-    "webpack-dev-server": "^2.7.1"
+    "lerna": "^2.2.0"
   },
-  "peerDependencies": {
-    "prop-types": "^15.5.7",
-    "react": "^15.5.0"
-  }
+  "private": true
 }

@@ -23,7 +23,7 @@ module.exports = (env) => {
                 modules: __dirname + '/node_modules'
             }
         },
-        context: resolve(__dirname, "example"),
+        context: resolve(__dirname, "src"),
         entry: {
             'bundle': './app.jsx',
             'vendor': [
@@ -85,8 +85,8 @@ module.exports = (env) => {
         configs.plugins.push(new webpack.NamedModulesPlugin()); // prints more readable module names in the browser console on HMR updates
     } else if(isDocs) {
         // DOCS build configs
-        configs.output.path = resolve(__dirname, "docs");
-        configs.plugins.push(new CleanWebpackPlugin(['docs/*'], cleanOptions));
+        configs.output.path = resolve(__dirname, "../../docs");
+        configs.plugins.push(new CleanWebpackPlugin(['../../docs/*'], cleanOptions));
         configs.plugins.push(new webpack.optimize.UglifyJsPlugin({sourceMap: true}));
     } else {
         throw "ERROR: Unknown webpack build profile: " + env.profile;
