@@ -11,8 +11,8 @@ import {SynchronizedForms} from './cases/synchronized-forms'
 import {FormValuesManipulationExample} from './cases/form-values-manipulation'
 
 export function Routes({branch = 'master'}) {
-    const rootPath = 'example/cases'
-    const baseRawGithub = `https://raw.githubusercontent.com/leandrohsilveira/react-formctrl/${branch}/${rootPath}`
+    const rootPath = 'react-formctrl-examples/src/cases'
+    const baseRawGithub = `https://raw.githubusercontent.com/leandrohsilveira/react-formctrl/${branch}/packages/${rootPath}`
     return (
         <Route path="/" render={() => (
             <div>
