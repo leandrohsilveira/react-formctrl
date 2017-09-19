@@ -3,11 +3,6 @@ const {resolve}       = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 // const StyleLintPlugin = require('stylelint-webpack-plugin');
-let cleanOptions = {
-  root:     __dirname,
-  verbose:  true,
-  dry:      false
-}
 
 module.exports = (env) => {
 
@@ -86,7 +81,11 @@ module.exports = (env) => {
     } else if(isDocs) {
         // DOCS build configs
         configs.output.path = resolve(__dirname, "../../docs");
-        configs.plugins.push(new CleanWebpackPlugin(['../../docs/*'], cleanOptions));
+        configs.plugins.push(new CleanWebpackPlugin(['docs/*'], {
+            root:     resolve(__dirname, "../.."),
+            verbose:  true,
+            dry:      false
+        }));
         configs.plugins.push(new webpack.optimize.UglifyJsPlugin({sourceMap: true}));
     } else {
         throw "ERROR: Unknown webpack build profile: " + env.profile;
