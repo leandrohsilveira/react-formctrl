@@ -8,6 +8,7 @@ import {MoreOfBasicForm} from './cases/moreofbasic-form'
 import {FieldValidationForm} from './cases/field-validation'
 import {FormControlExample} from './cases/form-control-example'
 import {SynchronizedForms} from './cases/synchronized-forms'
+import {FormValuesManipulationExample} from './cases/form-values-manipulation'
 
 export function Routes({branch = 'master'}) {
     const rootPath = 'example/cases'
@@ -42,6 +43,12 @@ export function Routes({branch = 'master'}) {
                 <Route path="/sync-forms" render={() => (
                     <Case fileName={`${rootPath}/synchronized-forms.jsx`} url={`${baseRawGithub}/synchronized-forms.jsx`}>
                         <SynchronizedForms />
+                    </Case>
+                )} />
+
+                <Route path="/form-values-manipulation" render={() => (
+                    <Case fileName={`${rootPath}/form-values-manipulation.jsx`} url={`${baseRawGithub}/form-values-manipulation.jsx`}>
+                        <FormValuesManipulationExample />
                     </Case>
                 )} />
             </div>

@@ -46,10 +46,10 @@ export function FormControlExample(props) {
                         <Input label="E-mail (email and required)"></Input>
                     </Field>
                     <div>
-                        <FormControl form={formName} transformProps={ctrl => ({disabled: ctrl.invalid})}>
+                        <FormControl form={formName} inject={ctrl => ({disabled: ctrl.invalid})}>
                             <button type="submit">Submit</button>
                         </FormControl>
-                        <FormControl form={formName} transformProps={ctrl => ({disabled: ctrl.unchanged})}>
+                        <FormControl form={formName} inject={ctrl => ({disabled: ctrl.unchanged})}>
                             <button type="reset">Reset</button>
                         </FormControl>
                     </div>

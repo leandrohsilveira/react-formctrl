@@ -51,11 +51,11 @@ function PeopleForm({formName = 'people', onSubmit}) {
                 </li>
             </ul>
             <div>
-                <FormControl form={formName} transformProps={formCtrl => ({disabled: formCtrl.invalid || formCtrl.unchanged})}>
+                <FormControl form={formName} inject={formCtrl => ({disabled: formCtrl.invalid || formCtrl.unchanged})}>
                     <button type="submit">Submit</button>
                 </FormControl>
                 &nbsp;
-                <FormControl form={formName} transformProps={formCtrl => ({disabled: formCtrl.unchanged})}>
+                <FormControl form={formName} inject={formCtrl => ({disabled: formCtrl.unchanged})}>
                     <button type="reset">Reset</button>
                 </FormControl>
             </div>
