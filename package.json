@@ -1,6 +1,6 @@
 {
   "name": "react-formctrl",
-  "version": "0.1.0-alpha06",
+  "version": "0.1.0-alpha07",
   "description": "A lightweight ReactJS forms controller",
   "license": "MIT",
   "homepage": "https://github.com/leandrohsilveira/react-formctrl",
@@ -32,18 +32,18 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-
+    "predevbuild": "rimraf ./node_modules/react-formctrl",
+    "devbuild": "npm run build",
+    "postdevbuild": "node ./cplib.js",
+    "predev": "npm run devbuild",
     "dev": "webpack-dev-server --progress --env.profile=dev",
     "docs": "webpack --progress -p --env.profile=docs",
-
     "clean": "rimraf ./lib",
     "prebuild": "npm run clean",
     "build": "babel ./src --out-dir ./lib",
-
     "prepublish": "npm run build"
   },
   "devDependencies": {
-    "react-formctrl": "0.1.0-alpha06",
     "axios": "^0.16.2",
     "babel-cli": "^6.26.0",
     "babel-core": "^6.25.0",
@@ -52,6 +52,7 @@
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
     "clean-webpack-plugin": "^0.1.16",
+    "copy": "^0.3.1",
     "css-loader": "^0.28.4",
     "html-webpack-plugin": "^2.30.1",
     "node-sass": "^4.5.3",
