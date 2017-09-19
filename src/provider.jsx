@@ -280,6 +280,8 @@ export class FormProvider extends React.Component {
                     const forms = {...state.forms}
                     const form = forms[formName]
                     const fieldCtrl = form.fields[fieldName]
+                    fieldCtrl.dirty = true
+                    fieldCtrl.pristine = false
                     this.updateFieldCtrl(fieldCtrl, value)
                     FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, fieldCtrl
                     )
