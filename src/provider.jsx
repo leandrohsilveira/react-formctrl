@@ -2,6 +2,10 @@ import React from 'react'
 
 const REACT_FORMCTRL_NAME = 'react-formctl'
 
+const INTEGER_REGEX = /^-?\d+?$/
+const FLOAT_REGEX = /^-?\d+(\.\d+)?$/
+const EMAIL_REGEX = /\S+@\S+\.\S+/
+
 const PROVIDER_FLAG = `${REACT_FORMCTRL_NAME}.FormProvider`
 
 export const REACT_FORMCTRL = {
@@ -12,6 +16,8 @@ export const REACT_FORMCTRL = {
         UNREGISTER_FIELD: `${REACT_FORMCTRL_NAME}.unregisterField`,
         FORM_CHANGED: `${REACT_FORMCTRL_NAME}.formChanged`,
         FIELD_CHANGED: `${REACT_FORMCTRL_NAME}.fieldChanged`,
+        FIELD_PROPS_CHANGED: `${REACT_FORMCTRL_NAME}.fieldPropsChanged`,
+        FIELD_BLURRED: `${REACT_FORMCTRL_NAME}.fieldBlurred`,
         FORM_SUBMITED: `${REACT_FORMCTRL_NAME}.formSubmited`,
         FORM_RESETED: `${REACT_FORMCTRL_NAME}.formReseted`,
     }
@@ -59,9 +65,21 @@ export class FormEventDispatcher {
         document.dispatchEvent(event)
     }
 
-    static dispatchFieldChanged(form, field, fieldCtrl) {
-        const payload = FormEventDispatcher.copy({detail: {form, field, fieldCtrl}})
+    static dispatchFieldPropsChanged(form, field, props) {
+        const payload = FormEventDispatcher.copy({detail: {form, field, props}})
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_PROPS_CHANGED, payload)
+        document.dispatchEvent(event)
+    }
+
+    static dispatchFieldChanged(form, field, value) {
+        const payload = FormEventDispatcher.copy({detail: {form, field, value}})
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, payload)
+        document.dispatchEvent(event)
+    }
+
+    static dispatchFieldBlur(form, field) {
+        const payload = FormEventDispatcher.copy({detail: {form, field}})
+        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_BLURRED, payload)
         document.dispatchEvent(event)
     }
 
@@ -71,11 +89,6 @@ export class FormEventDispatcher {
         document.dispatchEvent(event)
     }
     
-    static forwardResetFormEvent(form) {
-        const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_RESETED}#${form}`)
-        document.dispatchEvent(event)
-    }
-
     static forwardFieldChangedEvent(form, field, fieldCtrl) {
         const payload = FormEventDispatcher.copy({detail: {form, field, fieldCtrl}})
         const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, payload)
@@ -105,9 +118,12 @@ export class FormProvider extends React.Component {
         this.onRegisterField = this.onRegisterField.bind(this)
         this.onUnregisterField = this.onUnregisterField.bind(this)
         this.onFieldChanged = this.onFieldChanged.bind(this)
+        this.onFieldPropsChanged = this.onFieldPropsChanged.bind(this)
+        this.onFieldBlurred = this.onFieldBlurred.bind(this)
         this.onFormSubmited = this.onFormSubmited.bind(this)
         this.onFormReseted = this.onFormReseted.bind(this)
         this.updateFormCtrl = this.updateFormCtrl.bind(this)
+        this.updateFieldCtrl = this.updateFieldCtrl.bind(this)
     }
 
     componentWillMount() {
@@ -129,6 +145,8 @@ export class FormProvider extends React.Component {
         document.addEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, this.onEvent)
         document.addEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, this.onEvent)
         document.addEventListener(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, this.onEvent)
+        document.addEventListener(REACT_FORMCTRL.EVENTS.FIELD_BLURRED, this.onEvent)
+        document.addEventListener(REACT_FORMCTRL.EVENTS.FIELD_PROPS_CHANGED, this.onEvent)
         document.addEventListener(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, this.onEvent)
         document.addEventListener(REACT_FORMCTRL.EVENTS.FORM_RESETED, this.onEvent)
     }
@@ -151,7 +169,13 @@ export class FormProvider extends React.Component {
                 this.onUnregisterField(payload.form, payload.field)
                 break
             case EVENTS.FIELD_CHANGED:
-                this.onFieldChanged(payload.form, payload.field, payload.fieldCtrl)
+                this.onFieldChanged(payload.form, payload.field, payload.value)
+                break
+            case EVENTS.FIELD_PROPS_CHANGED:
+                this.onFieldPropsChanged(payload.form, payload.field, payload.props)
+                break
+            case EVENTS.FIELD_BLURRED:
+                this.onFieldBlurred(payload.form, payload.field)
                 break
             case EVENTS.FORM_SUBMITED:
                 this.onFormSubmited(payload.form, payload.formRef)
@@ -173,6 +197,7 @@ export class FormProvider extends React.Component {
             } else {
                 forms[formName] = {
                     __instances: 1,
+                    formName,
                     valid: true,
                     invalid: false,
                     untouched: true,
@@ -199,11 +224,12 @@ export class FormProvider extends React.Component {
                 } else {
                     fieldCtrl.__instances = 1
                 }
+                this.updateFieldCtrl(fieldCtrl, fieldCtrl.initialValue)
+                FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, fieldCtrl)
+
                 form.fields[fieldName] = fieldCtrl
-                const field = form.fields[fieldName]
-                form.values[fieldName] = field.value
+                form.values[fieldName] = fieldCtrl.value
                 this.updateFormCtrl(formName, form)
-                FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, field)
                 return {forms}
             } else {
                 console.warn(`No form instance with name "${formName}" to register field "${fieldName}".`)
@@ -247,21 +273,49 @@ export class FormProvider extends React.Component {
         })
     }
 
-    onFieldChanged(formName, fieldName, fieldCtrl) {
+    onFieldChanged(formName, fieldName, value) {
         this.setState((state) => {
             if(state.forms[formName]) {
                 if(state.forms[formName].fields[fieldName]) {
                     const forms = {...state.forms}
                     const form = forms[formName]
+                    const fieldCtrl = form.fields[fieldName]
+                    this.updateFieldCtrl(fieldCtrl, value)
+                    FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, fieldCtrl
+                    )
                     if(!form.values) form.values = {}
-                    form.values[fieldName] = fieldCtrl.value
-                    form.fields[fieldName] = {...fieldCtrl}
+                    form.values[fieldName] = value
                     this.updateFormCtrl(formName, form)
-                    FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, form.fields[fieldName])
                     return {forms}
                 }
             }
             return state
+        })
+    }
+
+    onFieldPropsChanged(formName, fieldName, props) {
+        this.setState(state => {
+            const forms = {...state.forms}
+            const form = forms[formName]
+            const field = form.fields[fieldName]
+            field.props = props
+            this.updateFieldCtrl(field, field.value)
+            FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, field)
+            this.updateFormCtrl(formName, form)
+            return {forms}
+        })
+    }
+
+    onFieldBlurred(formName, fieldName) {
+        this.setState(state => {
+            const forms = {...state.forms}
+            const form = forms[formName]
+            const field = form.fields[fieldName]
+            field.touched = true
+            field.untouched = false
+            FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, field)
+            this.updateFormCtrl(formName, form)
+            return {forms}
         })
     }
     
@@ -288,6 +342,46 @@ export class FormProvider extends React.Component {
         FormEventDispatcher.forwardFormChangedEvent(formName, form)
     }
 
+    updateFieldCtrl(fieldCtrl, value) {
+        const errors = []
+        const {
+            initialValue,
+            props: {
+                type = 'text', 
+                required, 
+                pattern, 
+                match, 
+                integer,
+                min,
+                max,
+                minLength,
+                maxLength,
+            }
+        } = fieldCtrl
+
+        if(required && !value) errors.push('required')
+        else if(pattern && !new RegExp(pattern).test(value)) errors.push('pattern')
+        else {
+            if(type === 'email' && !EMAIL_REGEX.test(value)) errors.push('email')
+            if(type === 'number') {
+                if(integer && !INTEGER_REGEX.test(value)) errors.push('integer')
+                if(!integer && !FLOAT_REGEX.test(value)) errors.push('float')
+                if(min && +value < min) errors.push('min')
+                if(max && +value > max) errors.push('max')
+            } else {
+                if(minLength && value && value.length < minLength) errors.push('minLength')
+                if(maxLength && value && value.length > maxLength) errors.push('maxLength')
+            }
+        }
+
+        fieldCtrl.value = value;
+        fieldCtrl.errors = errors;
+        fieldCtrl.unchanged = value === initialValue;
+        fieldCtrl.changed = value !== initialValue;
+        fieldCtrl.valid = errors.length === 0;
+        fieldCtrl.invalid = errors.length > 0;
+    }
+
     onFormSubmited(formName, formRef) {
         this.setState((state) => {
             const form = state.forms[formName]
@@ -299,7 +393,22 @@ export class FormProvider extends React.Component {
     }
 
     onFormReseted(formName) {
-        FormEventDispatcher.forwardResetFormEvent(formName)
+        this.setState(state => {
+            const forms = {...state.forms}
+            const form = forms[formName]
+            Object.keys(form.fields).forEach(fieldName => {
+                const field = form.fields[fieldName]
+                this.updateFieldCtrl(field, field.initialValue)
+                field.touched = false
+                field.untouched = true
+                field.dirty = false
+                field.pristine = true
+                FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, field)
+                form.values[fieldName] = field.initialValue
+            })
+            this.updateFormCtrl(formName, form)
+            return state
+        })
     }
 
     unsubscribe() {
@@ -308,6 +417,8 @@ export class FormProvider extends React.Component {
         document.removeEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, this.onEvent)
         document.removeEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, this.onEvent)
         document.removeEventListener(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, this.onEvent)
+        document.removeEventListener(REACT_FORMCTRL.EVENTS.FIELD_BLURRED, this.onEvent)
+        document.removeEventListener(REACT_FORMCTRL.EVENTS.FIELD_PROPS_CHANGED, this.onEvent)
         document.removeEventListener(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, this.onEvent)
         document.removeEventListener(REACT_FORMCTRL.EVENTS.FORM_RESETED, this.onEvent)
     }

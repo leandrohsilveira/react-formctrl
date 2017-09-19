@@ -6,6 +6,9 @@ export class Form extends React.Component {
 
     constructor(props) {
         super(props)
+        this.state = {
+            ref: `${Math.random() * 999999999999999999}-${new Date().getTime()}`
+        }
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleReset = this.handleReset.bind(this)
         this.handleFormSubmitForward = this.handleFormSubmitForward.bind(this)
@@ -13,8 +16,9 @@ export class Form extends React.Component {
 
     handleSubmit(event) {
         const {name} = this.props
+        const {ref} = this.state
         event.preventDefault()
-        FormEventDispatcher.dispatchSubmitForm(name, this)
+        FormEventDispatcher.dispatchSubmitForm(name, ref)
     }
 
     handleReset(event) {
@@ -26,14 +30,14 @@ export class Form extends React.Component {
     componentWillMount() {
         const {name} = this.props
         document.addEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${name}`, this.handleFormSubmitForward)
-        FormEventDispatcher.dispatchRegisterForm(name)
+        FormEventDispatcher.dispatchRegisterForm(name, )
     }
     
     handleFormSubmitForward(event) {
         const {onSubmit} = this.props
         if(typeof onSubmit === 'function') {
             const {values, formCtrl, formRef} = event.detail
-            if(formRef == this) {
+            if(formRef == this.state.ref) {
                 onSubmit(values, formCtrl)
             }
         }
@@ -75,7 +79,8 @@ export class FormControl extends React.Component {
         this.onChange = this.onChange.bind(this)
         this.handleFormChanged = this.handleFormChanged.bind(this)
         this.sync = this.sync.bind(this)
-        this.transformProps = this.transformProps.bind(this)
+        this.inject = this.inject.bind(this)
+        this.setFieldValue = this.setFieldValue.bind(this)
     }
 
     componentWillMount() {
@@ -104,7 +109,7 @@ export class FormControl extends React.Component {
         const {formCtrl} = payload
         const syncState = this.sync(formCtrl)
         if(Object.keys(syncState).length > 0) {
-            this.setState(syncState)
+            this.setState(formCtrl)
             this.onChange(formCtrl)
         }
     }
@@ -124,12 +129,18 @@ export class FormControl extends React.Component {
         return syncState
     }
 
-    transformProps() {
-        const {transformProps} = this.props
-        if(typeof transformProps === 'function') {
-            return transformProps(this.state)
+    setFieldValue(fieldName, value) {
+        const {form} = this.props
+        FormEventDispatcher.dispatchFieldChanged(form, fieldName, value)
+    }
+
+    inject() {
+        const {inject} = this.props
+        const formCtrl = {...this.state, setFieldValue: this.setFieldValue}
+        if(typeof inject === 'function') {
+            return inject(formCtrl)
         }
-        return this.state
+        return {formCtrl}
     }
 
     render() {
@@ -138,7 +149,7 @@ export class FormControl extends React.Component {
         if(Array.isArray(children)) {
             child = children[0]
         }
-        return React.cloneElement(child, {...child.props, ...this.transformProps()})
+        return React.cloneElement(child, {...child.props, ...this.inject()})
     }
 
 }
