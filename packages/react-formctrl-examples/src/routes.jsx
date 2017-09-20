@@ -9,6 +9,7 @@ import {FieldValidationForm} from './cases/field-validation'
 import {FormControlExample} from './cases/form-control-example'
 import {SynchronizedForms} from './cases/synchronized-forms'
 import {FormValuesManipulationExample} from './cases/form-values-manipulation'
+import {UserFormApp} from './cases/user-form'
 
 export function Routes({branch = 'master'}) {
     const rootPath = 'react-formctrl-examples/src/cases'
@@ -49,6 +50,12 @@ export function Routes({branch = 'master'}) {
                 <Route path="/form-values-manipulation" render={() => (
                     <Case fileName={`${rootPath}/form-values-manipulation.jsx`} url={`${baseRawGithub}/form-values-manipulation.jsx`}>
                         <FormValuesManipulationExample />
+                    </Case>
+                )} />
+
+                <Route path="/users" render={(props) => (
+                    <Case fileName={`${rootPath}/user-form.jsx`} url={`${baseRawGithub}/user-form.jsx`}>
+                        <UserFormApp {...props} />
                     </Case>
                 )} />
             </div>

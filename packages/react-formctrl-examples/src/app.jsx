@@ -33,6 +33,7 @@ export function App(props) {
                             <NavLink activeClassName="active" to="/form-control">Form control</NavLink>
                             <NavLink activeClassName="active" to="/sync-forms">Synchronized forms</NavLink>
                             <NavLink activeClassName="active" to="/form-values-manipulation">Form values manipulation</NavLink>
+                            <NavLink activeClassName="active" to="/users">Complete user form example</NavLink>
                         </div>
                         <Routes />
                     </div>
