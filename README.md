@@ -3,77 +3,133 @@ A lightweight ReactJS forms controller inspired by Redux-form and Angular forms.
 
 It's lightweight: 18.9 KB of bundle size.
 
+Check the <a href="https://leandrohsilveira.github.io/react-formctrl/">Live demo</a>
 
-**Under development**
+## Quick start
 
-## <a href="https://leandrohsilveira.github.io/react-formctrl/">Live demo</a>
+### Installation:
+`npm install --save react-formctrl`
 
-### Just wrap all your forms with:
+### Wrap all your application with:
 ```jsx
-import {FormProvider} from 'react-formctrl';
-
 export function App(props) {
     return (
         <FormProvider>
-            {'... routes, rest of your app ...'}
+            {'... your app ...'}
         </FormProvider>
     )
 }
 ```
 
-### Wrap your components for full form controlling:
+### Then wrap your field component:
 ```jsx
-import {FormControl, Form, Field} from 'react-formctrl';
-
-
 /* some injected props: */
-export function Input({name, type, onChange, onBlur, value}) {
-    return (
-        <input name={name} 
-                type={type} 
-                onChange={onChange} 
-                onBlur={onBlur} 
-                value={value}>
-        </input>
-    );
-}
+function MyInput({label, placeholder, name, type, required, onChange, onBlur, value}) {
 
-/* some injected props: */
-export function SomeForm({formName, values, invalid, dirty}) {
+    const getLabel = () => {
+        return required ? `${label}*` : label
+    }
 
     return (
         <div>
-            <Form name={formName}>
-                {/* No hierarchy needed. */}
-                <div className="field">
-                    <Field form={formName} name="username">
-                        <Input></Input>
-                    </Field>
-                </div>
-                <div className="field">
-                    <Field form={formName} name="password" type="password">
-                        <Input></Input>
-                    </Field>
-                </div>
-                <div className="buttons">
-                    <button type="submit" disabled={invalid && dirty}>Submit</button>
-                </div>
-            </Form>
+            <label for={name}>{getLabel()}</label>
+            <input id={name} name={name} 
+                type={type} 
+                onChange={onChange} 
+                onBlur={onBlur}
+                placeholder={placeholder || label}
+                value={value} />
         </div>
     );
 }
 
-export function SomeContainer(props) {
-    const formName = "someForm";
+function InputField({label, placeholder, form, name, type, initialValue, required, pattern, integer}) {
     return (
-        <div className="page">
-            <h1>Some container</h1>
-            <FormControl form={formName}>
-                <SomeForm formName={formName}></SomeForm>
-            </FormControl>
+        <Field form={form} 
+                name={name} 
+                type={type} 
+                initialValue={initialValue} 
+                required={required} 
+                integer={integer}
+                pattern={pattern}>
+            <MyInput label={label} placeholder={placeholder} />
+        </Field>
+    )
+}
+
+```
+
+### And build your forms:
+```jsx
+
+/*
+ * EASY REAUSABLE FORMS!
+ */
+function UserForm(props) {
+    const formName = props.formCtrl.formName
+    const user = props.user || {name: '', email: ''}
+    return (
+        <div class="form-container">
+            <Form name={formName} onSubmit={props.onSubmit}>
+                <div class="fieldset">
+                    <div class="fields-container">
+                        <InputField form={formName} name="name" label="Name" initialValue={user.name} required />
+                        <InputField form={formName} name="email" type="email" label="E-mail" initialValue={user.email} required />
+                        <InputField form={formName} name="confirmEmail" type="email" label="Confirm e-mail" initialValue={user.email} required match="email" />
+                        <InputField form={formName} name="password" type="password" label="Password" required minLength={8} />
+                        <InputField form={formName} name="confirmPassword" type="password" label="Confirm password" required minLength={8} match="password" />
+                    </div>
+                    <div class="buttons-container">
+                        <button type="submit" disabled={props.formCtrl.invalid || props.formCtrl.unchanged}>Save</button>
+                        <button type="reset" disabled={props.formCtrl.unchanged}>Reset</button>
+                    </div>
+                </div>
+            </Form>
         </div>
     )
 }
+
+function RegisterUser() {
+    const handleSubmit = (values) => UserService.create(values)
+    return (
+        <FormControl name="registerUserForm">
+            <UserForm onSubmit={postUser} />
+        </FormControl>
+    )
+}
+
+class UpdateUser extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            user: {
+                name: '',
+                email: ''
+            }
+        }
+        this.handleSubmit = this.handleSubmit.bind(this)
+    }
+
+    componentWillMount() {
+        UserService.find(props.id)
+                    .then(user => this.setState({user}))
+    }
+
+    handleSubmit(values) {
+        UserService.update(values)
+    }
+
+    render() {
+        return (
+            <FormControl name="updateUserForm">
+                <UserForm onSubmit={this.handleSubmit} />
+            </FormControl>
+        )
+    }
+
+}
+
 ```
 
 # Components
@@ -170,7 +226,7 @@ setFieldValue | Function | Method to programmatically change a field value: `pro
 
 ## Field
 
-
+Component that injects an form's field control properties to it's child.
 
 ### Properties
 
