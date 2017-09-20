@@ -177,14 +177,14 @@ The table below shows the fields of the "formCtrl" property that will be injecte
 /*
  * The Form component can be a child of it's own FormControl, the FormControl component waits the Form component register to FormProvider.
  */
-function Default(props) {
+function DefaultInjection(props) {
     return (
         <Form name={props.formCtrl.formName}>
             <div>{/*... fields ...*/}</div>
         </Form>
     )
 }
-function Child(props) {
+function CustomInjection(props) {
     return (
         <Form name={props.injectedFormName}>
             <div>{/*... fields ...*/}</div>
@@ -193,16 +193,16 @@ function Child(props) {
 }
 
 function Page(props) {
-    const defaultFormName = "defaultForm"
-    const injectedFormName = "injectedForm"
+    const defaultInjectionFormName = "defaultForm"
+    const customInjectionFormName = "injectedForm"
     const inject = (formCtrl) => ({injectedFormName: formCtrl.formName})
     return (
         <div>
-            <FormControl form={defaultFormName}>
-                <Child />
+            <FormControl form={defaultInjectionFormName}>
+                <DefaultInjection />
             </FormControl>
-            <FormControl form={injectedFormName} inject={inject}>
-                <Child />
+            <FormControl form={customInjectionFormName} inject={inject}>
+                <CustomInjection />
             </FormControl>
         </div>
     )
