@@ -182,7 +182,7 @@ required | boolean | false | `true` if the field is required.
 pattern | String\|RegExp | | The regex to validate the field value.
 type | String | text | The input field type. Supports all types, but currently only the "email" and "number" types has out of the box validation.
 integer | boolean | false | `true` if when the Field type property is "number" and should validate to integer value.
-inject | Function | | A function responsible for transforming the FieldProps object into an object containing as key the name of the property to be injected and the value of the property: `(fieldProps) => ({injectedOnChange: fieldProps.onChange})`
+inject | Function | | A function responsible for transforming the Field component injection properties into an object containing as key the name of the property to be injected and the value of the property: `(field) => ({injectedOnChange: field.onChange})`
 
 ### Injects
 
@@ -194,7 +194,6 @@ className | String | The CSS class to inject into it's component child.
 required | boolean | false | `true` if the field is required.
 pattern | String\|RegExp | The regex to validate the field value.
 type | String | The input field type.
-integer | boolean | `true` if when the Field type property is "number" and should validate to integer value.
 onChange | HTMLEventHandler | The field change event handler: `(e) => handleChange(e.target.value)`.
 onBlur | HTMLEventHandler | The field blur event handler: `(e) => handleBlur(e.target.name)`.
 value | String | The current field value.
@@ -239,6 +238,9 @@ function SomeForm(props) {
     )
 }
 function Page(props) {
+    const handleSubmit(values) {
+        console.log('Values:', values) // # Values: {nativeInput: '50', email: 'email@email.com'}
+    }
     return (
         <FormProvider form="someForm">
             <SomeForm />
@@ -262,3 +264,18 @@ unchanged | boolean | `true` if the field value is exactly equals it's initial v
 changed | boolean | `true` if the field value isn't exactly equals it's initial value.
 value | String | The value of the field.
 errors | String[] | An array of Strings with all current validation errors of the field.
+props | FieldProperties | Some properties of the Field.
+
+#### FieldProperties
+
+Name | Type | Description
+------------ | ------------- | -------------
+type | String | The input field type.
+required | boolean | `true` if the input field is required.
+pattern | String\|RegExp | The regex to validate the field pattern.
+match | String | Another field name that the value of this field should match.
+integer | boolean | `true` if when the Field type property is "number" and should validate to integer value.
+min | Number | The min Number value of a field with type "number".
+max | Number | The max Number value of a field with type "number".
+minLength | Number | The min String value length of a field.
+maxLength | Number | The max String value length of a field.
