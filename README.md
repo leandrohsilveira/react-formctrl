@@ -165,6 +165,7 @@ unchanged | boolean | `true` if all fields values of the form are exactly equals
 changed | boolean | `true` if any field value of the form aren't exactly equals it's initial value.
 values | Object{String: String} | The fields values of the form: `{[fieldName]: [fieldValue]}`.
 fields | Object{String: FieldCtrl} | The fields controllers of the form: `{[fieldName]: [fieldCtrl]}`
+setFieldValue | Function | Method to programmatically change a field value: `props.formCtrl.setFieldValue('fieldName', 'newValue')`.
 
 
 ## Field
