@@ -103,29 +103,32 @@ class UpdateUser extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            user: {
-                name: '',
-                email: ''
-            }
+            user: null
         }
         this.handleSubmit = this.handleSubmit.bind(this)
     }
 
     componentWillMount() {
-        UserService.find(props.id)
+        UserService.find(this.props.id)
                     .then(user => this.setState({user}))
     }
 
     handleSubmit(values) {
-        UserService.update(values)
+        UserService.update(this.props.id, values)
     }
 
     render() {
-        return (
-            <FormControl name="updateUserForm">
-                <UserForm onSubmit={this.handleSubmit} />
-            </FormControl>
-        )
+        if(this.state.user) {
+            // Initial values are applied only on componentWillMount phase! Do not load the component with null or empty values!
+            return (
+                <FormControl name="updateUserForm">
+                    <UserForm onSubmit={this.handleSubmit} user={this.state.user} />
+                </FormControl>
+            )
+        } else {
+            return <div>Loading user data...</div>
+        }
+
     }
 
 }
