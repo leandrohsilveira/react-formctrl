@@ -94,7 +94,7 @@ name | String | | The form id and name
 className | String | | The CSS classes for the native form component rendered by this component
 onSubmit | Function | | A submit handler function which receives the form values object by parameter: `(formValues) => doSomething(formValues)`
 
-### Inject's
+### Injects
 
 No property are injected into it's childrens by this component.
 
@@ -110,9 +110,10 @@ form | String | | The name of a registered form (or to be registered later by an
 onChange | Function | | A change event handler function which receives the form controller by parameter: `(formCtrl) => doSomething(formCtrl)`
 inject | Function | | A function responsible for transforming the form controller into an object containing as key the name of the property to be injected and the value of the property: `(formCtrl) => ({injectedFormNameProp: formCtrl.formName})`
 
-### Inject's
+### Injects
 
 The table below shows the fields of the "formCtrl" property that will be injected by this component into the child component, which can be changed through the "inject" property:
+
 ```jsx
 /*
  * The Form component can be a child of it's own FormControl, the FormControl component waits the Form component register to FormProvider.
@@ -162,8 +163,90 @@ pristine | boolean | `true` if all fields of the form never changed it's value s
 dirty | boolean | `true` if any field of the form has changed it's value one or more times since it's loaded or reseted.
 unchanged | boolean | `true` if all fields values of the form are exactly equals it's initial values.
 changed | boolean | `true` if any field value of the form aren't exactly equals it's initial value.
-values | Map<String,String> | The fields values of the form: `{[fieldName]: [fieldValue]}`.
-fields | Map<String,FieldCtrl> | The fields controllers of the form: `{[fieldName]: [fieldCtrl]}`
+values | Object{String: String} | The fields values of the form: `{[fieldName]: [fieldValue]}`.
+fields | Object{String: FieldCtrl} | The fields controllers of the form: `{[fieldName]: [fieldCtrl]}`
+
+
+## Field
+
+
+
+### Properties
+
+Name | Type | Default value | Description
+------------ | ------------- | ------------- | --------------
+name | String | | The name of the field.
+form | String | | The name of the field's form.
+className | String | | The CSS class to inject into it's component child.
+required | boolean | false | `true` if the field is required.
+pattern | String\|RegExp | | The regex to validate the field value.
+type | String | text | The input field type. Supports all types, but currently only the "email" and "number" types has out of the box validation.
+integer | boolean | false | `true` if when the Field type property is "number" and should validate to integer value.
+inject | Function | | A function responsible for transforming the FieldProps object into an object containing as key the name of the property to be injected and the value of the property: `(fieldProps) => ({injectedOnChange: fieldProps.onChange})`
+
+### Injects
+
+Name | Type | Description
+------------ | ------------- | -------------
+name | String | The name of the field.
+form | String | The name of the field's form.
+className | String | The CSS class to inject into it's component child.
+required | boolean | false | `true` if the field is required.
+pattern | String\|RegExp | The regex to validate the field value.
+type | String | The input field type.
+integer | boolean | `true` if when the Field type property is "number" and should validate to integer value.
+onChange | HTMLEventHandler | The field change event handler: `(e) => handleChange(e.target.value)`.
+onBlur | HTMLEventHandler | The field blur event handler: `(e) => handleBlur(e.target.name)`.
+value | String | The current field value.
+ctrl | FieldCtrl | The field controller.
+
+```jsx
+function InputWrapper(props) {
+    const messages = null
+    if(props.ctrl.invalid) {
+        messages = (
+            <ul>
+                {props.ctrl.errors.map(error => (
+                    <li>{error}</li>
+                ))}
+            </ul>
+        )
+    }
+    return (
+        <div>
+            <input {...props} />
+            {messages}
+        </div>
+    )
+}
+function SomeForm(props) {
+    const formName = props.formCtrl.formName
+    return (
+        <Form formName={formName} onSubmit={props.onSubmit}>
+            <div>
+                {/* The Field props overrides the child props:*/}
+                <Field form={formName} name="nativeInput" type="number">
+                    <input type="text" placeholder="Native input (Number)" />
+                </Field>
+
+                <Field form={formName} name="email" type="email" required>
+                    <InputWrapper placeholder="Native input (Number)" />
+                </Field>
+
+                <button type="submit" disabled={props.formCtrl.invalid}>Submit</button>
+            </div>
+        </Form>
+    )
+}
+function Page(props) {
+    return (
+        <FormProvider form="someForm">
+            <SomeForm />
+        </FormProvider>
+    )
+}
+
+```
 
 #### FieldCtrl
 
@@ -178,4 +261,4 @@ dirty | boolean | `true` if the field has changed it's value one or more times s
 unchanged | boolean | `true` if the field value is exactly equals it's initial value.
 changed | boolean | `true` if the field value isn't exactly equals it's initial value.
 value | String | The value of the field.
-errors | List<String> | An array of Strings with all current validation errors of the field.
+errors | String[] | An array of Strings with all current validation errors of the field.
