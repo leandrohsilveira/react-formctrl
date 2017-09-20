@@ -135,8 +135,8 @@ export class FormControl extends React.Component {
     }
 
     inject() {
-        const {inject} = this.props
-        const formCtrl = {...this.state, setFieldValue: this.setFieldValue}
+        const {inject, form} = this.props
+        const formCtrl = {...this.state, formName: name, setFieldValue: this.setFieldValue}
         if(typeof inject === 'function') {
             return inject(formCtrl)
         }
