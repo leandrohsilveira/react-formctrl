@@ -224,7 +224,7 @@ export class FormProvider extends React.Component {
                 } else {
                     fieldCtrl.__instances = 1
                 }
-                this.updateFieldCtrl(fieldCtrl, fieldCtrl.initialValue)
+                this.updateFieldCtrl(formName, fieldCtrl, fieldCtrl.initialValue)
                 FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, fieldCtrl)
 
                 form.fields[fieldName] = fieldCtrl
@@ -282,7 +282,7 @@ export class FormProvider extends React.Component {
                     const fieldCtrl = form.fields[fieldName]
                     fieldCtrl.dirty = true
                     fieldCtrl.pristine = false
-                    this.updateFieldCtrl(fieldCtrl, value)
+                    this.updateFieldCtrl(formName, fieldCtrl, value)
                     FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, fieldCtrl
                     )
                     if(!form.values) form.values = {}
@@ -301,7 +301,7 @@ export class FormProvider extends React.Component {
             const form = forms[formName]
             const field = form.fields[fieldName]
             field.props = props
-            this.updateFieldCtrl(field, field.value)
+            this.updateFieldCtrl(formName, field, field.value)
             FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, field)
             this.updateFormCtrl(formName, form)
             return {forms}
@@ -344,7 +344,7 @@ export class FormProvider extends React.Component {
         FormEventDispatcher.forwardFormChangedEvent(formName, form)
     }
 
-    updateFieldCtrl(fieldCtrl, value) {
+    updateFieldCtrl(formName, fieldCtrl, value) {
         const errors = []
         const {
             initialValue,
@@ -363,7 +363,10 @@ export class FormProvider extends React.Component {
 
         if(required && !value) errors.push('required')
         else if(pattern && !new RegExp(pattern).test(value)) errors.push('pattern')
-        else {
+        else if(match) {
+            const form = this.state.forms[formName]
+            if(form && form.values[match] != value) errors.push('match')
+        } else {
             if(type === 'email' && !EMAIL_REGEX.test(value)) errors.push('email')
             if(type === 'number') {
                 if(integer && !INTEGER_REGEX.test(value)) errors.push('integer')
@@ -400,7 +403,7 @@ export class FormProvider extends React.Component {
             const form = forms[formName]
             Object.keys(form.fields).forEach(fieldName => {
                 const field = form.fields[fieldName]
-                this.updateFieldCtrl(field, field.initialValue)
+                this.updateFieldCtrl(formName, field, field.initialValue)
                 field.touched = false
                 field.untouched = true
                 field.dirty = false
