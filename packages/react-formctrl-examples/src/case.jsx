@@ -58,6 +58,9 @@ export class Case extends React.Component {
         const { code } = this.state
         return (
             <div className="case clearfix">
+                <div className="case-display">
+                    {children}
+                </div>
                 <div className="case-code">
                     <h4>Code: <small>{fileName}</small></h4>
                     {code !== '' && (
@@ -65,9 +68,6 @@ export class Case extends React.Component {
                             {code}
                         </SyntaxHighlighter>
                     )}
-                </div>
-                <div className="case-display">
-                    {children}
                 </div>
             </div>
         )
