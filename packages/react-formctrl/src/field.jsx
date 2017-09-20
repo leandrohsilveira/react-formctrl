@@ -36,7 +36,7 @@ export class Field extends React.Component {
         this.handleChange = this.handleChange.bind(this)
         this.handleBlur = this.handleBlur.bind(this)
         this.getChildProps = this.getChildProps.bind(this)
-        this.transformProps = this.transformProps.bind(this)
+        this.inject = this.inject.bind(this)
         this.sync = this.sync.bind(this)
     }
 
@@ -106,6 +106,7 @@ export class Field extends React.Component {
     getChildProps() {
         const props = {}
         props.name = this.props.name
+        props.formName = this.props.form
         props.ctrl = {
             valid: this.state.valid,
             invalid: this.state.invalid,
@@ -127,22 +128,22 @@ export class Field extends React.Component {
         return props
     }
 
-    transformProps(childProps) {
-        const { transformProps } = this.props
+    inject() {
+        const { inject } = this.props
         const props = this.getChildProps()
-        if (typeof transformProps === 'function') {
-            return transformProps(props)
+        if (typeof inject === 'function') {
+            return inject(props)
         }
         return props
     }
 
     render() {
-        const { getChildProps, transformProps } = this
+        const { inject } = this
         const { children } = this.props
         let child = children
         if (Array.isArray(children)) {
             child = children[0]
         }
-        return React.cloneElement(child, { ...child.props, ...transformProps() })
+        return React.cloneElement(child, { ...child.props, ...inject() })
     }
 }
