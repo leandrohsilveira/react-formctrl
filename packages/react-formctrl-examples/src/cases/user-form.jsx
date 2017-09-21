@@ -57,7 +57,7 @@ function MyInput({label, placeholder, name, type, required,  onChange, onBlur, v
             return (
                 <ul>
                     {errors.map(error => (
-                        <li key={error}>{error}</li>
+                        <li key={error.key}>{error.key}</li>
                     ))}
                 </ul>
             )

@@ -21,7 +21,7 @@ function Input({label, className = 'field', type, ctrl, name, onChange, onBlur, 
                 <div className="errors">
                     <ul>
                         {ctrl.errors.map(error => (
-                            <li key={error}>{error}</li>
+                            <li key={error.key}>{error.key}</li>
                         ))}
                     </ul>
                 </div>

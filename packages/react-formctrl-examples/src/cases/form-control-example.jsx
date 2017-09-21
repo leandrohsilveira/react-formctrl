@@ -15,7 +15,7 @@ function Input({label, name, value, onChange, onBlur, ctrl: {invalid, errors}}) 
                 <div>
                     <ul>
                         {errors.map(error => (
-                            <span key={error}>{error}</span>
+                            <span key={error.key}>{error.key}</span>
                         ))}
                     </ul>
                 </div>
