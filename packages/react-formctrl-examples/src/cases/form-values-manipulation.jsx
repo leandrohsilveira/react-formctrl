@@ -31,7 +31,8 @@ function InputField({ label, formName, fieldName, type = 'text', required, patte
     )
 }
 
-function SampleForm({ formName, formCtrl, onSubmit }) {
+function SampleForm({ formCtrl, onSubmit }) {
+    const formName = formCtrl.formName
     return (
         <Form name={formName} onSubmit={onSubmit}>
             <InputField label="Name (required)" formName={formName} fieldName="name" required></InputField>
@@ -55,7 +56,7 @@ export function FormValuesManipulationExample(props) {
             <h3>Form values manipulation:</h3>
             <p>This is a more complex example of form controller manipulation to programatically change state. Be careful with setValue method, calling it directly on component update phase may result on stack overflow error!</p>
             <div>
-                <FormControl name={formName}>
+                <FormControl form={formName}>
                     <SampleForm onSubmit={handleSubmit}></SampleForm>
                 </FormControl>
             </div>
