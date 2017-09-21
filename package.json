@@ -5,6 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "link": "cd packages/react-formctrl && yarn link",
+    "unlink": "cd packages/react-formctrl && yarn unlink",
     "cleandeps": "lerna clean",
     "build": "lerna bootstrap",
     "predev": "npm run build",
