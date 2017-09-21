@@ -22,7 +22,7 @@ declare interface FormState {
     ref: string;
 }
 
-export class Form extends React.Component<FormProps, FormState> {
+declare class Form extends React.Component<FormProps, FormState> {
 
     handleSubmit(event: React.FormEvent<any>): void;
 

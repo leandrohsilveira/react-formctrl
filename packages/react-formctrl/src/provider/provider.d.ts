@@ -54,17 +54,17 @@ declare interface DefaultFieldInjectedProps {
     /**
      * The name of the field.
      */
-    name?: String;
+    name?: string;
 
     /**
      * The name of the field's form.
      */
-    form?: String;
+    form?: string;
 
     /**
      * The CSS class to inject into it's component child.
      */
-    className?: String;
+    className?: string;
 
     /**
      * false
@@ -74,12 +74,12 @@ declare interface DefaultFieldInjectedProps {
     /**
      * RegExp	The regex to validate the field value.
      */
-    pattern?: String;
+    pattern?: string;
 
     /**
      * The input field type.
      */
-    type?: String;
+    type?: string;
 
     /**
      * The field change event handler: (e) => handleChange(e.target.value).
@@ -94,7 +94,7 @@ declare interface DefaultFieldInjectedProps {
     /**
      * The current field value.
      */
-    value?: String;
+    value?: string;
 
     /**
      * The field controller.
@@ -150,13 +150,13 @@ declare interface FormStateController {
 
     /**
      * 
-     * {String: String}	The fields values of the form: {[fieldName]: [fieldValue]}.
+     * {string: string}	The fields values of the form: {[fieldName]: [fieldValue]}.
      */
     values: {[fieldName: string]: string};
 
     /**
      * 
-     * {String: FieldCtrl}	The fields controllers of the form: {[fieldName]: [fieldCtrl]}
+     * {string: FieldCtrl}	The fields controllers of the form: {[fieldName]: [fieldCtrl]}
      */
     fields: {[fieldName: string]: FieldStateController};
 
@@ -203,12 +203,12 @@ declare interface FieldStateProperties {
     max?: number;
 
     /**
-     * The min String value length of a field.
+     * The min string value length of a field.
      */
     minLength?: number;
 
     /**
-     * The max String value length of a field.
+     * The max string value length of a field.
      */
     maxLength?: number;	
 }
@@ -256,7 +256,7 @@ declare interface FieldStateController {
     value: string;
 
     /**
-     * An array of Strings with all current validation errors of the field.
+     * An array of strings with all current validation errors of the field.
      */
     errors: string[];
 
@@ -275,7 +275,7 @@ declare interface FormProviderState {
     forms: {[formName: string]: FormStateController}
 }
 
-export class FormProvider extends React.Component<FormProviderProps, FormProviderState> {
+declare class FormProvider extends React.Component<FormProviderProps, FormProviderState> {
 
     subscribe(): void;
 

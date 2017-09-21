@@ -7,17 +7,17 @@ declare interface FieldProps extends React.Props<any> {
     /**
      * 	The name of the field.
      */
-    name: String;
+    name: string;
 
     /**
      * 	The name of the field's form.
      */
-    form: String;
+    form: string;
 
     /**
      * 	The CSS class to inject into it's component child.
      */
-    className?: String;
+    className?: string;
 
     /**
      * true if the field is required.
@@ -27,12 +27,12 @@ declare interface FieldProps extends React.Props<any> {
     /**
      * The regex to validate the field value.
      */
-    pattern?: String|RegExp;
+    pattern?: string|RegExp;
 
     /**
      * text	The input field type. Supports all types, but currently only the "email" and "number" types has out of the box validation.
      */
-    type?: String;
+    type?: string;
 
     /**
      * true if when the Field type property is "number" and should validate to integer value.
@@ -50,7 +50,7 @@ declare interface FieldState extends FieldStateController {
 
 }
 
-export class Field extends React.Component<FieldProps, FieldState> {
+declare class Field extends React.Component<FieldProps, FieldState> {
 
     onChange(fieldCtrl: FieldStateController): void;
 

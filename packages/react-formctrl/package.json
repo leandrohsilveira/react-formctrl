@@ -29,11 +29,13 @@
   },
   "main": "./lib",
   "module": "./lib",
+  "typings": "./lib/index.d.ts",
   "engines": {
     "node": ">= 6"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "babel ./src --out-dir ./lib --copy-files --watch",
     "clean": "rimraf ./lib",
     "prebuild": "npm run clean",
     "build": "babel ./src --out-dir ./lib --copy-files",
