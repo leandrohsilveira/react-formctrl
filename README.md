@@ -149,8 +149,8 @@ The component that registers the form in FormProvider component and listen to su
 
 Name | Type | Default value | Description
 ------------ | ------------- | ------------- | --------------
-name | String | | The form id and name
-className | String | | The CSS classes for the native form component rendered by this component
+name | string | | The form id and name
+className | string | | The CSS classes for the native form component rendered by this component
 onSubmit | Function | | A submit handler function which receives the form values object by parameter: `(formValues) => doSomething(formValues)`
 
 ### Injects
@@ -165,7 +165,7 @@ Component responsible for injecting the controller of a form into a child compon
 
 Name | Type | Default value | Description
 ------------ | ------------- | ------------- | --------------
-form | String | | The name of a registered form (or to be registered later by an Form component)
+form | string | | The name of a registered form (or to be registered later by an Form component)
 onChange | Function | | A change event handler function which receives the form controller by parameter: `(formCtrl) => doSomething(formCtrl)`
 inject | Function | | A function responsible for transforming the form controller into an object containing as key the name of the property to be injected and the value of the property: `(formCtrl) => ({injectedFormNameProp: formCtrl.formName})`
 
@@ -209,11 +209,11 @@ function Page(props) {
 }
 ```
 
-#### FormCtrl
+#### FormStateController
 
 Name | Type | Description
 ------------ | ------------- | -------------
-formName | String | The name of the watched form.
+formName | string | The name of the watched form.
 valid | boolean | `true` if the form is valid.
 invalid | boolean | `true` if the form is invalid.
 untouched | boolean | `true` if all fields of the form are untouched (field blur).
@@ -222,8 +222,8 @@ pristine | boolean | `true` if all fields of the form never changed it's value s
 dirty | boolean | `true` if any field of the form has changed it's value one or more times since it's loaded or reseted.
 unchanged | boolean | `true` if all fields values of the form are exactly equals it's initial values.
 changed | boolean | `true` if any field value of the form aren't exactly equals it's initial value.
-values | Object{String: String} | The fields values of the form: `{[fieldName]: [fieldValue]}`.
-fields | Object{String: FieldCtrl} | The fields controllers of the form: `{[fieldName]: [fieldCtrl]}`
+values | object{string: string} | The fields values of the form: `{[fieldName]: [fieldValue]}`.
+fields | object{string: FieldStateController} | The fields controllers of the form: `{[fieldName]: [fieldCtrl]}`
 setFieldValue | Function | Method to programmatically change a field value: `props.formCtrl.setFieldValue('fieldName', 'newValue')`.
 
 
@@ -235,12 +235,12 @@ Component that injects an form's field control properties to it's child.
 
 Name | Type | Default value | Description
 ------------ | ------------- | ------------- | --------------
-name | String | | The name of the field.
-form | String | | The name of the field's form.
-className | String | | The CSS class to inject into it's component child.
+name | string | | The name of the field.
+form | string | | The name of the field's form.
+className | string | | The CSS class to inject into it's component child.
 required | boolean | false | `true` if the field is required.
-pattern | String\|RegExp | | The regex to validate the field value.
-type | String | text | The input field type. Supports all types, but currently only the "email" and "number" types has out of the box validation.
+pattern | string\|RegExp | | The regex to validate the field value.
+type | string | text | The input field type. Supports all types, but currently only the "email" and "number" types has out of the box validation.
 integer | boolean | false | `true` if when the Field type property is "number" and should validate to integer value.
 inject | Function | | A function responsible for transforming the Field component injection properties into an object containing as key the name of the property to be injected and the value of the property: `(field) => ({injectedOnChange: field.onChange})`
 
@@ -248,16 +248,16 @@ inject | Function | | A function responsible for transforming the Field componen
 
 Name | Type | Description
 ------------ | ------------- | -------------
-name | String | The name of the field.
-form | String | The name of the field's form.
-className | String | The CSS class to inject into it's component child.
+name | string | The name of the field.
+form | string | The name of the field's form.
+className | string | The CSS class to inject into it's component child.
 required | boolean | false | `true` if the field is required.
-pattern | String\|RegExp | The regex to validate the field value.
-type | String | The input field type.
+pattern | string\|RegExp | The regex to validate the field value.
+type | string | The input field type.
 onChange | HTMLEventHandler | The field change event handler: `(e) => handleChange(e.target.value)`.
 onBlur | HTMLEventHandler | The field blur event handler: `(e) => handleBlur(e.target.name)`.
-value | String | The current field value.
-ctrl | FieldCtrl | The field controller.
+value | string | The current field value.
+ctrl | FieldStateController | The field controller.
 
 ```jsx
 function InputWrapper(props) {
@@ -310,7 +310,7 @@ function Page(props) {
 
 ```
 
-#### FieldCtrl
+#### FieldStateController
 
 Name | Type | Description
 ------------ | ------------- | -------------
@@ -322,20 +322,27 @@ pristine | boolean | `true` if the field never changed it's value since it's loa
 dirty | boolean | `true` if the field has changed it's value one or more times since it's loaded or reseted.
 unchanged | boolean | `true` if the field value is exactly equals it's initial value.
 changed | boolean | `true` if the field value isn't exactly equals it's initial value.
-value | String | The value of the field.
-errors | String[] | An array of Strings with all current validation errors of the field.
-props | FieldProperties | Some properties of the Field.
+value | string | The value of the field.
+errors | ValidationError[] | An array of strings with all current validation errors of the field.
+props | FieldStateProperties | Some properties of the Field.
 
-#### FieldProperties
+#### FieldStateProperties
 
 Name | Type | Description
 ------------ | ------------- | -------------
-type | String | The input field type.
+type | string | The input field type.
 required | boolean | `true` if the input field is required.
-pattern | String\|RegExp | The regex to validate the field pattern.
-match | String | Another field name that the value of this field should match.
+pattern | string\|RegExp | The regex to validate the field pattern.
+match | string | Another field name that the value of this field should match.
 integer | boolean | `true` if when the Field type property is "number" and should validate to integer value.
 min | Number | The min Number value of a field with type "number".
 max | Number | The max Number value of a field with type "number".
-minLength | Number | The min String value length of a field.
-maxLength | Number | The max String value length of a field.
+minLength | Number | The min string value length of a field.
+maxLength | Number | The max string value length of a field.
+
+#### ValidationError
+
+Name | Type | Description
+------------ | ------------- | -------------
+key | string | Validation error message key.
+params | object{string: any} | Validation error message parameters.

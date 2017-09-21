@@ -348,6 +348,13 @@ export class FormProvider extends React.Component {
         FormEventDispatcher.forwardFormChangedEvent(formName, form)
     }
 
+    createValidationError(key, params) {
+        return {
+            key,
+            params
+        }
+    }
+
     updateFieldCtrl(formName, fieldCtrl, value) {
         const errors = []
         const {
@@ -365,21 +372,22 @@ export class FormProvider extends React.Component {
             }
         } = fieldCtrl
 
-        if(required && !value) errors.push('required')
-        else if(pattern && !new RegExp(pattern).test(value)) errors.push('pattern')
+        if(required && !value) errors.push(this.createValidationError('required'))
+        else if(pattern && pattern instanceof RegExp && !pattern.test(value)) errors.push(this.createValidationError('pattern', {value, pattern}))
+        else if(pattern && !new RegExp(pattern).test(value)) errors.push(this.createValidationError('pattern', {value, pattern}))
         else if(match) {
             const form = this.state.forms[formName]
-            if(form && form.values[match] != value) errors.push('match')
+            if(form && form.values[match] != value) errors.push(this.createValidationError('match', {value, match}))
         } else {
-            if(type === 'email' && !EMAIL_REGEX.test(value)) errors.push('email')
+            if(type === 'email' && !EMAIL_REGEX.test(value)) errors.push(this.createValidationError('email', {value}))
             if(type === 'number') {
-                if(integer && !INTEGER_REGEX.test(value)) errors.push('integer')
-                if(!integer && !FLOAT_REGEX.test(value)) errors.push('float')
-                if(min && +value < min) errors.push('min')
-                if(max && +value > max) errors.push('max')
+                if(integer && !INTEGER_REGEX.test(value)) errors.push(this.createValidationError('integer', {value}))
+                if(!integer && !FLOAT_REGEX.test(value)) errors.push(this.createValidationError('float', {value}))
+                if(min && +value < min) errors.push(this.createValidationError('min', {value, min}))
+                if(max && +value > max) errors.push(this.createValidationError('max', {value, max}))
             } else {
-                if(minLength && value && value.length < minLength) errors.push('minLength')
-                if(maxLength && value && value.length > maxLength) errors.push('maxLength')
+                if(minLength && value && value.length < minLength) errors.push(this.createValidationError('minLength', {value, minLength}))
+                if(maxLength && value && value.length > maxLength) errors.push(this.createValidationError('maxLength', {value, maxLength}))
             }
         }
 

@@ -15,7 +15,7 @@ declare interface FieldEvent {
  * Event handler form FieldEvent type.
  */
 declare interface FieldEventHandler {
-    (event: FieldEvent): void;
+    (event: React.ChangeEvent<HTMLInputElement|HTMLSelectElement>): void;
 }
 
 /**
@@ -101,6 +101,19 @@ declare interface DefaultFieldInjectedProps {
      */
     ctrl?: FieldStateController;
 
+}
+
+declare interface ValidationError {
+
+    /**
+     * Validation error message key
+     */
+    key: string;
+
+    /**
+     * Validation error message parameters.
+     */
+    params?: {[paramName: string]: any}
 }
 
 /**
@@ -256,9 +269,9 @@ declare interface FieldStateController {
     value: string;
 
     /**
-     * An array of strings with all current validation errors of the field.
+     * An array of ValidationError with all current validation errors of the field.
      */
-    errors: string[];
+    errors: ValidationError[];
 
     /**
      * Some properties of the Field.
