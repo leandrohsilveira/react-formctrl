@@ -3,8 +3,6 @@
   "packages": [
     "packages/*"
   ],
-  "bootstrap": {
-    "ignore": "*/node_modules"
-  },
-  "version": "0.0.0"
+  "version": "1.0.1-SNAPSHOT",
+  "npmClient": "yarn"
 }

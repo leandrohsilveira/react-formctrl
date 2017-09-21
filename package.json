@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "cleandeps": "lerna clean",
     "build": "lerna bootstrap",
     "predev": "npm run build",
     "dev": "cd ./packages/react-formctrl-examples && npm run dev",
