@@ -1,6 +1,6 @@
 import React from 'react'
 
-import {FormEventDispatcher, REACT_FORMCTRL} from './provider'
+import {FormEventDispatcher, REACT_FORMCTRL} from '../provider/provider'
 
 export class Form extends React.Component {
 

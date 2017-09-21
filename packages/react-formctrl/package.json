@@ -28,7 +28,7 @@
     "url": "https://github.com/leandrohsilveira/react-formctrl/issues"
   },
   "main": "./lib",
-  "module": "./src",
+  "module": "./lib",
   "engines": {
     "node": ">= 6"
   },
@@ -36,7 +36,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean": "rimraf ./lib",
     "prebuild": "npm run clean",
-    "build": "babel ./src --out-dir ./lib",
+    "build": "babel ./src --out-dir ./lib && babel ./src --out-dir ./lib --copy-files",
     "prepublish": "npm run build"
   },
   "dependencies": {

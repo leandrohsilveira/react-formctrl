@@ -1,4 +1,8 @@
-import * as React from 'react'
+import * as React from 'react';
+
+declare interface CustomPropertiesInjection {
+    [propertyInjectionName: string]: any;
+}
 
 /**
  * A simplified HtmlElementEvent,
@@ -271,7 +275,7 @@ declare interface FormProviderState {
     forms: {[formName: string]: FormStateController}
 }
 
-declare interface FormProvider extends React.Component<FormProviderProps, FormProviderState> {
+export class FormProvider extends React.Component<FormProviderProps, FormProviderState> {
 
     subscribe(): void;
 
@@ -293,150 +297,12 @@ declare interface FormProvider extends React.Component<FormProviderProps, FormPr
     
     updateFormCtrl(formName: string, formCtrl: FormStateController): void;
 
-    updateFieldCtrl(formName: string, fieldCtrl, value: string): void;
+    updateFieldCtrl(formName: string, fieldCtrl: FieldStateController, value: string): void;
 
     onFormSubmited(formName: string, formRef: string): void;
 
     onFormReseted(formName: string): void;
 
     unsubscribe(): void;
-
-}
-
-declare interface FormProps extends React.Props<any> {
-    /**
-     * The name of the form to be registered.
-     */
-    name: string;
-
-    /**
-     * The CSS classes to apply to native form component rendered by this component.
-     */
-    className?: string;
-
-    /**
-     * The form submit handler.
-     */
-    onSubmit?(values: {[fieldName: string]: string}, formCtrl?: FormStateController): void;
-}
-
-declare interface FormState {
-    ref: string;
-}
-
-declare interface Form extends React.Component<FormProps, FormState> {
-
-    handleSubmit(event: React.FormEvent<any>): void;
-
-    handleReset(event: React.FormEvent<any>): void;
-
-    handleFormSubmitForward(event: CustomEvent);
-
-}
-
-declare interface CustomPropertiesInjection {
-    [propertyInjectionName: string]: any;
-}
-
-declare interface FormControlProps extends React.Props<any> {
-
-    /**
-     * The form name reference to watch it's controller and inject into child component properties.
-     */
-    form: string;
-
-    /**
-     * The form values change event handler.
-     */
-    onChange?(formCtrl: FormStateController): void;
-
-    /**
-     * A function responsible for transforming the form controller into an object containing as key the name of the property to be injected and the value of the property: (formCtrl) => ({injectedFormNameProp: formCtrl.formName})
-     */
-    inject?(formCtrl: InjectedFormStateController): CustomPropertiesInjection;
-
-}
-
-declare interface FormControlState extends FormStateController, React.Props<any> {
-
-}
-
-declare interface FormControl extends React.Component<FormControlProps, FormControlState> {
-
-    onChange(formCtrl: FormStateController);
-
-    handleFormChanged(event: CustomEvent): void;
-
-    sync(formCtrl: FormStateController): any;
-
-    setFieldValue(fieldName, value): void;
-
-    inject(): {[propertyInjectionName: string]: any};
-
-}
-
-declare interface FieldProps extends React.Props<any> {
-
-    /**
-     * 	The name of the field.
-     */
-    name: String;
-
-    /**
-     * 	The name of the field's form.
-     */
-    form: String;
-
-    /**
-     * 	The CSS class to inject into it's component child.
-     */
-    className?: String;
-
-    /**
-     * true if the field is required.
-     */
-    required?: boolean;
-
-    /**
-     * The regex to validate the field value.
-     */
-    pattern?: String|RegExp;
-
-    /**
-     * text	The input field type. Supports all types, but currently only the "email" and "number" types has out of the box validation.
-     */
-    type?: String;
-
-    /**
-     * true if when the Field type property is "number" and should validate to integer value.
-     */
-    integer?: boolean;
-
-    /**
-     * 	A function responsible for transforming the Field component injection properties into an object containing as key the name of the property to be injected and the value of the property: (field) => ({injectedOnChange: field.onChange})
-     */
-    inject?(field: DefaultFieldInjectedProps): CustomPropertiesInjection;
-
-}
-
-declare interface FieldState extends FieldStateController {
-
-}
-
-declare interface Field extends React.Component<FieldProps, FieldState> {
-
-    onChange(fieldCtrl: FieldStateController): void;
-
-    handleFieldChangeForward(event: CustomEvent): void;
-
-    handleChange(event: FieldEvent): void;
-
-    handleBlur(event: FieldEvent): void
-
-    sync(fieldCtrl): any;
-
-    getChildProps(): DefaultFieldInjectedProps;
-
-    inject(): CustomPropertiesInjection;
 
 }

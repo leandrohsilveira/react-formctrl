@@ -1,5 +1,10 @@
 {
-    "compilerOptions": {
-        "jsx": "react"
-    }
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "jsx": "react",
+    "noEmit": true,
+    "noImplicitAny": true,
+    "noUnusedLocals": true
+  }
 }
