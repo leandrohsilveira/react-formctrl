@@ -1,8 +1,15 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import {FormEventDispatcher, REACT_FORMCTRL} from '../provider/provider'
 
 export class Form extends React.Component {
+
+    static propTypes = {
+        name: PropTypes.string.isRequired,
+        className: PropTypes.string,
+        onSubmit: PropTypes.func,
+    }
 
     constructor(props) {
         super(props)
@@ -62,6 +69,13 @@ export class Form extends React.Component {
 }
 
 export class FormControl extends React.Component {
+
+    static propTypes = {
+        form: PropTypes.string.isRequired,
+        onChange: PropTypes.func,
+        inject: PropTypes.func,
+    }
+
     constructor(props) {
         super(props)
         this.state = {

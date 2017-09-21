@@ -1,8 +1,23 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import { FormEventDispatcher, REACT_FORMCTRL } from '../provider/provider'
 
 export class Field extends React.Component {
+
+    static propTypes = {
+        name: PropTypes.string.isRequired,
+        form: PropTypes.string.isRequired,
+        className: PropTypes.string,
+        required: PropTypes.bool,
+        pattern: PropTypes.oneOf([
+            PropTypes.string,
+            PropTypes.instanceOf(RegExp)
+        ]),
+        type: PropTypes.string,
+        integer: PropTypes.bool,
+        inject: PropTypes.func,
+    }
 
     constructor(props) {
         super(props)

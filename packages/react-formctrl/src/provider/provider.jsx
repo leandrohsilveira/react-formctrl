@@ -105,6 +105,10 @@ export class FormEventDispatcher {
 
 export class FormProvider extends React.Component {
 
+    static propTypes = {
+
+    }
+
     constructor(props) {
         super(props)
         this.state = {
