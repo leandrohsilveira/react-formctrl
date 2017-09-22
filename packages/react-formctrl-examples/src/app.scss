@@ -27,3 +27,16 @@ body {
         padding: 0;
     }
 }
+
+.submit-values {
+    display: none;
+    position: fixed;
+    right: 5%;
+    top: 5%;
+    padding: 20px;
+    z-index: 10000000;
+
+    &.show {
+        display: block;
+    }
+}

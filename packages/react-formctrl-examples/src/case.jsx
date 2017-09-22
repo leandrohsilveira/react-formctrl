@@ -1,7 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/light';
-import { tomorrowNight as theme } from 'react-syntax-highlighter/dist/styles';
+import { github as theme } from 'react-syntax-highlighter/dist/styles';
+import {SubmitValuesPopup} from './submit-values'
 
 export function Json({ json, title, maxHeight, children }) {
     let content = json
@@ -77,6 +78,7 @@ export class Case extends React.Component {
         const { code } = this.state
         return (
             <div className="case clearfix">
+                <SubmitValuesPopup></SubmitValuesPopup>
                 <div className="case-display">
                     {children}
                 </div>
