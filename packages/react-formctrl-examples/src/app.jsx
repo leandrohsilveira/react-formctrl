@@ -2,7 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import {HashRouter, NavLink} from 'react-router-dom'
 
-import javascript from 'react-syntax-highlighter/dist/languages/javascript';
+import javascript from 'react-syntax-highlighter/dist/languages/javascript'
 import json from 'react-syntax-highlighter/dist/languages/json';
 import { registerLanguage } from "react-syntax-highlighter/dist/light"
 
@@ -10,6 +10,8 @@ import {FormProvider} from 'react-formctrl'
 import {SubmitValuesPopup} from './submit-values'
 import {Routes} from './routes'
 
+import 'modules/bootstrap/dist/css/bootstrap-grid.min.css'
+import 'modules/bootstrap/dist/css/bootstrap.min.css'
 import './app.scss'
 
 export function App(props) {

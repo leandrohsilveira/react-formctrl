@@ -2,7 +2,9 @@ const webpack         = require("webpack");
 const {resolve}       = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
 // const StyleLintPlugin = require('stylelint-webpack-plugin');
+const path = require('path');
 
 module.exports = (env) => {
 
@@ -15,14 +17,14 @@ module.exports = (env) => {
         resolve: {
             extensions: [".webpack.js", ".web.js", ".js", ".jsx"],
             alias: {
-                modules: __dirname + '/node_modules'
+                modules: path.resolve('./node_modules'),
             }
         },
         context: resolve(__dirname, "src"),
         entry: {
             'bundle': './app.jsx',
             'vendor': [
-                'react', 
+                'react',
                 'react-dom', 
                 'react-router-dom',
                 'axios', 
@@ -30,7 +32,7 @@ module.exports = (env) => {
                 'react-syntax-highlighter/dist/styles',
                 'react-syntax-highlighter/dist/languages/javascript',
                 'react-syntax-highlighter/dist/languages/json'
-            ],
+            ]
         },
         output: {
             filename: "[name].js", 
@@ -40,14 +42,22 @@ module.exports = (env) => {
         module: {
             rules: [
                 {
-                    test:    /\.(js|jsx)$/,
-                    use:     ["babel-loader"],
+                    test: /\.(js|jsx)$/,
+                    use: ["babel-loader"],
                     exclude: /node_modules/
                 },
                 {
-                    test:    /\.(css|scss|sass)$/,
-                    use:     ["style-loader", "css-loader", "sass-loader"],
-                }
+                    test: /\.(css)$/,
+                    use: ['style-loader', 'css-loader']
+                },
+                {
+                    test: /\.(scss|sass)$/,
+                    use: ["style-loader", "css-loader", "sass-loader"],
+                },
+                {
+                    test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|woff2)$/,
+                    use: ["url-loader"]
+                },
             ]
         },
 
@@ -61,6 +71,7 @@ module.exports = (env) => {
                 filename: 'index.html',
                 inject: 'body'
             }),
+            new ExtractTextPlugin('bundle.css', { allChunks: true }),
         ],
         performance: {
             hints: false
@@ -76,7 +87,7 @@ module.exports = (env) => {
             publicPath: "/" // match the output `publicPath`
         };
 
-        configs.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable HMR globally
+        // configs.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable HMR globally
         configs.plugins.push(new webpack.NamedModulesPlugin()); // prints more readable module names in the browser console on HMR updates
     } else if(isDocs) {
         // DOCS build configs
