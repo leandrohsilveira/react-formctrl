@@ -1,13 +1,29 @@
 body {
     padding-top: 3.5rem;
 }
-
+.card {
+    margin-bottom: 10px;
+}
 .case {
     .case-display {
         margin-bottom: 10px;
     }
+    & > .case-code > .card {
+        
+        margin-bottom: 0;
+
+        & > .card-body {
+            padding: 0;
+        }
+    }
+}
+
+.json-code {
+    margin-bottom: 20px;
+    pre {
+        margin-bottom: 0;
+    }
     .card-body {
         padding: 0;
     }
-
 }

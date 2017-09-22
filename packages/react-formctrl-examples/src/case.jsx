@@ -3,20 +3,39 @@ import axios from 'axios'
 import SyntaxHighlighter from 'react-syntax-highlighter/dist/light';
 import { tomorrowNight as theme } from 'react-syntax-highlighter/dist/styles';
 
-export function Json({ json, title, children }) {
+export function Json({ json, title, maxHeight, children }) {
     let content = json
+    const style = {}
+    if(maxHeight) {
+        style.height = maxHeight
+        style.overflowY = 'auto'
+    }
     if (typeof content === 'object') content = JSON.stringify(content, null, 4)
     return (
         <div className="json-code">
-            {children !== undefined && (
-                <div className="json-children">
-                    {children}
+            <div className="row">
+                {children !== undefined && (
+                    <div className="col">
+                        <div className="json-children">
+                            {children}
+                        </div>
+                    </div>
+                )}
+                <div className="col">
+                    <div className="card">
+                        <div className="card-header">
+                            <h4><small>{title}</small></h4>
+                        </div>
+                        <div className="card-body">
+                            <div style={style}>
+                                <SyntaxHighlighter language="json" style={theme}>
+                                    {content}
+                                </SyntaxHighlighter>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            )}
-            <h4><small>{title}</small></h4>
-            <SyntaxHighlighter language="json" style={theme}>
-                {content}
-            </SyntaxHighlighter>
+            </div>
         </div>
     )
 }
@@ -61,18 +80,21 @@ export class Case extends React.Component {
                 <div className="case-display">
                     {children}
                 </div>
-                <div className="card">
-                    <div className="card-header">
-                        <h4>Code: <small>{fileName}</small></h4>
-                    </div>
-                    <div className="card-body">
-                        {code !== '' && (
-                            <SyntaxHighlighter showLineNumbers={true} language="javascript" style={theme}>
-                                {code}
-                            </SyntaxHighlighter>
-                        )}
+                <div className="case-code">
+                    <div className="card">
+                        <div className="card-header">
+                            <h4>Code: <small>{fileName}</small></h4>
+                        </div>
+                        <div className="card-body">
+                            {code !== '' && (
+                                <SyntaxHighlighter showLineNumbers={true} language="javascript" style={theme}>
+                                    {code}
+                                </SyntaxHighlighter>
+                            )}
+                        </div>
                     </div>
                 </div>
+                
             </div>
         )
     }

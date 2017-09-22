@@ -3,22 +3,19 @@ import React from 'react'
 import { Form, Field, FormControl } from 'react-formctrl'
 import { SubmitValuesPopup } from '../submit-values'
 
-function Input({ label, name, value, onChange, onBlur, ctrl: { invalid, errors } }) {
+function Input({ label, name, value, onChange, onBlur, ctrl: { valid, invalid, touched, errors } }) {
+    const getClassName = () => {
+        if (valid) return 'is-valid'
+        if (touched && invalid) return 'is-invalid'
+    }
+
     return (
-        <div>
+        <div className="form-group">
             <label htmlFor={name}>{label}:</label>
-            <div>
-                <input name={name} value={value} onChange={onChange} onBlur={onBlur}></input>
-            </div>
-            {invalid && (
-                <div>
-                    <ul>
-                        {errors.map(error => (
-                            <span key={error.key}>{error.key}</span>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            <input className={`form-control ${getClassName()}`} name={name} value={value} onChange={onChange} onBlur={onBlur}></input>
+            {invalid && touched && errors.map(error => (
+                <div className="invalid-feedback" key={error.key}>{error.key}</div>
+            ))}
         </div>
     )
 }
@@ -33,6 +30,7 @@ function InputField({ label, formName, fieldName, type = 'text', required, patte
 
 function SampleForm({ formCtrl, onSubmit }) {
     const formName = formCtrl.formName
+    const setRandomAge = () => formCtrl.setFieldValue('age', `${parseInt(Math.random() * 100)}`)
     return (
         <Form name={formName} onSubmit={onSubmit}>
             <InputField label="Name (required)" formName={formName} fieldName="name" required></InputField>
@@ -40,9 +38,9 @@ function SampleForm({ formCtrl, onSubmit }) {
             <InputField label="Age (number and required)" formName={formName} fieldName="age" type="number" required></InputField>
 
             <div>
-                <button type="button" onClick={() => formCtrl.setFieldValue('age', `${parseInt(Math.random() * 100)}`)}>Set random age</button>
-                <button disabled={formCtrl.invalid} type="submit">Submit</button>
-                <button disabled={formCtrl.unchanged} type="reset">Reset</button>
+                <button className="btn btn-primary" disabled={formCtrl.invalid} type="submit">Submit</button>
+                <button className="btn btn-default" disabled={formCtrl.unchanged} type="reset">Reset</button>
+                <button className="btn btn-secondary" onClick={setRandomAge} type="button">Set random age</button>
             </div>
         </Form>
     )

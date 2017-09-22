@@ -12,7 +12,7 @@ export function AppMenu() {
             <div className="collapse navbar-collapse" id="navbarsExampleDefault">
                 <ul className="navbar-nav mr-auto">
                     <li className="nav-item">
-                        <Link className="nav-link" exact to="/">Basic</Link>
+                        <Link className="nav-link" to="/">Basic</Link>
                     </li>
                     <li className="nav-item">
                         <Link className="nav-link" to="/more">More of basics</Link>

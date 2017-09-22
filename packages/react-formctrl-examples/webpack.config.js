@@ -83,11 +83,12 @@ module.exports = (env) => {
 
         configs.devServer = {
             hot: true, // enable HMR on the server
+            port: 9000,
             contentBase: resolve(__dirname, "public"), // match the output path
             publicPath: "/" // match the output `publicPath`
         };
 
-        // configs.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable HMR globally
+        configs.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable HMR globally
         configs.plugins.push(new webpack.NamedModulesPlugin()); // prints more readable module names in the browser console on HMR updates
     } else if(isDocs) {
         // DOCS build configs

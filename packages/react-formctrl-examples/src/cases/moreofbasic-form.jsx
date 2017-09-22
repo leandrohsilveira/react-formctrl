@@ -5,10 +5,10 @@ import {SubmitValuesPopup} from '../submit-values'
 
 function Input({label, name, value, onChange}) {
     return (
-        <div>
+        <div className="form-group">
             <label htmlFor={name}>{label}:</label>
             <div>
-                <input name={name} value={value} onChange={onChange}></input>
+                <input className="form-control" name={name} value={value} onChange={onChange}></input>
             </div>
         </div>
     )
@@ -30,8 +30,8 @@ export function MoreOfBasicForm(props) {
                         <Input label="With initial value" ></Input>
                     </Field>
                     <div>
-                        <button type="submit">Submit</button>
-                        <button type="reset">Reset</button>
+                        <button className="btn btn-primary" type="submit">Submit</button>
+                        <button className="btn btn-default" type="reset">Reset</button>
                     </div>
                 </Form>
             </div>
