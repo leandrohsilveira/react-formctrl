@@ -39,7 +39,9 @@
     "clean": "rimraf ./lib",
     "prebuild": "npm run clean",
     "build": "babel ./src --out-dir ./lib --copy-files",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "preminify": "rimraf ./dist",
+    "minify": "node minify.js"
   },
   "dependencies": {
     "prop-types": "^15.5.7",
@@ -54,6 +56,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "node-minify": "^2.3.0",
     "rimraf": "^2.6.1",
     "typescript": "^2.5.2",
     "yarn": "^1.0.2"
