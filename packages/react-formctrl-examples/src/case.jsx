@@ -61,13 +61,17 @@ export class Case extends React.Component {
                 <div className="case-display">
                     {children}
                 </div>
-                <div className="case-code">
-                    <h4>Code: <small>{fileName}</small></h4>
-                    {code !== '' && (
-                        <SyntaxHighlighter showLineNumbers={true} language="javascript" style={theme}>
-                            {code}
-                        </SyntaxHighlighter>
-                    )}
+                <div className="card">
+                    <div className="card-header">
+                        <h4>Code: <small>{fileName}</small></h4>
+                    </div>
+                    <div className="card-body">
+                        {code !== '' && (
+                            <SyntaxHighlighter showLineNumbers={true} language="javascript" style={theme}>
+                                {code}
+                            </SyntaxHighlighter>
+                        )}
+                    </div>
                 </div>
             </div>
         )

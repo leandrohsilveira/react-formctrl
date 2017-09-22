@@ -10,6 +10,8 @@ import {FormProvider} from 'react-formctrl'
 import {SubmitValuesPopup} from './submit-values'
 import {Routes} from './routes'
 
+import {AppLayout} from './layout/layout'
+
 import 'modules/bootstrap/dist/css/bootstrap-grid.min.css'
 import 'modules/bootstrap/dist/css/bootstrap.min.css'
 import './app.scss'
@@ -20,27 +22,11 @@ export function App(props) {
 
     return (
         <FormProvider>
-            <div>
-                <SubmitValuesPopup />
-                <div className="header">
-                    <h1>ReactJS controlled forms</h1>
-                    <p>react-formctrl is a lightweight forms controller library for ReactJS inspired by Angular forms and Redux forms.</p>
-                </div>
-                <HashRouter>
-                    <div>
-                        <div className="menu">
-                            <NavLink activeClassName="active" exact to="/">Basic</NavLink>
-                            <NavLink activeClassName="active" to="/more">More of basics</NavLink>
-                            <NavLink activeClassName="active" to="/validation">Field validation</NavLink>
-                            <NavLink activeClassName="active" to="/form-control">Form control</NavLink>
-                            <NavLink activeClassName="active" to="/sync-forms">Synchronized forms</NavLink>
-                            <NavLink activeClassName="active" to="/form-values-manipulation">Form values manipulation</NavLink>
-                            <NavLink activeClassName="active" to="/users">Complete user form example</NavLink>
-                        </div>
-                        <Routes />
-                    </div>
-                </HashRouter>
-            </div>
+            <HashRouter>
+                <AppLayout>
+                    <Routes />
+                </AppLayout>
+            </HashRouter>
         </FormProvider>
     )
 }

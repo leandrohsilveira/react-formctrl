@@ -2,11 +2,11 @@ import React from 'react'
 
 export function AppBanner() {
     return (
-        <div class="jumbotron">
-            <div class="container">
-                <h1 class="display-3">Hello, world!</h1>
-                <p>This is a template for a simple marketing or informational website. It includes a large callout called a jumbotron and three supporting pieces of content. Use it as a starting point to create something more unique.</p>
-                <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
+        <div className="jumbotron">
+            <div className="container">
+                <h1 className="display-3">ReactJS controlled forms</h1>
+                <p>ReactJS controlled forms is a lightweight forms controller library for ReactJS inspired by Angular forms and Redux forms.</p>
+                <p><a className="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>
             </div>
         </div>
     )

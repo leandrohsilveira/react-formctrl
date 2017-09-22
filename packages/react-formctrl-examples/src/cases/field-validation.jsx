@@ -7,11 +7,9 @@ import {Json} from '../case'
 function Input({label, name, value, onChange, onBlur, ctrl}) {
     return (
         <Json title="Field controller" json={ctrl}>
-            <div>
+            <div className="form-group">
                 <label htmlFor={name}>{label}:</label>
-                <div>
-                    <input name={name} value={value} onChange={onChange} onBlur={onBlur}></input>
-                </div>
+                <input className="form-control" name={name} value={value} onChange={onChange} onBlur={onBlur}></input>
             </div>
         </Json> 
     )
