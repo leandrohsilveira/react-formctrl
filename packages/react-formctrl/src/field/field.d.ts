@@ -40,6 +40,31 @@ declare interface FieldProps extends React.Props<any> {
     integer?: boolean;
 
     /**
+     * the name of the field of the same form that the value of this field should match.
+     */
+    match?: string;
+
+    /**
+     * The min Number value of a field with type "number".
+     */
+    min?: number|string;
+
+    /**
+     * The max Number value of a field with type "number".
+     */
+    max?: number|string;
+
+    /**
+     * The min string value length of a field.
+     */
+    minLength?: number|string;
+
+    /**
+     * The max string value length of a field.
+     */
+    maxLength?: number|string;
+
+    /**
      * 	A function responsible for transforming the Field component injection properties into an object containing as key the name of the property to be injected and the value of the property: (field) => ({injectedOnChange: field.onChange})
      */
     inject?(field: DefaultFieldInjectedProps): CustomPropertiesInjection;

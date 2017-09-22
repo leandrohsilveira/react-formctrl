@@ -242,6 +242,11 @@ required | boolean | false | `true` if the field is required.
 pattern | string\|RegExp | | The regex to validate the field value.
 type | string | text | The input field type. Supports all types, but currently only the "email" and "number" types has out of the box validation.
 integer | boolean | false | `true` if when the Field type property is "number" and should validate to integer value.
+match | string | | Another field name that the value of this field should match.
+min | number\|string | | The min number value of a field with type "number".
+max | number\|string | | The max number value of a field with type "number".
+minLength | number\|string | | The min string value length of a field.
+maxLength | number\|string | | The max string value length of a field.
 inject | Function | | A function responsible for transforming the Field component injection properties into an object containing as key the name of the property to be injected and the value of the property: `(field) => ({injectedOnChange: field.onChange})`
 
 ### Injects
@@ -285,11 +290,11 @@ function SomeForm(props) {
             <div>
                 {/* The Field props overrides the child props:*/}
                 <Field form={formName} name="nativeInput" type="number">
-                    <input type="text" placeholder="Native input (Number)" />
+                    <input type="text" placeholder="Native input (number)" />
                 </Field>
 
                 <Field form={formName} name="email" type="email" required>
-                    <InputWrapper placeholder="Native input (Number)" />
+                    <InputWrapper placeholder="Native input (number)" />
                 </Field>
 
                 <button type="submit" disabled={props.formCtrl.invalid}>Submit</button>
@@ -333,12 +338,12 @@ Name | Type | Description
 type | string | The input field type.
 required | boolean | `true` if the input field is required.
 pattern | string\|RegExp | The regex to validate the field pattern.
-match | string | Another field name that the value of this field should match.
 integer | boolean | `true` if when the Field type property is "number" and should validate to integer value.
-min | Number | The min Number value of a field with type "number".
-max | Number | The max Number value of a field with type "number".
-minLength | Number | The min string value length of a field.
-maxLength | Number | The max string value length of a field.
+match | string | Another field name that the value of this field should match.
+min | number\|string | The min number value of a field with type "number".
+max | number\|string | The max number value of a field with type "number".
+minLength | number\|string | The min string value length of a field.
+maxLength | number\|string | The max string value length of a field.
 
 #### ValidationError
 
