@@ -67,6 +67,7 @@ module.exports = (env) => {
                 name: 'vendor',
             }),
             new HtmlWebpackPlugin({
+                hash: true,
                 template: 'index.html',
                 filename: 'index.html',
                 inject: 'body'
