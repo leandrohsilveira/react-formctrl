@@ -10,6 +10,7 @@
     "cleandeps": "lerna clean",
     "build": "lerna bootstrap",
     "predev": "npm run build",
+    "libdev": "cd ./packages/react-formctrl && npm run dev",
     "dev": "cd ./packages/react-formctrl-examples && npm run dev",
     "predocs": "npm run build",
     "docs": "cd ./packages/react-formctrl-examples && npm run docs"

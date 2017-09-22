@@ -10,13 +10,30 @@ export class Field extends React.Component {
         form: PropTypes.string.isRequired,
         className: PropTypes.string,
         required: PropTypes.bool,
-        pattern: PropTypes.oneOf([
+        pattern: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.instanceOf(RegExp)
         ]),
         type: PropTypes.string,
         integer: PropTypes.bool,
         inject: PropTypes.func,
+        match: PropTypes.string,
+        min: PropTypes.oneOfType([
+            PropTypes.number,
+            PropTypes.string,
+        ]),
+        max: PropTypes.oneOfType([
+            PropTypes.number,
+            PropTypes.string,
+        ]),
+        minLength: PropTypes.oneOfType([
+            PropTypes.number,
+            PropTypes.string,
+        ]),
+        maxLength: PropTypes.oneOfType([
+            PropTypes.number,
+            PropTypes.string,
+        ]),
     }
 
     constructor(props) {
