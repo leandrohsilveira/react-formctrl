@@ -5,7 +5,7 @@ import {SubmitValuesPopup} from '../submit-values'
 
 function Input({name, value, onChange}) {
     return (
-        <input name={name} value={value} onChange={onChange}></input>
+        <input className="form-control" name={name} value={value} onChange={onChange}></input>
     )
 }
 
@@ -18,16 +18,14 @@ export function BasicForm(props) {
             <p>This is a basic example of Form usage</p>
             <div>
                 <Form name={formName} onSubmit={onSubmit}>
-                    <div>
+                    <div className="form-group">
                         <label htmlFor="simple">Simple:</label>
-                        <div>
-                            <Field form={formName} name="simple">
-                                <Input></Input>
-                            </Field>
-                        </div>
+                        <Field form={formName} name="simple">
+                            <Input></Input>
+                        </Field>
                     </div>
                     <div>
-                        <button type="submit">Submit</button>
+                        <button className="btn btn-primary" type="submit">Submit</button>
                     </div>
                 </Form>
             </div>

@@ -1,161 +1,42 @@
-* {
-    box-sizing: border-box;
+body {
+    padding-top: 3.5rem;
+}
+.card {
+    margin-bottom: 10px;
+}
+.case {
+    .case-display {
+        margin-bottom: 10px;
+    }
+    & > .case-code > .card {
+        
+        margin-bottom: 0;
+
+        & > .card-body {
+            padding: 0;
+        }
+    }
 }
 
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: rgb(44, 48, 51);
-    color: white;
-    padding: 0;
-    margin: 0;
-}
-hr.inserted {
-    display: none;
-}
-.header {
-    background: rgb(59, 65, 70);
-    padding: 10px;
-    h1 {
-        font-size: 2.5em;
-        margin-top: 0;
+.json-code {
+    margin-bottom: 20px;
+    pre {
+        margin-bottom: 0;
+    }
+    .card-body {
+        padding: 0;
     }
 }
 
 .submit-values {
     display: none;
     position: fixed;
-    right: 0;
-    top: 0;
-    border: 1px solid white;
-    background: rgb(44, 48, 51);
-    padding: 10px;
+    right: 5%;
+    top: 5%;
+    padding: 20px;
+    z-index: 10000000;
 
     &.show {
         display: block;
-    }
-}
-
-.case {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid rgb(125, 138, 149);
-
-    .case-display {
-        padding-bottom: 10px;
-
-        label {
-            margin-bottom: 5px;
-        }
-        input {
-            background: rgb(59, 65, 70);
-            border: 1px solid rgb(125, 138, 149);
-            border-radius: 5px;
-            padding: 10px;
-            min-width: 300px;
-            color: white;
-            margin-bottom: 10px;
-
-            &:focus {
-                outline-color: white;
-            }
-        }
-        
-        button {
-            height: 40px;
-            vertical-align: middle;
-            border: 1px solid rgb(125, 138, 149);
-            border-radius: 5px;
-            text-transform: uppercase;
-            background: rgba(0, 0, 0, 0);
-            color: white;
-            
-            &:hover,
-            &:focus,
-            &:active {
-                background: rgba(0, 0, 0, 0.3);
-            }
-            
-            &[type=submit] {
-                background: white;
-                color: rgb(44, 48, 51);
-
-                &:hover,
-                &:focus,
-                &:active {
-                    background: rgb(191, 194, 195);
-                    // color: white;
-                }
-            }
-
-            &:disabled {
-                opacity: 0.5;
-            }
-
-        }
-
-    }
-
-    .case-code {
-        h4 {
-            background: rgb(29, 31, 33);
-            padding: 10px;
-            margin: 0;
-        }
-        pre {
-            margin: 0;
-        }
-    }
-}
-
-a {
-    &,
-    &:active,
-    &:hover,
-    &:visited {
-        color: white;
-    }
-}
-
-.menu {
-    background: rgb(59, 65, 70);
-    padding: 20px 5px;
-    
-    a {
-        text-decoration: none;
-        padding: 15px;
-        &:hover,
-        &.active {
-            background: rgb(29, 31, 33);
-        }
-    }
-}
-
-.case-display,
-.case-code {
-    width: 100%;
-    padding: 5px;
-}
-
-.clearfix:after {
-    display: block;
-    content: "";
-    clear: both;
-}
-
-.json-code {
-    border: 1px solid rgb(125, 138, 149);
-    margin-bottom: 10px;
-
-    .json-children {
-        background: rgb(29, 31, 33);
-        padding: 10px;
-    }
-    h4 {
-        background: rgb(29, 31, 33);
-        padding: 10px;
-        margin: 0;
-    }
-    pre {
-        margin: 0;
     }
 }

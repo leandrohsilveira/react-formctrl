@@ -13,6 +13,7 @@ export class SubmitValuesPopup extends React.Component {
             timeout: null
         }
         this.handleShowSubmitValuesPopupEvent = this.handleShowSubmitValuesPopupEvent.bind(this)
+        this.close = this.close.bind(this)
     }
 
     static dispatchShowSubmitValuesPopupEvent(formName, values) {
@@ -35,33 +36,45 @@ export class SubmitValuesPopup extends React.Component {
             clearTimeout(this.state.timeout)
         }
 
-        const timeout = setTimeout(() => {
-            this.setState(state => ({
-                show: false,
-                formName: null,
-                values: {},
-                timeout: null
-            }))
-        }, 5000);
+        const timeout = setTimeout(this.close, 5000);
 
         this.setState({show: true, formName, values, timeout})
+    }
+
+    close() {
+        if(this.state.timeout) {
+            clearTimeout(this.state.timeout)
+        }
+        this.setState(state => ({
+            show: false,
+            formName: null,
+            values: {},
+            timeout: null
+        }))
     }
 
     render() {
         const {show, formName, values} = this.state
         return (
             <div className={`submit-values${show ? ' show' : ''}`}>
-                <h3>Submited form: {formName}</h3>
-                <ul>
-                    {(!values || values.length === 0) && (
-                        <li>No values sent in submission</li>
-                    )}
-                    {values && Object.keys(values).map(field => (
-                        <li key={field}>
-                            <strong>{field}</strong>: {values[field]}
-                        </li>
-                    ))}
-                </ul>
+                <div className="card">
+                    <div className="card-header">
+                        <h3>Submited form: {formName}</h3>
+                    </div>
+                    <ul className="list-group list-group-flush">
+                        {(!values || values.length === 0) && (
+                            <li className="list-group-item">No values sent in submission</li>
+                        )}
+                        {values && Object.keys(values).map(field => (
+                            <li className="list-group-item" key={field}>
+                                <strong>{field}</strong>: {values[field]}
+                            </li>
+                        ))}
+                    </ul>
+                    <div className="card-body">
+                        <button type="button" className="btn btn-primary" onClick={this.close}>Close</button>
+                    </div>
+                </div>
             </div>
         )
     }
