@@ -31,7 +31,9 @@ module.exports = (env) => {
                 'react-syntax-highlighter/dist/light', 
                 'react-syntax-highlighter/dist/styles',
                 'react-syntax-highlighter/dist/languages/javascript',
-                'react-syntax-highlighter/dist/languages/json'
+                'react-syntax-highlighter/dist/languages/json',
+                'modules/bootstrap/dist/css/bootstrap-grid.min.css',
+                'modules/bootstrap/dist/css/bootstrap.min.css',
             ]
         },
         output: {

@@ -12,8 +12,6 @@ import {Routes} from './routes'
 
 import {AppLayout} from './layout/layout'
 
-import 'modules/bootstrap/dist/css/bootstrap-grid.min.css'
-import 'modules/bootstrap/dist/css/bootstrap.min.css'
 import './app.scss'
 
 export function App(props) {
