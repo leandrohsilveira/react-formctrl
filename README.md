@@ -1,7 +1,7 @@
 # React controlled forms
 A lightweight ReactJS forms controller inspired by Redux-form and Angular forms.
 
-It's lightweight: 23.6 KB of bundle size. (Measured in 22/09/2017, v1.1.0)
+It's lightweight: 23.6 KB of bundle size. (Measured in 09/22/2017, v1.1.0)
 
 Check the <a href="https://leandrohsilveira.github.io/react-formctrl/">Live demo</a>
 
