@@ -27,6 +27,7 @@ module.exports = (env) => {
                 'react',
                 'react-dom', 
                 'react-router-dom',
+                'react-formctrl',
                 'axios', 
                 'react-syntax-highlighter/dist/light', 
                 'react-syntax-highlighter/dist/styles',
