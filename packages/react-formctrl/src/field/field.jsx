@@ -51,6 +51,8 @@ export class Field extends React.Component {
             value: '',
             initialValue: props.initialValue || '',
             props: {
+                name: props.name,
+                form: props.form,
                 type: props.type,
                 required: props.required,
                 pattern: props.pattern,

@@ -1,5 +1,7 @@
 import React from 'react'
 
+import PropTypes from 'prop-types'
+
 const REACT_FORMCTRL_NAME = 'react-formctl'
 
 const INTEGER_REGEX = /^-?\d+?$/
@@ -106,7 +108,17 @@ export class FormEventDispatcher {
 export class FormProvider extends React.Component {
 
     static propTypes = {
-
+        customValidators: PropTypes.arrayOf(PropTypes.shape({
+            name: PropTypes.string.isRequired,
+            validate: PropTypes.oneOfType([
+                PropTypes.func,
+                PropTypes.shape({
+                    debounce: PropTypes.number,
+                    onNextValue: PropTypes.func
+                })
+            ]).isRequired,
+            phase: PropTypes.oneOf(['before', 'after']),
+        }))
     }
 
     constructor(props) {
@@ -128,6 +140,7 @@ export class FormProvider extends React.Component {
         this.onFormReseted = this.onFormReseted.bind(this)
         this.updateFormCtrl = this.updateFormCtrl.bind(this)
         this.updateFieldCtrl = this.updateFieldCtrl.bind(this)
+        this.getValidatorFunction = this.getValidatorFunction.bind(this)
     }
 
     componentWillMount() {
@@ -136,6 +149,70 @@ export class FormProvider extends React.Component {
         // }
         // window.sessionStorage.setItem(PROVIDER_FLAG, 'true')
         this.subscribe()
+        const newState = {
+            customValidators: {},
+        }
+        const {customValidators = []} = this.props
+        const asyncValidators = []
+        customValidators.forEach(validator => {
+            if(typeof validator.validate === 'function') {
+                newState.customValidators[validator.name] = {
+                    name: validator.name,
+                    validate: (formName, fieldName, fieldCtrl, params, value) => {
+                        const valid = validator.validate(value, params)
+                        fieldCtrl.valid = valid
+                        fieldCtrl.invalid = !valid
+                        fieldCtrl.errors.push(this.createValidationError(validator.name, params))
+                    }
+                }
+            } else {
+                asyncValidators.push(validator)
+            }
+        })
+        newState.validateAsync = (formName, fieldName, fieldCtrl, params, value) => {
+            if(fieldCtrl.debounceTimeout) {
+                clearTimeout(fieldCtrl.debounceTimeout)
+                fieldCtrl.debounceTimeout = null
+            }
+            fieldCtrl.validating = true
+            fieldCtrl.valid = false
+            fieldCtrl.invalid = true
+            fieldCtrl.debounceTimeout = setTimeout(() => {
+                
+                Promise.all(asyncValidators.map(asyncValidator => {
+                    return asyncValidator.onNextValue(value, params)
+                                        .then(valid => ({name: asyncValidator.name, valid, params}))
+                }))
+                .then(results => {
+                    this.setState(state => {
+                        const forms = {...state.forms}
+                        const form = forms[formName]
+                        const field = forms.fields[fieldName]
+                        field.debounceTimeout = null
+                        field.validating = false
+                        field.valid = true
+                        field.invalid = false
+                        results.forEach(result => {
+                            if(!result.valid) {
+                                field.valid = false
+                                field.invalid = true
+                                field.errors.push(this.createValidationError(result.name, result.params))
+                            }
+                        })
+                        FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, field)
+                        this.updateFormCtrl(formName, form)
+                        return {forms}
+                    })
+                })
+                
+                            
+            }, validator.debounce)
+        }
+        this.setState(newState)
+    }
+
+    getValidatorFunction(validator) {
+        
     }
 
     componentWillUnmount() {
@@ -202,6 +279,7 @@ export class FormProvider extends React.Component {
                 forms[formName] = {
                     __instances: 1,
                     formName,
+                    validating: false,
                     valid: true,
                     invalid: false,
                     untouched: true,
@@ -287,8 +365,7 @@ export class FormProvider extends React.Component {
                     fieldCtrl.dirty = true
                     fieldCtrl.pristine = false
                     this.updateFieldCtrl(formName, fieldCtrl, value)
-                    FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, fieldCtrl
-                    )
+                    FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, fieldCtrl)
                     if(!form.values) form.values = {}
                     form.values[fieldName] = value
                     this.updateFormCtrl(formName, form)
@@ -326,6 +403,7 @@ export class FormProvider extends React.Component {
     }
     
     updateFormCtrl(formName, form) {
+        form.validating = false
         form.valid = true
         form.invalid = false
         form.untouched = true
@@ -336,6 +414,7 @@ export class FormProvider extends React.Component {
         form.changed = false
         Object.keys(form.fields).forEach(fieldName => {
             const field = form.fields[fieldName]
+            if(field.validating) form.validating = true
             if(!field.valid) form.valid = false
             if(field.invalid) form.invalid = true
             if(!field.untouched) form.untouched = false
@@ -357,9 +436,11 @@ export class FormProvider extends React.Component {
 
     updateFieldCtrl(formName, fieldCtrl, value) {
         const errors = []
+        const {customValidators = {}} = this.state
         const {
             initialValue,
             props: {
+                name,
                 type = 'text', 
                 required, 
                 pattern, 
@@ -369,6 +450,7 @@ export class FormProvider extends React.Component {
                 max,
                 minLength,
                 maxLength,
+                validate = []
             }
         } = fieldCtrl
 
@@ -388,6 +470,22 @@ export class FormProvider extends React.Component {
             } else {
                 if(minLength && value && value.length < minLength) errors.push(this.createValidationError('minLength', {value, minLength}))
                 if(maxLength && value && value.length > maxLength) errors.push(this.createValidationError('maxLength', {value, maxLength}))
+            }
+            if(validate.length && Object.keys(customValidators).length) {
+                validate.forEach(validatorSpec => {
+                    let validator = null
+                    let props = null
+                    if(typeof validatorSpec === 'string') {
+                        validator = customValidators[validatorSpec]
+                        params = {value}
+                    } else {
+                        validator = customValidators[validatorSpec.name]
+                        params = validatorSpec.params
+                    }
+                    if(validator) {
+                        validator(formName, name, fieldCtrl, params, value)
+                    }
+                })
             }
         }
 
