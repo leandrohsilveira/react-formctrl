@@ -162,13 +162,16 @@ declare interface FormStateController {
     changed: boolean;
 
     /**
-     * 
      * {string: string}	The fields values of the form: {[fieldName]: [fieldValue]}.
      */
     values: {[fieldName: string]: string};
 
     /**
-     * 
+     * All selected files of each field of the form.
+     */
+    files: {[fieldName: string]: File[]};
+
+    /**
      * {string: FieldCtrl}	The fields controllers of the form: {[fieldName]: [fieldCtrl]}
      */
     fields: {[fieldName: string]: FieldStateController};
@@ -236,6 +239,21 @@ declare interface FieldStateProperties {
      */
     validate?: (string|ValidatorSpec)[]
 
+    /**
+     * A collection of accepted mimetypes separated by comma.
+     */
+    accept?: string;
+    
+    /**
+     * An array of accepted files extensions.
+     */
+    extensions?: string[];
+
+    /**
+     * The max file bytes size accepted.
+     */
+    maxSize?: number|string;
+
 }
 
 /**
@@ -275,10 +293,16 @@ declare interface FieldStateController {
      * true if the field value isn't exactly equals it's initial value.
      */
     changed: boolean;
+
     /**
      * The value of the field.
      */
     value: string;
+
+    /**
+     * All selected files of the field.
+     */
+    files: File[];
 
     /**
      * An array of ValidationError with all current validation errors of the field.
@@ -331,7 +355,7 @@ declare class FormProvider extends React.Component<FormProviderProps, FormProvid
 
     onUnregisterField(formName: string, fieldName: string): void;
 
-    onFieldChanged(formName: string, fieldName: string, value: string): void;
+    onFieldChanged(formName: string, fieldName: string, value: string, files?: File[]): void;
 
     onFieldPropsChanged(formName: string, fieldName: string, props: FieldStateProperties): void;
 

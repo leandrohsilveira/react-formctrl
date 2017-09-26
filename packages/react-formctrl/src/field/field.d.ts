@@ -72,7 +72,22 @@ declare interface FieldProps extends React.Props<any> {
     /**
      * An array of custom validators registered on FormProvider component.
      */
-    validate?: (string|ValidatorSpec)[]
+    validate?: (string|ValidatorSpec)[];
+
+    /**
+     * A collection of accepted mimetypes separated by comma.
+     */
+    accept?: string;
+
+    /**
+     * An array of accepted files extensions.
+     */
+    extensions?: string[];
+
+    /**
+     * The max file bytes size accepted.
+     */
+    maxSize?: number|string;
 
 }
 

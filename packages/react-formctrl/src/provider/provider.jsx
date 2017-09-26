@@ -73,8 +73,8 @@ export class FormEventDispatcher {
         document.dispatchEvent(event)
     }
 
-    static dispatchFieldChanged(form, field, value) {
-        const payload = FormEventDispatcher.copy({detail: {form, field, value}})
+    static dispatchFieldChanged(form, field, value, files) {
+        const payload = FormEventDispatcher.copy({detail: {form, field, value, files}})
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, payload)
         document.dispatchEvent(event)
     }
@@ -187,7 +187,7 @@ export class FormProvider extends React.Component {
                 this.onUnregisterField(payload.form, payload.field)
                 break
             case EVENTS.FIELD_CHANGED:
-                this.onFieldChanged(payload.form, payload.field, payload.value)
+                this.onFieldChanged(payload.form, payload.field, payload.value, payload.files)
                 break
             case EVENTS.FIELD_PROPS_CHANGED:
                 this.onFieldPropsChanged(payload.form, payload.field, payload.props)
@@ -226,7 +226,8 @@ export class FormProvider extends React.Component {
                     unchanged: true,
                     changed: false,
                     fields: {},
-                    values: {}
+                    values: {},
+                    files: {}
                 }
             }
             return {forms}
@@ -292,7 +293,7 @@ export class FormProvider extends React.Component {
         })
     }
 
-    onFieldChanged(formName, fieldName, value) {
+    onFieldChanged(formName, fieldName, value, files) {
         this.setState((state) => {
             if(state.forms[formName]) {
                 if(state.forms[formName].fields[fieldName]) {
@@ -301,7 +302,7 @@ export class FormProvider extends React.Component {
                     const fieldCtrl = form.fields[fieldName]
                     fieldCtrl.dirty = true
                     fieldCtrl.pristine = false
-                    this.updateFieldCtrl(formName, fieldCtrl, value)
+                    this.updateFieldCtrl(formName, fieldCtrl, value, files)
                     FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, fieldCtrl)
                     if(!form.values) form.values = {}
                     form.values[fieldName] = value
@@ -371,7 +372,7 @@ export class FormProvider extends React.Component {
         }
     }
 
-    updateFieldCtrl(formName, fieldCtrl, value) {
+    updateFieldCtrl(formName, fieldCtrl, value, files) {
         const errors = []
         const {customValidators = {}} = this.state
         const {
@@ -387,6 +388,9 @@ export class FormProvider extends React.Component {
                 max,
                 minLength,
                 maxLength,
+                extensions = [],
+                accept, 
+                maxSize,
                 validate = []
             }
         } = fieldCtrl
@@ -404,6 +408,20 @@ export class FormProvider extends React.Component {
                 if(!integer && !FLOAT_REGEX.test(value)) errors.push(this.createValidationError('float', {value}))
                 if(min && +value < min) errors.push(this.createValidationError('min', {value, min}))
                 if(max && +value > max) errors.push(this.createValidationError('max', {value, max}))
+            } else if(type === 'file' && files && files.length) {
+                files.forEach(file => {
+                    if(extensions && extensions.length) {
+                        const matchedExtensions = extensions.filter(extension => {
+                            const regex = new RegExp(`\\.${extension.replace(/\./, '')}$`, 'i')
+                            return regex.test(file.name)
+                        })
+                        if(!matchedExtensions.length) errors.push(this.createValidationError('extension', {value, file, extensions}))
+                    } else if(accept) {
+                        const matchedAccepts = accept.replace(/ /g, '').split(',').filter(mimetype => file.type === mimetype)
+                        if(!matchedAccepts.length) errors.push(this.createValidationError('accept', {value, file, accept}))
+                    }
+                    if(maxSize && file.size > +maxSize) errors.push(this.createValidationError('maxSize', {value, file, maxSize}))
+                })
             } else {
                 if(minLength && value && value.length < minLength) errors.push(this.createValidationError('minLength', {value, minLength}))
                 if(maxLength && value && value.length > maxLength) errors.push(this.createValidationError('maxLength', {value, maxLength}))
@@ -416,7 +434,7 @@ export class FormProvider extends React.Component {
                         validatorName = validatorSpec.name
                     }
                     let validator = customValidators[validatorName]
-                    if(validator && !validator(value, params)) errors.push(this.createValidationError(validatorName, params))
+                    if(validator && !validator(value, params, files)) errors.push(this.createValidationError(validatorName, params))
                 })
             }
         }

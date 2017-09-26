@@ -88,7 +88,8 @@ export class FormControl extends React.Component {
             unchanged: true,
             changed: false,
             fields: {},
-            values: {}
+            values: {},
+            files: {}
         }
         this.onChange = this.onChange.bind(this)
         this.handleFormChanged = this.handleFormChanged.bind(this)

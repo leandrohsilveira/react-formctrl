@@ -34,6 +34,12 @@ export class Field extends React.Component {
             PropTypes.number,
             PropTypes.string,
         ]),
+        accept: PropTypes.string,
+        extensions: PropTypes.arrayOf(PropTypes.string),
+        maxSize: PropTypes.oneOfType([
+            PropTypes.number,
+            PropTypes.string
+        ]),
         validate: PropTypes.arrayOf(PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.shape({
@@ -56,6 +62,7 @@ export class Field extends React.Component {
             changed: false,
             errors: [],
             value: '',
+            files: [],
             initialValue: props.initialValue || '',
             props: {
                 name: props.name,
@@ -69,6 +76,9 @@ export class Field extends React.Component {
                 max: props.max,
                 minLength: props.minLength,
                 maxLength: props.maxLength,
+                accept: props.accept,
+                extensions: props.extensions || [],
+                maxSize: props.maxSize,
                 validate: props.validate
             }
         }
@@ -114,8 +124,10 @@ export class Field extends React.Component {
     handleChange(event) {
         const { sync } = this
         const { form, name } = this.props
-        const value = event.target.value
-        FormEventDispatcher.dispatchFieldChanged(form, name, value)
+        const target = event.target
+        const value = target.value
+        const files = target.files
+        FormEventDispatcher.dispatchFieldChanged(form, name, value, files)
     }
 
     handleBlur(event) {
@@ -140,6 +152,9 @@ export class Field extends React.Component {
             changed: this.state.changed,
             errors: this.state.errors,
         }
+        props.accept = this.props.accept
+        props.extensions = this.props.extensions
+        props.maxSize = this.props.maxSize
         props.className = this.props.className
         props.value = this.state.value
         props.required = this.props.required
