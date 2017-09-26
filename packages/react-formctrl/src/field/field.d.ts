@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { DefaultFieldInjectedProps, CustomPropertiesInjection, FieldStateController, FieldEvent } from '../provider/provider';
+import { DefaultFieldInjectedProps, CustomPropertiesInjection, FieldStateController, FieldEvent, ValidatorSpec } from '../provider/provider';
 
 declare interface FieldProps extends React.Props<any> {
 
@@ -68,6 +68,11 @@ declare interface FieldProps extends React.Props<any> {
      * 	A function responsible for transforming the Field component injection properties into an object containing as key the name of the property to be injected and the value of the property: (field) => ({injectedOnChange: field.onChange})
      */
     inject?(field: DefaultFieldInjectedProps): CustomPropertiesInjection;
+
+    /**
+     * An array of custom validators registered on FormProvider component.
+     */
+    validate?: (string|ValidatorSpec)[]
 
 }
 
