@@ -8,6 +8,7 @@ export function AppMenu() {
             <NavbarItem to="/">Basic</NavbarItem>
             <NavbarItem to="/more">More of basics</NavbarItem>
             <NavbarItem to="/validation">Field validation</NavbarItem>
+            <NavbarItem to="/fields">Fields usage</NavbarItem>
             <NavbarItem to="/form-control">Form control</NavbarItem>
             <NavbarItem to="/sync-forms">Synchronized forms</NavbarItem>
             <NavbarItem to="/form-values-manipulation">Form values manipulation</NavbarItem>
