@@ -12,6 +12,7 @@ export function AppMenu() {
             <NavbarItem to="/sync-forms">Synchronized forms</NavbarItem>
             <NavbarItem to="/form-values-manipulation">Form values manipulation</NavbarItem>
             <NavbarItem to="/users">Complete user form example</NavbarItem>
+            <NavbarItem to="/custom-validators">Custom validators example</NavbarItem>
         </Navbar>
     )
 }

@@ -10,6 +10,7 @@ import {FormControlExample} from './cases/form-control-example'
 import {SynchronizedForms} from './cases/synchronized-forms'
 import {FormValuesManipulationExample} from './cases/form-values-manipulation'
 import {UserFormApp} from './cases/user-form'
+import {CustomValidatorExample} from './cases/custom-validators'
 
 export function Routes({branch = 'master'}) {
     const rootPath = 'react-formctrl-examples/src/cases'
@@ -56,6 +57,12 @@ export function Routes({branch = 'master'}) {
                 <Route path="/users" render={(props) => (
                     <Case fileName={`${rootPath}/user-form.jsx`} url={`${baseRawGithub}/user-form.jsx`}>
                         <UserFormApp {...props} />
+                    </Case>
+                )} />
+
+                <Route path="/custom-validators" render={(props) => (
+                    <Case fileName={`${rootPath}/custom-validators.jsx`} url={`${baseRawGithub}/custom-validators.jsx`}>
+                        <CustomValidatorExample {...props} />
                     </Case>
                 )} />
             </div>

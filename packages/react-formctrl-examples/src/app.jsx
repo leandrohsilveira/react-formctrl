@@ -18,8 +18,16 @@ export function App(props) {
     registerLanguage('javascript', javascript);
     registerLanguage('json', json);
 
+    const customValidators = [{
+        name: 'noadmin',
+        validate: (value) => {
+            if(value) return !(/^admin$/i.test(value))
+            return true
+        }
+    }]
+
     return (
-        <FormProvider>
+        <FormProvider customValidators={customValidators}>
             <HashRouter>
                 <AppLayout>
                     <Routes />
