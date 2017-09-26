@@ -34,6 +34,13 @@ export class Field extends React.Component {
             PropTypes.number,
             PropTypes.string,
         ]),
+        validate: PropTypes.arrayOf(PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.shape({
+                name: PropTypes.string.isRequired,
+                params: PropTypes.any      
+            })
+        ]))
     }
 
     constructor(props) {
@@ -62,6 +69,7 @@ export class Field extends React.Component {
                 max: props.max,
                 minLength: props.minLength,
                 maxLength: props.maxLength,
+                validate: props.validate
             }
         }
 
@@ -71,7 +79,6 @@ export class Field extends React.Component {
         this.handleBlur = this.handleBlur.bind(this)
         this.getChildProps = this.getChildProps.bind(this)
         this.inject = this.inject.bind(this)
-        this.sync = this.sync.bind(this)
     }
 
     componentWillMount() {
@@ -100,11 +107,8 @@ export class Field extends React.Component {
     handleFieldChangeForward(event) {
         const payload = event.detail
         const fieldCtrl = payload.fieldCtrl
-        const syncState = this.sync(fieldCtrl)
-        if (Object.keys(syncState).length) {
-            this.setState(syncState)
-            this.onChange(fieldCtrl)
-        }
+        this.setState(fieldCtrl)
+        this.onChange(fieldCtrl)
     }
 
     handleChange(event) {
@@ -119,22 +123,6 @@ export class Field extends React.Component {
             const { form, name } = this.props
             FormEventDispatcher.dispatchFieldBlur(form, name, { ...this.state, touched: true, untouched: false })
         }
-    }
-
-    sync(fieldCtrl) {
-        const syncState = {}
-        if (JSON.stringify(this.state.errors) !== JSON.stringify(fieldCtrl.errors)) syncState.errors = fieldCtrl.errors
-        if (this.state.valid !== fieldCtrl.valid) syncState.valid = fieldCtrl.valid
-        if (this.state.invalid !== fieldCtrl.invalid) syncState.invalid = fieldCtrl.invalid
-        if (this.state.untouched !== fieldCtrl.untouched) syncState.untouched = fieldCtrl.untouched
-        if (this.state.touched !== fieldCtrl.touched) syncState.touched = fieldCtrl.touched
-        if (this.state.pristine !== fieldCtrl.pristine) syncState.pristine = fieldCtrl.pristine
-        if (this.state.dirty !== fieldCtrl.dirty) syncState.dirty = fieldCtrl.dirty
-        if (this.state.unchanged !== fieldCtrl.unchanged) syncState.unchanged = fieldCtrl.unchanged
-        if (this.state.changed !== fieldCtrl.changed) syncState.changed = fieldCtrl.changed
-        if (this.state.value !== fieldCtrl.value) syncState.value = fieldCtrl.value
-        if (this.state.__instances != fieldCtrl.__instances) syncState.__instances = fieldCtrl.__instances
-        return syncState
     }
 
     getChildProps() {
