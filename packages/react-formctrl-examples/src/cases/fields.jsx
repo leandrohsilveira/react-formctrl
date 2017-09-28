@@ -68,17 +68,17 @@ function FieldsForm({onSubmit, formCtrl: {formName, invalid, unchanged}}) {
             <Field form={formName} name="fieldText" required>
                 <Input label="Field text"></Input>
             </Field>
-            <Field form={formName} name="fieldNumberFloat" type="number" required min={1} max={100}>
-                <Input label="Field number (float, min 1, max 100)"></Input>
+            <Field form={formName} name="fieldNumberFloat" type="number" required min={0} max={100}>
+                <Input label="Field number (float, min 0, max 100)"></Input>
             </Field>
-            <Field form={formName} name="fieldNumberInteger" type="number" integer={true} required>
+            <Field form={formName} name="fieldNumberInteger" type="number" integer required>
                 <Input label="Field number (integer)"></Input>
             </Field>
             <Field form={formName} name="fieldEmail" type="email" required>
                 <Input label="Field e-mail"></Input>
             </Field>
-            <Field form={formName} name="fieldFile" type="file" accept="image/png" required>
-                <InputFile label="Field file"></InputFile>
+            <Field form={formName} name="fieldFile" type="file" accept="image/png" maxSize={50000} required>
+                <InputFile label="Field file (max size 50 kb)"></InputFile>
             </Field>
             <Field form={formName} name="fieldFileMultiple" type="file" accept="image/*" extensions={['png', 'jpg', 'jpeg']} required>
                 <InputFile label="Field file (multiple)" multiple></InputFile>
