@@ -21,10 +21,18 @@ function FormGroup({name, label, children, ctrl: {invalid, dirty, errors}}) {
     )
 }
 
-function Input({name, label, type, multiple = false, accept, onChange, onBlur, value, ctrl}) {
+function Input({name, label, type, onChange, onBlur, value, ctrl}) {
     return (
         <FormGroup name={name} label={label} ctrl={ctrl}>
-            <input type={type} id={name} name={name} accept={accept} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} multiple={multiple} onChange={onChange} onBlur={onBlur} value={value}></input>
+            <input type={type} id={name} name={name} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} onChange={onChange} onBlur={onBlur} value={value}></input>
+        </FormGroup>
+    )
+}
+
+function InputFile({name, label, multiple = false, accept, onChange, ctrl}) {
+    return (
+        <FormGroup name={name} label={label} ctrl={ctrl}>
+            <input type="file" id={name} name={name} accept={accept} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} multiple={multiple} onChange={onChange}></input>
         </FormGroup>
     )
 }
@@ -70,7 +78,10 @@ function FieldsForm({onSubmit, formCtrl: {formName, invalid, unchanged}}) {
                 <Input label="Field e-mail"></Input>
             </Field>
             <Field form={formName} name="fieldFile" type="file" accept="image/png" required>
-                <Input label="Field file"></Input>
+                <InputFile label="Field file"></InputFile>
+            </Field>
+            <Field form={formName} name="fieldFileMultiple" type="file" accept="image/*" extensions={['png', 'jpg', 'jpeg']} required>
+                <InputFile label="Field file (multiple)" multiple></InputFile>
             </Field>
             <Field form={formName} name="fieldPassword" type="password" minLength="8" required>
                 <Input label="Field password"></Input>

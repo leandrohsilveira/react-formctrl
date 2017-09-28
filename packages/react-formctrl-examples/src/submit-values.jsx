@@ -55,15 +55,36 @@ export class SubmitValuesPopup extends React.Component {
         }))
     }
 
+    renderSelectedFiles(files) {
+        if(files) {
+            const fieldsNames = Object.keys(files)
+            if(fieldsNames.length) {
+                return fieldsNames.map((fieldName) => files[fieldName].map((file, index) => {
+                    const fieldNameIndex = `${fieldName}[${index}]`
+                    return (
+                        <li className="list-group-item" key={fieldNameIndex}>
+                            <strong>{fieldNameIndex}</strong>: {file.name} - {file.size} byte(s).
+                        </li>
+                    )
+                }))
+            }
+        }
+        return <li className="list-group-item">No files sent in submission</li>
+            
+            
+            
+    }
+
     render() {
         const {show, formName, values, files} = this.state
+        console.log('SubmitValuesPopup.render', formName, values, files)
         return (
             <div className={`submit-values${show ? ' show' : ''}`}>
                 <div className="card">
                     <div className="card-header">
                         <h3>Submited form: {formName}</h3>
                     </div>
-                    <ul className="list-group list-group-flush">
+                    <ul className="list-group list-group-flush" style={{maxHeight: 500, overflowY: 'auto'}}>
                         <li className="list-group-item">
                             <h4>Values</h4>
                         </li>
@@ -78,16 +99,7 @@ export class SubmitValuesPopup extends React.Component {
                         <li className="list-group-item">
                             <h4>Files</h4>
                         </li>
-                        {(!files || files.length === 0) && (
-                            <li className="list-group-item">No files sent in submission</li>
-                        )}
-                        {files && Object.keys(files).map((field) => (
-                            files[field].map((file, index) => {
-                                <li className="list-group-item" key={field}>
-                                    <strong>{field}[{index}]</strong>: {file.name} - {file.size} byte(s).
-                                </li>
-                            })
-                        ))}
+                        {this.renderSelectedFiles(files)}
                     </ul>
                     <div className="card-body">
                         <button type="button" className="btn btn-primary" onClick={this.close}>Close</button>
