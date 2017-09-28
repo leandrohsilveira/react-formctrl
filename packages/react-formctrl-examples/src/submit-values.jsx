@@ -55,30 +55,6 @@ export class SubmitValuesPopup extends React.Component {
         }))
     }
 
-    renderSelectedFiles(formFiles) {
-        if(formFiles) {
-            const fieldsNames = Object.keys(formFiles)
-            if(fieldsNames.length) {
-                return fieldsNames.map((fieldName) => {
-                    let index = 0;
-                    const output = []
-                    const fieldFiles = formFiles[fieldName]
-                    fieldFiles.item(file => {
-                        const fileFieldKey = `${fieldName}[${index}]`
-                        index++
-                        output.push((
-                            <li className="list-group-item" key={fileFieldKey}>
-                                <strong>{fileFieldKey}</strong>: {file.name} - {file.size} byte(s).
-                            </li>
-                        ))
-                    })
-                    return output
-                });
-            }
-        }
-        return <li className="list-group-item">No files sent in submission</li>
-    }
-
     render() {
         const {show, formName, values, files} = this.state
         return (
@@ -102,8 +78,16 @@ export class SubmitValuesPopup extends React.Component {
                         <li className="list-group-item">
                             <h4>Files</h4>
                         </li>
-                        {this.renderSelectedFiles(files)}
-                        
+                        {(!files || files.length === 0) && (
+                            <li className="list-group-item">No files sent in submission</li>
+                        )}
+                        {files && Object.keys(files).map((field) => (
+                            files[field].map((file, index) => {
+                                <li className="list-group-item" key={field}>
+                                    <strong>{field}[{index}]</strong>: {file.name} - {file.size} byte(s).
+                                </li>
+                            })
+                        ))}
                     </ul>
                     <div className="card-body">
                         <button type="button" className="btn btn-primary" onClick={this.close}>Close</button>
