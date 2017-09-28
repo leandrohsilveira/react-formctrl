@@ -33,12 +33,10 @@ export class FormEventDispatcher {
                 return FormEventDispatcher.copyArray(selectedFiles)
             } else {
                 const files = []
-                console.log(selectedFiles)
-                selectedFiles.item(file => {
-                    console.log(file)
+                for(var i = 0; i < selectedFiles.length; i++) {
+                    const file = selectedFiles.item(i)
                     files.push(file)
-                    console.log(files)
-                })
+                }
                 return files
             }
         }
@@ -72,6 +70,30 @@ export class FormEventDispatcher {
         }
     }
 
+    static copyError(error) {
+        const output = {
+            key: error.key
+        }
+        if(error.params) {
+            const params = {}
+            Object.keys(error.params).forEach(paramName => {
+                const param = error.params[paramName]
+                if(Array.isArray(param)) params[paramName] = FormEventDispatcher.copyArray(param)
+                else if(param instanceof FileList) params[paramName] = FormEventDispatcher.copyFiles(param)
+                else params[paramName] = param
+            })
+            output.params = params
+        }
+        return output
+    }
+
+    static copyErrors(errors) {
+        if(errors && errors.length) {
+            return errors.map(error => FormEventDispatcher.copyError(error))
+        }
+        return errors
+    }
+
     static copyFieldCtrl(fieldCtrl) {
         return {
             valid: fieldCtrl.valid,
@@ -82,7 +104,7 @@ export class FormEventDispatcher {
             dirty: fieldCtrl.dirty,
             unchanged: fieldCtrl.unchanged,
             changed: fieldCtrl.changed,
-            errors: FormEventDispatcher.copyArray(fieldCtrl.errors),
+            errors: FormEventDispatcher.copyErrors(fieldCtrl.errors),
             value: fieldCtrl.value,
             files: fieldCtrl.files,
             initialValue: fieldCtrl.initialValue,
@@ -537,7 +559,7 @@ export class FormProvider extends React.Component {
                         })
                         if(!matchedExtensions.length) errors.push(this.createValidationError('extension', {value, file, extensions}))
                     } else if(accept) {
-                        const matchedAccepts = accept.replace(/ /g, '').split(',').filter(mimetype => file.type === mimetype)
+                        const matchedAccepts = accept.replace(/ /g, '').split(',').filter(mimetype => new RegExp(`^${mimetype.replace(/\*/g, '.*')}$`).test(file.type))
                         if(!matchedAccepts.length) errors.push(this.createValidationError('accept', {value, file, accept}))
                     }
                     if(maxSize && file.size > +maxSize) errors.push(this.createValidationError('maxSize', {value, file, maxSize}))
