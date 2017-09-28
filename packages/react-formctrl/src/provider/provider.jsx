@@ -520,27 +520,27 @@ export class FormProvider extends React.Component {
         const {
             initialValue,
             props: {
-                name,
+                name = null,
                 type = 'text', 
-                required, 
-                pattern, 
-                match, 
-                integer,
-                min,
-                max,
-                minLength,
-                maxLength,
+                required = null, 
+                pattern = null, 
+                match = null, 
+                integer = null,
+                min = null,
+                max = null,
+                minLength = null,
+                maxLength = null,
                 extensions = [],
-                accept, 
-                maxSize,
+                accept = null, 
+                maxSize = null,
                 validate = []
             }
         } = fieldCtrl
 
         if(required && !value) errors.push(this.createValidationError('required'))
-        else if(pattern && pattern instanceof RegExp && !pattern.test(value)) errors.push(this.createValidationError('pattern', {value, pattern}))
-        else if(pattern && !new RegExp(pattern).test(value)) errors.push(this.createValidationError('pattern', {value, pattern}))
-        else if(match) {
+        else if(pattern != null && pattern instanceof RegExp && !pattern.test(value)) errors.push(this.createValidationError('pattern', {value, pattern}))
+        else if(pattern  != null && !new RegExp(pattern).test(value)) errors.push(this.createValidationError('pattern', {value, pattern}))
+        else if(match != null) {
             const form = this.state.forms[formName]
             if(form && form.values[match] != value) errors.push(this.createValidationError('match', {value, match}))
         } else {
@@ -548,8 +548,8 @@ export class FormProvider extends React.Component {
             if(type === 'number') {
                 if(integer && !INTEGER_REGEX.test(value)) errors.push(this.createValidationError('integer', {value}))
                 if(!integer && !FLOAT_REGEX.test(value)) errors.push(this.createValidationError('float', {value}))
-                if(min && +value < min) errors.push(this.createValidationError('min', {value, min}))
-                if(max && +value > max) errors.push(this.createValidationError('max', {value, max}))
+                if(min != null && +value < min) errors.push(this.createValidationError('min', {value, min}))
+                if(max != null && +value > max) errors.push(this.createValidationError('max', {value, max}))
             } else if(type === 'file' && files && files.length) {
                 files.forEach(file => {
                     if(extensions && extensions.length) {
@@ -562,11 +562,11 @@ export class FormProvider extends React.Component {
                         const matchedAccepts = accept.replace(/ /g, '').split(',').filter(mimetype => new RegExp(`^${mimetype.replace(/\*/g, '.*')}$`).test(file.type))
                         if(!matchedAccepts.length) errors.push(this.createValidationError('accept', {value, file, accept}))
                     }
-                    if(maxSize && file.size > +maxSize) errors.push(this.createValidationError('maxSize', {value, file, maxSize}))
+                    if(maxSize != null && file.size > +maxSize) errors.push(this.createValidationError('maxSize', {value, file, maxSize}))
                 })
             } else {
-                if(minLength && value && value.length < minLength) errors.push(this.createValidationError('minLength', {value, minLength}))
-                if(maxLength && value && value.length > maxLength) errors.push(this.createValidationError('maxLength', {value, maxLength}))
+                if(minLength != null && value && value.length < minLength) errors.push(this.createValidationError('minLength', {value, minLength}))
+                if(maxLength != null && value && value.length > maxLength) errors.push(this.createValidationError('maxLength', {value, maxLength}))
             }
             if(validate.length && Object.keys(customValidators).length) {
                 validate.forEach(validatorSpec => {
