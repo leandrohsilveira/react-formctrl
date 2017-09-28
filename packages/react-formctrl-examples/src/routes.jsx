@@ -67,7 +67,9 @@ export function Routes({branch = 'master'}) {
                     </Case>
                 )} />
                 <Route path="/fields" render={(props) => (
-                    <FieldsExample />
+                    <Case fileName={`${rootPath}/fields.jsx`} url={`${baseRawGithub}/fields.jsx`}>
+                        <FieldsExample {...props} />
+                    </Case>
                 )} />
             </div>
 

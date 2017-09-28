@@ -24,7 +24,7 @@ function FormGroup({name, label, children, ctrl: {invalid, dirty, errors}}) {
 function Input({name, label, type, multiple = false, accept, onChange, onBlur, value, ctrl}) {
     return (
         <FormGroup name={name} label={label} ctrl={ctrl}>
-            <input type={type} id={name} name={name} accept={accept} className={`form-control ${getInputClasses(ctrl)}`} multiple={multiple} onChange={onChange} onBlur={onBlur} value={value}></input>
+            <input type={type} id={name} name={name} accept={accept} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} multiple={multiple} onChange={onChange} onBlur={onBlur} value={value}></input>
         </FormGroup>
     )
 }
@@ -35,6 +35,7 @@ function Select({name, label, onChange, onBlur, value, ctrl, children}) {
     return (
         <FormGroup name={name} label={label} ctrl={ctrl}>
             <select id={name} name={name} className={`form-control ${getInputClasses(ctrl)}`} onChange={onChange} onBlur={onBlur} value={value}>
+                <option disabled={true} hidden={true} value=''>{label}</option>
                 {children}
             </select>
         </FormGroup>
@@ -101,7 +102,7 @@ function FieldsForm({onSubmit, formCtrl: {formName, invalid, unchanged}}) {
                     </Field>
                 </div>
             </div>
-            <button type="submit" className="btn btn-primary" disabled={invalid || unchanged}>Submit</button>
+            <button type="submit" className="btn btn-primary">Submit</button>
             &nbsp;
             <button type="reset" className="btn btn-default" disabled={unchanged}>Reset</button>
         </Form>
