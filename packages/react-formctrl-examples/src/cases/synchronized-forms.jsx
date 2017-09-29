@@ -71,10 +71,10 @@ export function SynchronizedForms(props) {
             <h3>Synchronized forms</h3>
             <p>If there is two instances of forms with the same name, they will be synchronized!</p>
             <div className="row">
-                <div className="col">
+                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                     <PeopleForm title="Form 1" formName="syncForm" onSubmit={makeSubmitEvent('Sync form 1')}></PeopleForm>
                 </div>
-                <div className="col">
+                <div className="col-xs-12 col-sm-12 col-md-6 col-lg-6">
                     <PeopleForm title="Form 2" formName="syncForm" onSubmit={makeSubmitEvent('Sync form 2')}></PeopleForm>
                 </div>
             </div>

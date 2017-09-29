@@ -11,6 +11,56 @@ export function NavbarItem({to, onClick, children}) {
     )
 }
 
+export function NavbarDropdownItem({to, onClick, children}) {
+    return <Link className="dropdown-item" to={to} onClick={onClick}>{children}</Link>
+}
+
+export class NavbarDropdown extends React.Component {
+
+    constructor(props) {
+        super(props)
+        this.state = {
+            open: false
+        }
+
+        this.getToggleClass = this.getToggleClass.bind(this)
+        this.handleToggleClick = this.handleToggleClick.bind(this)
+        this.injectClickEvent = this.injectClickEvent.bind(this)
+    }
+
+    getToggleClass(className) {
+        if(this.state.open) {
+            return `${className} show`
+        } else {
+            return className
+        }
+    }
+
+    injectClickEvent(child) {
+        if(child.type === NavbarDropdownItem) {
+            return React.cloneElement(child, {...child.props, onClick: this.handleToggleClick})
+        }
+        return child
+    }
+
+    handleToggleClick() {
+        this.setState({open: !this.state.open})
+    }
+
+    render() {
+        const {text, children} = this.props
+        const dropdownItems = React.Children.map(children, child => this.injectClickEvent(child))
+        return (
+            <li className={this.getToggleClass('nav-item dropdown')}>
+                <a href="javascript:void(0)" onClick={this.handleToggleClick} className="nav-link dropdown-toggle">{text}</a>
+                <div className={this.getToggleClass('dropdown-menu')}>
+                    {dropdownItems}
+                </div>
+            </li>
+        )
+    }
+}
+
 export class Navbar extends React.Component {
     
     constructor(props) {
@@ -47,29 +97,33 @@ export class Navbar extends React.Component {
     }
 
     render() {
-        const {id, title, className = 'fixed-top navbar-dark bg-primary', children} = this.props
+        const {id, title, className = 'sticky-top navbar-dark bg-primary', containerClassName, children} = this.props
         const {open} = this.state
 
         const navbarItems = React.Children.map(children, child => React.cloneElement(child, {...child.props, onClick: this.handleToggleNavbarClick}))
 
         return (
             <nav className={`navbar navbar-expand-md ${className}`}>
-                <a className="navbar-brand" href="#">{title}</a>
-                <button type="button" 
-                        className={this.getNavbarTogglerClasses()} 
-                        data-toggle="collapse" 
-                        data-target={`#${id}`} 
-                        aria-controls={id} 
-                        aria-expanded={open+''} 
-                        onClick={this.handleToggleNavbarClick}
-                        aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
-        
-                <div className={`navbar-collapse ${this.getNavbarCollapseClasses()}`} id={id}>
-                    <ul className="navbar-nav mr-auto">
-                        {navbarItems}
-                    </ul>
+                <div className={containerClassName}>
+                    {!!title && (
+                        <a className="navbar-brand" href="#">{title}</a>
+                    )}
+                    <button type="button" 
+                            className={this.getNavbarTogglerClasses()} 
+                            data-toggle="collapse" 
+                            data-target={`#${id}`} 
+                            aria-controls={id} 
+                            aria-expanded={open+''} 
+                            onClick={this.handleToggleNavbarClick}
+                            aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+            
+                    <div className={`navbar-collapse ${this.getNavbarCollapseClasses()}`} id={id}>
+                        <ul className="navbar-nav mr-auto">
+                            {navbarItems}
+                        </ul>
+                    </div>
                 </div>
             </nav>
         )

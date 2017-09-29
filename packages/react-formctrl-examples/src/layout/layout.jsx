@@ -27,9 +27,9 @@ function AppFeatures() {
 
 export function AppLayout({children}) {
     return (
-        <div>
-            <AppMenu />
+        <div className="layout">
             <AppBanner />
+            <AppMenu />
             <div className="container">
                 {children}
             </div>
