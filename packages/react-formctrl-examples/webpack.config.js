@@ -29,10 +29,9 @@ module.exports = (env) => {
                 'react-router-dom',
                 'react-formctrl',
                 'axios', 
-                'react-syntax-highlighter/dist/light', 
-                'react-syntax-highlighter/dist/styles',
-                'react-syntax-highlighter/dist/languages/javascript',
-                'react-syntax-highlighter/dist/languages/json',
+                'prismjs',
+                'modules/prismjs/themes/prism.css',
+                'modules/prismjs/themes/prism-coy.css',
                 'modules/bootstrap/dist/css/bootstrap-grid.min.css',
                 'modules/bootstrap/dist/css/bootstrap.min.css',
             ]
@@ -61,6 +60,10 @@ module.exports = (env) => {
                     test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|woff2)$/,
                     loader: "file-loader?name=[name].[ext]"
                 },
+                {
+                    test: /\.json$/,
+                    loader: 'json-loader'
+                }
             ]
         },
 
@@ -92,8 +95,8 @@ module.exports = (env) => {
             publicPath: "/" // match the output `publicPath`
         };
 
-        configs.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable HMR globally
-        configs.plugins.push(new webpack.NamedModulesPlugin()); // prints more readable module names in the browser console on HMR updates
+        // configs.plugins.push(new webpack.HotModuleReplacementPlugin()); // enable HMR globally
+        // configs.plugins.push(new webpack.NamedModulesPlugin()); // prints more readable module names in the browser console on HMR updates
     } else if(isDocs) {
         // DOCS build configs
         configs.output.path = resolve(__dirname, "../../docs");
