@@ -4037,13 +4037,6 @@ react-dom@^15.6.1:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-react-formctrl@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/react-formctrl/-/react-formctrl-1.1.0.tgz#ef8cdf4cfb4b3f820540692458cf8cc6a7fe1ea6"
-  dependencies:
-    prop-types "^15.5.7"
-    react "^15.5.0"
-
 react-router-dom@^4.1.2:
   version "4.2.2"
   resolved "https://registry.yarnpkg.com/react-router-dom/-/react-router-dom-4.2.2.tgz#c8a81df3adc58bba8a76782e946cbd4eae649b8d"

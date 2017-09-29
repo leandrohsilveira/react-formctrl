@@ -1,7 +1,7 @@
 import React from 'react'
 import {Route} from 'react-router-dom'
 
-import {Case} from './case'
+import {Case} from './components/case'
 
 import {BasicForm} from './cases/basic-form'
 import {MoreOfBasicForm} from './cases/moreofbasic-form'
@@ -12,7 +12,7 @@ import {FormValuesManipulationExample} from './cases/form-values-manipulation'
 import {UserFormApp} from './cases/user-form'
 import {CustomValidatorExample} from './cases/custom-validators'
 import {FieldsExample} from './cases/fields'
-import {ReadMe} from './read-me'
+import {ReadMe} from './components/read-me'
 
 export function Routes({branch = 'master'}) {
     const rootUrl = `https://raw.githubusercontent.com/leandrohsilveira/react-formctrl/${branch}`

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import {HashRouter, NavLink} from 'react-router-dom'
 
 import {FormProvider} from 'react-formctrl'
-import {SubmitValuesPopup} from './submit-values'
+import {SubmitValuesPopup} from './components/submit-values'
 import {Routes} from './routes'
 
 import {AppLayout} from './layout/layout'

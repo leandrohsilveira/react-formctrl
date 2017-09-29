@@ -2,7 +2,7 @@ import React from 'react'
 
 import {Form, Field, FormControl} from 'react-formctrl'
 
-import {SubmitValuesPopup} from '../submit-values'
+import {SubmitValuesPopup} from '../components/submit-values'
 
 const getInputClasses = ({valid, dirty, invalid}) => {
     if(valid) return 'is-valid'

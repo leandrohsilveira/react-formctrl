@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import {HighlightJsx, HighlightJson} from './components/highlight'
+import {HighlightJsx, HighlightJson} from './highlight'
 import {SubmitValuesPopup} from './submit-values'
 
 export function Json({ json, title, maxHeight, children }) {

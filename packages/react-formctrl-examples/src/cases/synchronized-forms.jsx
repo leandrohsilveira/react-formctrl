@@ -1,6 +1,6 @@
 import React from 'react'
 import {Form, FormControl, Field} from 'react-formctrl'
-import {SubmitValuesPopup} from '../submit-values'
+import {SubmitValuesPopup} from '../components/submit-values'
 
 function Input({label, type, ctrl, name, onChange, onBlur, value, required}) {
     const {valid, invalid, touched, errors} = ctrl

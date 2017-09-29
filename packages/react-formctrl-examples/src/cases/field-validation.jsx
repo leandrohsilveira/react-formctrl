@@ -1,8 +1,8 @@
 import React from 'react'
 
 import {Form, Field} from 'react-formctrl'
-import {SubmitValuesPopup} from '../submit-values'
-import {Json} from '../case'
+import {SubmitValuesPopup} from '../components/submit-values'
+import {Json} from '../components/case'
 
 function Input({label, name, value, onChange, onBlur, ctrl}) {
     const {valid, invalid, dirty, errors} = ctrl
