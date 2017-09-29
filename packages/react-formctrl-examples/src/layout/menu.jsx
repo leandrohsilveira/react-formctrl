@@ -27,6 +27,7 @@ export function AppMenu() {
                 <NavbarDropdownItem to="/sync-forms">Synchronized forms</NavbarDropdownItem>
                 <NavbarDropdownItem to="/users">Complete user form example</NavbarDropdownItem>
             </NavbarDropdown>
+            <NavbarItem to="https://github.com/leandrohsilveira/react-formctrl" icon="github" external>GitHub Repository</NavbarItem>
         </Navbar>
     )
 }

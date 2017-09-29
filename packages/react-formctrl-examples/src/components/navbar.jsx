@@ -1,12 +1,17 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link as RLink } from 'react-router-dom'
 
 import './navbar.scss'
 
-export function NavbarItem({to, icon, onClick, children}) {
+export function Link({className, onClick, to, external=false, target, children}) {
+    if(external) return <a href={to} className={className} onClick={onClick} target={target}>{children}</a>
+    else return <RLink to={to} className={className} onClick={onClick} target={target}>{children}</RLink>
+}
+
+export function NavbarItem({to, icon, onClick, external, children}) {
     return (
         <li className="nav-item">
-            <Link className="nav-link" onClick={onClick} to={to}>
+            <Link className="nav-link" onClick={onClick} to={to} external={external}>
                 {!!icon && <i className={`fa fa-${icon}`} style={{marginRight: 5}}></i>}
                 {children}
             </Link>
@@ -27,9 +32,9 @@ export function NavbarDropdownHeader({icon, children}) {
     )
 }
 
-export function NavbarDropdownItem({to, onClick, icon, children}) {
+export function NavbarDropdownItem({to, onClick, icon, external, children}) {
     return (
-        <Link className="dropdown-item" to={to} onClick={onClick}>
+        <Link className="dropdown-item" to={to} onClick={onClick} external={external}>
             {!!icon && <i className={`fa fa-${icon}`} style={{marginRight: 5}}></i>}
             {children}
         </Link>
