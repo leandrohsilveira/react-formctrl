@@ -10,6 +10,8 @@ const converter = new showdown.Converter({
     ghCodeBlocks: true
 });
 
+import './markdown.scss'
+
 export class Markdown extends React.Component {
 
     componentDidMount() {
