@@ -3,10 +3,13 @@ import { Link } from 'react-router-dom'
 
 import './navbar.scss'
 
-export function NavbarItem({to, onClick, children}) {
+export function NavbarItem({to, icon, onClick, children}) {
     return (
         <li className="nav-item">
-            <Link className="nav-link" onClick={onClick} to={to}>{children}</Link>
+            <Link className="nav-link" onClick={onClick} to={to}>
+                {!!icon && <i className={`fa fa-${icon}`} style={{marginRight: 5}}></i>}
+                {children}
+            </Link>
         </li>
     )
 }
@@ -15,12 +18,22 @@ export function NavbarDropdownDivider() {
     return <div className="dropdown-divider"></div>
 }
 
-export function NavbarDropdownHeader({children}) {
-    return <h6 className="dropdown-header">{children}</h6>
+export function NavbarDropdownHeader({icon, children}) {
+    return (
+        <h6 className="dropdown-header">
+            {!!icon && <i className={`fa fa-${icon}`} style={{marginRight: 5}}></i>}
+            {children}
+        </h6>
+    )
 }
 
-export function NavbarDropdownItem({to, onClick, children}) {
-    return <Link className="dropdown-item" to={to} onClick={onClick}>{children}</Link>
+export function NavbarDropdownItem({to, onClick, icon, children}) {
+    return (
+        <Link className="dropdown-item" to={to} onClick={onClick}>
+            {!!icon && <i className={`fa fa-${icon}`} style={{marginRight: 5}}></i>}
+            {children}
+        </Link>
+    )
 }
 
 export class NavbarDropdown extends React.Component {
@@ -60,11 +73,14 @@ export class NavbarDropdown extends React.Component {
     }
 
     render() {
-        const {text, children} = this.props
+        const {text, icon, children} = this.props
         const dropdownItems = React.Children.map(children, child => this.injectClickEvent(child))
         return (
             <li className={this.getToggleClass('nav-item dropdown')}>
-                <a href="javascript:void(0)" onClick={this.handleToggleClick} className="nav-link dropdown-toggle">{text}</a>
+                <a href="javascript:void(0)" onClick={this.handleToggleClick} className="nav-link dropdown-toggle">
+                    {!!icon && <i className={`fa fa-${icon}`} style={{marginRight: 5}}></i>}
+                    {text}
+                </a>
                 <div className={this.getToggleClass('dropdown-menu')}>
                     {dropdownItems}
                 </div>
