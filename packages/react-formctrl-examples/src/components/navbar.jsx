@@ -11,6 +11,14 @@ export function NavbarItem({to, onClick, children}) {
     )
 }
 
+export function NavbarDropdownDivider() {
+    return <div className="dropdown-divider"></div>
+}
+
+export function NavbarDropdownHeader({children}) {
+    return <h6 className="dropdown-header">{children}</h6>
+}
+
 export function NavbarDropdownItem({to, onClick, children}) {
     return <Link className="dropdown-item" to={to} onClick={onClick}>{children}</Link>
 }
