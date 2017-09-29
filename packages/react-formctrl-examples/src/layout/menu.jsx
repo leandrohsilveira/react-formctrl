@@ -5,7 +5,8 @@ import {Navbar, NavbarItem} from '../components/navbar'
 export function AppMenu() {
     return (
         <Navbar id="appMenuNavbar" title="react-formctrl">
-            <NavbarItem to="/">Basic</NavbarItem>
+            <NavbarItem to="/">Documentation</NavbarItem>
+            <NavbarItem to="/basic">Basic</NavbarItem>
             <NavbarItem to="/more">More of basics</NavbarItem>
             <NavbarItem to="/validation">Field validation</NavbarItem>
             <NavbarItem to="/fields">Fields usage</NavbarItem>
