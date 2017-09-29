@@ -1,12 +1,20 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link as RLink } from 'react-router-dom'
 
 import './navbar.scss'
 
-export function NavbarItem({to, onClick, children}) {
+export function Link({className, onClick, to, external=false, target, children}) {
+    if(external) return <a href={to} className={className} onClick={onClick} target={target}>{children}</a>
+    else return <RLink to={to} className={className} onClick={onClick} target={target}>{children}</RLink>
+}
+
+export function NavbarItem({to, icon, onClick, external, children}) {
     return (
         <li className="nav-item">
-            <Link className="nav-link" onClick={onClick} to={to}>{children}</Link>
+            <Link className="nav-link" onClick={onClick} to={to} external={external}>
+                {!!icon && <i className={`fa fa-${icon}`} style={{marginRight: 5}}></i>}
+                {children}
+            </Link>
         </li>
     )
 }
@@ -15,12 +23,22 @@ export function NavbarDropdownDivider() {
     return <div className="dropdown-divider"></div>
 }
 
-export function NavbarDropdownHeader({children}) {
-    return <h6 className="dropdown-header">{children}</h6>
+export function NavbarDropdownHeader({icon, children}) {
+    return (
+        <h6 className="dropdown-header">
+            {!!icon && <i className={`fa fa-${icon}`} style={{marginRight: 5}}></i>}
+            {children}
+        </h6>
+    )
 }
 
-export function NavbarDropdownItem({to, onClick, children}) {
-    return <Link className="dropdown-item" to={to} onClick={onClick}>{children}</Link>
+export function NavbarDropdownItem({to, onClick, icon, external, children}) {
+    return (
+        <Link className="dropdown-item" to={to} onClick={onClick} external={external}>
+            {!!icon && <i className={`fa fa-${icon}`} style={{marginRight: 5}}></i>}
+            {children}
+        </Link>
+    )
 }
 
 export class NavbarDropdown extends React.Component {
@@ -46,7 +64,11 @@ export class NavbarDropdown extends React.Component {
 
     injectClickEvent(child) {
         if(child.type === NavbarDropdownItem) {
-            return React.cloneElement(child, {...child.props, onClick: this.handleToggleClick})
+            const clickHandler = () => {
+                this.handleToggleClick()
+                this.props.onClick()
+            }
+            return React.cloneElement(child, {...child.props, onClick: clickHandler})
         }
         return child
     }
@@ -56,12 +78,14 @@ export class NavbarDropdown extends React.Component {
     }
 
     render() {
-        const {text, children} = this.props
+        const {text, icon, children} = this.props
         const dropdownItems = React.Children.map(children, child => this.injectClickEvent(child))
         return (
             <li className={this.getToggleClass('nav-item dropdown')}>
-                <div className="backdrop" onClick={this.handleToggleClick}></div>
-                <a href="javascript:void(0)" onClick={this.handleToggleClick} className="nav-link dropdown-toggle">{text}</a>
+                <a href="javascript:void(0)" onClick={this.handleToggleClick} className="nav-link dropdown-toggle">
+                    {!!icon && <i className={`fa fa-${icon}`} style={{marginRight: 5}}></i>}
+                    {text}
+                </a>
                 <div className={this.getToggleClass('dropdown-menu')}>
                     {dropdownItems}
                 </div>
@@ -90,7 +114,7 @@ export class Navbar extends React.Component {
     getNavbarTogglerClasses() {
         const {open} = this.state
         if(open) {
-            return 'navbar-toggler'
+            return 'navbar-toggler show'
         } else {
             return 'navbar-toggler collapsed'
         }
@@ -125,7 +149,9 @@ export class Navbar extends React.Component {
                             aria-expanded={open+''} 
                             onClick={this.handleToggleNavbarClick}
                             aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
+                            <div></div>
+                            <div></div>
+                            <div></div>
                     </button>
             
                     <div className={`navbar-collapse ${this.getNavbarCollapseClasses()}`} id={id}>

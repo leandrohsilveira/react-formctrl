@@ -2,6 +2,7 @@ import React from 'react'
 
 const EVENT_NAME = 'react-formctrl.example.SubmitValuesPopup';
 
+import './submit-values.scss'
 export class SubmitValuesPopup extends React.Component {
 
     constructor(props) {

@@ -1,13 +1,10 @@
-# React controlled forms
-A lightweight ReactJS forms controller inspired by Redux-form and Angular forms.
+# React Form CTRL
+A lightweight React form library inspired by Angular's forms and Redux-Form.
 
-It's lightweight: 23.6 KB of bundle size. (Measured in 09/22/2017, v1.1.0)
-
-Check the <a href="https://leandrohsilveira.github.io/react-formctrl/">Live demo</a>
+Bundle size: 26.5 KB (09/29/2017, v1.1.1)
 
 ## Quick start
 
-### Installation:
 `npm install --save react-formctrl`
 
 ### Wrap all your application with:

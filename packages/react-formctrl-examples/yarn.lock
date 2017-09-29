@@ -2033,6 +2033,10 @@ follow-redirects@^1.2.3:
   dependencies:
     debug "^2.4.5"
 
+font-awesome@^4.7.0:
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
+
 for-each@~0.3.2:
   version "0.3.2"
   resolved "https://registry.yarnpkg.com/for-each/-/for-each-0.3.2.tgz#2c40450b9348e97f281322593ba96704b9abd4d4"
@@ -4036,6 +4040,13 @@ react-dom@^15.6.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
     prop-types "^15.5.10"
+
+react-formctrl@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/react-formctrl/-/react-formctrl-1.1.1.tgz#3e76be72026b709862e699f6610dd4ecb41400da"
+  dependencies:
+    prop-types "^15.5.7"
+    react "^15.5.0"
 
 react-router-dom@^4.1.2:
   version "4.2.2"
