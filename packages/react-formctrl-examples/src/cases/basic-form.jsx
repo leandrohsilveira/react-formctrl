@@ -1,7 +1,7 @@
 import React from 'react'
 
 import {Form, Field} from 'react-formctrl'
-import {SubmitValuesPopup} from '../submit-values'
+import {SubmitValuesPopup} from '../components/submit-values'
 
 function Input({name, value, onChange}) {
     return (

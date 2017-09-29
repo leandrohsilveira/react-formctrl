@@ -39,9 +39,10 @@
     "clean": "rimraf ./lib",
     "prebuild": "npm run clean",
     "build": "babel ./src --out-dir ./lib --copy-files",
-    "prepublish": "npm run build",
+    "postbuild": "npm run minify",
     "preminify": "rimraf ./dist",
-    "minify": "node minify.js"
+    "minify": "node minify.js",
+    "prepublish": "npm run build"
   },
   "dependencies": {
     "prop-types": "^15.5.7",

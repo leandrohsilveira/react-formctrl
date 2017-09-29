@@ -1,39 +1,32 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+
+import {Navbar, NavbarItem, NavbarDropdown, NavbarDropdownItem, NavbarDropdownHeader, NavbarDropdownDivider} from '../components/navbar'
 
 export function AppMenu() {
     return (
-        <nav className="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-            <a className="navbar-brand" href="#">react-formctrl</a>
-            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-            </button>
+        <Navbar id="appMenuNavbar" title="RFCTRL" containerClassName="container">
+            <NavbarItem to="/">Home</NavbarItem>
+            <NavbarItem to="/fields">Fields usage</NavbarItem>
+            <NavbarDropdown text="Examples">
+                <NavbarDropdownHeader>Basics</NavbarDropdownHeader>
+                <NavbarDropdownItem to="/basic">Simple</NavbarDropdownItem>
+                <NavbarDropdownItem to="/more">More of basics</NavbarDropdownItem>
+                <NavbarDropdownDivider />
 
-            <div className="collapse navbar-collapse" id="navbarsExampleDefault">
-                <ul className="navbar-nav mr-auto">
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/">Basic</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/more">More of basics</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/validation">Field validation</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/form-control">Form control</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/sync-forms">Synchronized forms</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/form-values-manipulation">Form values manipulation</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to="/users">Complete user form example</Link>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+                <NavbarDropdownHeader>Validation</NavbarDropdownHeader>
+                <NavbarDropdownItem to="/validation">Field validation</NavbarDropdownItem>
+                <NavbarDropdownItem to="/custom-validators">Custom validators example</NavbarDropdownItem>
+                <NavbarDropdownDivider />
+                
+                <NavbarDropdownHeader>Controlling</NavbarDropdownHeader>
+                <NavbarDropdownItem to="/form-control">Form control</NavbarDropdownItem>
+                <NavbarDropdownItem to="/form-values-manipulation">Form values manipulation</NavbarDropdownItem>
+                <NavbarDropdownDivider />
+                
+                <NavbarDropdownHeader>Misc</NavbarDropdownHeader>
+                <NavbarDropdownItem to="/sync-forms">Synchronized forms</NavbarDropdownItem>
+                <NavbarDropdownItem to="/users">Complete user form example</NavbarDropdownItem>
+            </NavbarDropdown>
+        </Navbar>
     )
 }

@@ -88,11 +88,11 @@ export class FormControl extends React.Component {
             unchanged: true,
             changed: false,
             fields: {},
-            values: {}
+            values: {},
+            files: {}
         }
         this.onChange = this.onChange.bind(this)
         this.handleFormChanged = this.handleFormChanged.bind(this)
-        this.sync = this.sync.bind(this)
         this.inject = this.inject.bind(this)
         this.setFieldValue = this.setFieldValue.bind(this)
     }
@@ -121,26 +121,8 @@ export class FormControl extends React.Component {
         const payload = event.detail
         const {form} = this.props
         const {formCtrl} = payload
-        const syncState = this.sync(formCtrl)
-        if(Object.keys(syncState).length > 0) {
-            this.setState(formCtrl)
-            this.onChange(formCtrl)
-        }
-    }
-
-    sync(formCtrl) {
-        const syncState = {}
-        if(JSON.stringify(this.state.values) !== JSON.stringify(formCtrl.values)) syncState.values = formCtrl.values
-        if(JSON.stringify(this.state.fields) !== JSON.stringify(formCtrl.fields)) syncState.fields = formCtrl.fields
-        if(this.state.valid !== formCtrl.valid) syncState.valid = formCtrl.valid
-        if(this.state.invalid !== formCtrl.invalid) syncState.invalid = formCtrl.invalid
-        if(this.state.untouched !== formCtrl.untouched) syncState.untouched = formCtrl.untouched
-        if(this.state.touched !== formCtrl.touched) syncState.touched = formCtrl.touched
-        if(this.state.pristine !== formCtrl.pristine) syncState.pristine = formCtrl.pristine
-        if(this.state.dirty !== formCtrl.dirty) syncState.dirty = formCtrl.dirty
-        if(this.state.unchanged !== formCtrl.unchanged) syncState.unchanged = formCtrl.unchanged
-        if(this.state.changed !== formCtrl.changed) syncState.changed = formCtrl.changed
-        return syncState
+        this.setState(formCtrl)
+        this.onChange(formCtrl)
     }
 
     setFieldValue(fieldName, value) {

@@ -1,7 +1,7 @@
 import React from 'react'
 import {Route} from 'react-router-dom'
 
-import {Case} from './case'
+import {Case} from './components/case'
 
 import {BasicForm} from './cases/basic-form'
 import {MoreOfBasicForm} from './cases/moreofbasic-form'
@@ -10,52 +10,72 @@ import {FormControlExample} from './cases/form-control-example'
 import {SynchronizedForms} from './cases/synchronized-forms'
 import {FormValuesManipulationExample} from './cases/form-values-manipulation'
 import {UserFormApp} from './cases/user-form'
+import {CustomValidatorExample} from './cases/custom-validators'
+import {FieldsExample} from './cases/fields'
+import {ReadMe} from './components/read-me'
 
 export function Routes({branch = 'master'}) {
-    const rootPath = 'react-formctrl-examples/src/cases'
-    const baseRawGithub = `https://raw.githubusercontent.com/leandrohsilveira/react-formctrl/${branch}/packages/${rootPath}`
+    const rootUrl = `https://raw.githubusercontent.com/leandrohsilveira/react-formctrl/${branch}`
+
+    const examplePath = 'react-formctrl-examples/src/cases'
+    const rawExampleUrl = `${rootUrl}/packages/${examplePath}`
     return (
         <Route path="/" render={() => (
             <div>
                 <Route exact path="/" render={() => (
-                    <Case fileName={`${rootPath}/basic-form.jsx`} url={`${baseRawGithub}/basic-form.jsx`}>
+                    <ReadMe path={`${rootUrl}/README.md`} />
+                )} />
+
+                <Route exact path="/basic" render={() => (
+                    <Case fileName={`${examplePath}/basic-form.jsx`} url={`${rawExampleUrl}/basic-form.jsx`}>
                         <BasicForm />
                     </Case>
                 )} />
 
                 <Route path="/more" render={() => (
-                    <Case fileName={`${rootPath}/moreofbasic-form.jsx`} url={`${baseRawGithub}/moreofbasic-form.jsx`}>
+                    <Case fileName={`${examplePath}/moreofbasic-form.jsx`} url={`${rawExampleUrl}/moreofbasic-form.jsx`}>
                         <MoreOfBasicForm />
                     </Case>
                 )} />
 
                 <Route path="/validation" render={() => (
-                    <Case fileName={`${rootPath}/field-validation.jsx`} url={`${baseRawGithub}/field-validation.jsx`}>
+                    <Case fileName={`${examplePath}/field-validation.jsx`} url={`${rawExampleUrl}/field-validation.jsx`}>
                         <FieldValidationForm />
                     </Case>
                 )} />
 
                 <Route path="/form-control" render={() => (
-                    <Case fileName={`${rootPath}/form-control-example.jsx`} url={`${baseRawGithub}/form-control-example.jsx`}>
+                    <Case fileName={`${examplePath}/form-control-example.jsx`} url={`${rawExampleUrl}/form-control-example.jsx`}>
                         <FormControlExample />
                     </Case>
                 )} />
                 
                 <Route path="/sync-forms" render={() => (
-                    <Case fileName={`${rootPath}/synchronized-forms.jsx`} url={`${baseRawGithub}/synchronized-forms.jsx`}>
+                    <Case fileName={`${examplePath}/synchronized-forms.jsx`} url={`${rawExampleUrl}/synchronized-forms.jsx`}>
                         <SynchronizedForms />
                     </Case>
                 )} />
 
                 <Route path="/form-values-manipulation" render={() => (
-                    <Case fileName={`${rootPath}/form-values-manipulation.jsx`} url={`${baseRawGithub}/form-values-manipulation.jsx`}>
+                    <Case fileName={`${examplePath}/form-values-manipulation.jsx`} url={`${rawExampleUrl}/form-values-manipulation.jsx`}>
                         <FormValuesManipulationExample />
                     </Case>
                 )} />
 
                 <Route path="/users" render={(props) => (
-                    <Case fileName={`${rootPath}/user-form.jsx`} url={`${baseRawGithub}/user-form.jsx`}>
+                    <Case fileName={`${examplePath}/user-form.jsx`} url={`${rawExampleUrl}/user-form.jsx`}>
                         <UserFormApp {...props} />
+                    </Case>
+                )} />
+
+                <Route path="/custom-validators" render={(props) => (
+                    <Case fileName={`${examplePath}/custom-validators.jsx`} url={`${rawExampleUrl}/custom-validators.jsx`}>
+                        <CustomValidatorExample {...props} />
+                    </Case>
+                )} />
+                <Route path="/fields" render={(props) => (
+                    <Case fileName={`${examplePath}/fields.jsx`} url={`${rawExampleUrl}/fields.jsx`}>
+                        <FieldsExample {...props} />
                     </Case>
                 )} />
             </div>

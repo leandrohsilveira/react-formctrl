@@ -1,8 +1,10 @@
 import React from 'react'
 
-import {Route, Link} from 'react-router-dom'
+import {Route} from 'react-router-dom'
 
 import {Field, Form, FormControl} from 'react-formctrl'
+
+import {Navbar, NavbarItem} from '../components/navbar'
 
 let SEQUENCE = 1
 const USERS = {
@@ -258,23 +260,10 @@ function UserList(props) {
 
 function Menu({path}) {
     return (
-        <nav className="navbar navbar-expand-md navbar-dark bg-dark">
-            <a className="navbar-brand" href="#">user-crud-example</a>
-            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-            </button>
-
-            <div className="collapse navbar-collapse" id="navbarsExampleDefault">
-                <ul className="navbar-nav mr-auto">
-                    <li className="nav-item">
-                        <Link className="nav-link" to={`${path}`}>User List</Link>
-                    </li>
-                    <li className="nav-item">
-                        <Link className="nav-link" to={`${path}/register`}>Register</Link>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        <Navbar id="userFormNavbar" className="navbar-dark bg-dark" title='user-crud-example'>
+            <NavbarItem to={`${path}`}>User List</NavbarItem>
+            <NavbarItem to={`${path}/register`}>Register</NavbarItem>
+        </Navbar>
     )
 }
 

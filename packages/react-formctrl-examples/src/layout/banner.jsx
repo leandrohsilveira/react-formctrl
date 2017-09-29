@@ -1,12 +1,18 @@
 import React from 'react'
 
+import img from './logo.png'
+
 export function AppBanner() {
     return (
-        <div className="jumbotron">
+        <div className="banner">
             <div className="container">
-                <h1 className="display-3">ReactJS controlled forms</h1>
-                <p>ReactJS controlled forms is a lightweight forms controller library for ReactJS inspired by Angular forms and Redux forms.</p>
-                {/* <p><a className="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p> */}
+                <div className="logo">
+                    <img src={img} alt="logo.png"/>
+                </div>
+                <div className="text">
+                    <h1 className="display-3">React Form CTRL</h1>
+                    <p>A lightweight React form library inspired by Angular's forms and Redux-Form.</p>
+                </div>
             </div>
         </div>
     )

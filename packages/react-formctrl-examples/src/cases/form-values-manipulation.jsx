@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Form, Field, FormControl } from 'react-formctrl'
-import { SubmitValuesPopup } from '../submit-values'
+import { SubmitValuesPopup } from '../components/submit-values'
 
 function Input({ label, name, value, onChange, onBlur, ctrl: { valid, invalid, touched, errors } }) {
     const getClassName = () => {

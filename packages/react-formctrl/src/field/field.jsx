@@ -34,6 +34,19 @@ export class Field extends React.Component {
             PropTypes.number,
             PropTypes.string,
         ]),
+        accept: PropTypes.string,
+        extensions: PropTypes.arrayOf(PropTypes.string),
+        maxSize: PropTypes.oneOfType([
+            PropTypes.number,
+            PropTypes.string
+        ]),
+        validate: PropTypes.arrayOf(PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.shape({
+                name: PropTypes.string.isRequired,
+                params: PropTypes.any      
+            })
+        ]))
     }
 
     constructor(props) {
@@ -49,8 +62,11 @@ export class Field extends React.Component {
             changed: false,
             errors: [],
             value: '',
+            files: [],
             initialValue: props.initialValue || '',
             props: {
+                name: props.name,
+                form: props.form,
                 type: props.type,
                 required: props.required,
                 pattern: props.pattern,
@@ -60,6 +76,10 @@ export class Field extends React.Component {
                 max: props.max,
                 minLength: props.minLength,
                 maxLength: props.maxLength,
+                accept: props.accept,
+                extensions: props.extensions || [],
+                maxSize: props.maxSize,
+                validate: props.validate
             }
         }
 
@@ -69,7 +89,6 @@ export class Field extends React.Component {
         this.handleBlur = this.handleBlur.bind(this)
         this.getChildProps = this.getChildProps.bind(this)
         this.inject = this.inject.bind(this)
-        this.sync = this.sync.bind(this)
     }
 
     componentWillMount() {
@@ -98,18 +117,17 @@ export class Field extends React.Component {
     handleFieldChangeForward(event) {
         const payload = event.detail
         const fieldCtrl = payload.fieldCtrl
-        const syncState = this.sync(fieldCtrl)
-        if (Object.keys(syncState).length) {
-            this.setState(syncState)
-            this.onChange(fieldCtrl)
-        }
+        this.setState(fieldCtrl)
+        this.onChange(fieldCtrl)
     }
 
     handleChange(event) {
         const { sync } = this
         const { form, name } = this.props
-        const value = event.target.value
-        FormEventDispatcher.dispatchFieldChanged(form, name, value)
+        const target = event.target
+        const value = target.value
+        const files = target.files
+        FormEventDispatcher.dispatchFieldChanged(form, name, value, files)
     }
 
     handleBlur(event) {
@@ -117,22 +135,6 @@ export class Field extends React.Component {
             const { form, name } = this.props
             FormEventDispatcher.dispatchFieldBlur(form, name, { ...this.state, touched: true, untouched: false })
         }
-    }
-
-    sync(fieldCtrl) {
-        const syncState = {}
-        if (JSON.stringify(this.state.errors) !== JSON.stringify(fieldCtrl.errors)) syncState.errors = fieldCtrl.errors
-        if (this.state.valid !== fieldCtrl.valid) syncState.valid = fieldCtrl.valid
-        if (this.state.invalid !== fieldCtrl.invalid) syncState.invalid = fieldCtrl.invalid
-        if (this.state.untouched !== fieldCtrl.untouched) syncState.untouched = fieldCtrl.untouched
-        if (this.state.touched !== fieldCtrl.touched) syncState.touched = fieldCtrl.touched
-        if (this.state.pristine !== fieldCtrl.pristine) syncState.pristine = fieldCtrl.pristine
-        if (this.state.dirty !== fieldCtrl.dirty) syncState.dirty = fieldCtrl.dirty
-        if (this.state.unchanged !== fieldCtrl.unchanged) syncState.unchanged = fieldCtrl.unchanged
-        if (this.state.changed !== fieldCtrl.changed) syncState.changed = fieldCtrl.changed
-        if (this.state.value !== fieldCtrl.value) syncState.value = fieldCtrl.value
-        if (this.state.__instances != fieldCtrl.__instances) syncState.__instances = fieldCtrl.__instances
-        return syncState
     }
 
     getChildProps() {
@@ -150,6 +152,9 @@ export class Field extends React.Component {
             changed: this.state.changed,
             errors: this.state.errors,
         }
+        props.accept = this.props.accept
+        props.extensions = this.props.extensions
+        props.maxSize = this.props.maxSize
         props.className = this.props.className
         props.value = this.state.value
         props.required = this.props.required

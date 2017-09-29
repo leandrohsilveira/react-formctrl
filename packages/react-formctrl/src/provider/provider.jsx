@@ -1,5 +1,7 @@
 import React from 'react'
 
+import PropTypes from 'prop-types'
+
 const REACT_FORMCTRL_NAME = 'react-formctl'
 
 const INTEGER_REGEX = /^-?\d+?$/
@@ -25,78 +27,214 @@ export const REACT_FORMCTRL = {
 
 export class FormEventDispatcher {
 
-    static copy(payload) {
-        return JSON.parse(JSON.stringify(payload))
+    static copyFiles(selectedFiles) {
+        if(selectedFiles) {
+            if(Array.isArray(selectedFiles)) {
+                return FormEventDispatcher.copyArray(selectedFiles)
+            } else {
+                const files = []
+                for(var i = 0; i < selectedFiles.length; i++) {
+                    const file = selectedFiles.item(i)
+                    files.push(file)
+                }
+                return files
+            }
+        }
+        return []
+    }
+
+    static copyArray(array) {
+        if(array) {
+            return array.map(item => item)
+        }
+        return []
+    }
+
+    static copyFieldCtrlProps(props) {
+        return {
+            name: props.name,
+            form: props.form,
+            type: props.type,
+            required: props.required,
+            pattern: props.pattern,
+            match: props.match,
+            integer: props.integer,
+            min: props.min,
+            max: props.max,
+            minLength: props.minLength,
+            maxLength: props.maxLength,
+            accept: props.accept,
+            extensions: FormEventDispatcher.copyArray(props.extensions),
+            maxSize: props.maxSize,
+            validate: props.validate
+        }
+    }
+
+    static copyError(error) {
+        const output = {
+            key: error.key
+        }
+        if(error.params) {
+            const params = {}
+            Object.keys(error.params).forEach(paramName => {
+                const param = error.params[paramName]
+                if(Array.isArray(param)) params[paramName] = FormEventDispatcher.copyArray(param)
+                else if(param instanceof FileList) params[paramName] = FormEventDispatcher.copyFiles(param)
+                else params[paramName] = param
+            })
+            output.params = params
+        }
+        return output
+    }
+
+    static copyErrors(errors) {
+        if(errors && errors.length) {
+            return errors.map(error => FormEventDispatcher.copyError(error))
+        }
+        return errors
+    }
+
+    static copyFieldCtrl(fieldCtrl) {
+        return {
+            valid: fieldCtrl.valid,
+            invalid: fieldCtrl.invalid,
+            untouched: fieldCtrl.untouched,
+            touched: fieldCtrl.touched,
+            pristine: fieldCtrl.pristine,
+            dirty: fieldCtrl.dirty,
+            unchanged: fieldCtrl.unchanged,
+            changed: fieldCtrl.changed,
+            errors: FormEventDispatcher.copyErrors(fieldCtrl.errors),
+            value: fieldCtrl.value,
+            files: fieldCtrl.files,
+            initialValue: fieldCtrl.initialValue,
+            props: FormEventDispatcher.copyFieldCtrlProps(fieldCtrl.props)
+        }
+    }
+
+    static copyFormValues(values) {
+        const cValues = {}
+        if(values) {
+            const fieldsNames = Object.keys(values)
+            if(fieldsNames.length) {
+                fieldsNames.forEach(fieldName => {
+                    cValues[fieldName] = values[fieldName]
+                })
+            }
+        }
+        return cValues
+    }
+
+    static copyFormFiles(files) {
+        const cFiles = {}
+        if(files) {
+            const fieldsNames = Object.keys(files)
+            if(fieldsNames.length) {
+                fieldsNames.forEach(fieldName => {
+                    cFiles[fieldName] = FormEventDispatcher.copyFiles(files[fieldName])
+                })
+            }
+        }
+        return cFiles
+    }
+
+    static copyFormFields(fields) {
+        const cFields = {}
+        if(fields) {
+            const fieldsNames = Object.keys(fields)
+            if(fieldsNames.length) {
+                fieldsNames.forEach(fieldName => {
+                    cFields[fieldName] = FormEventDispatcher.copyFieldCtrl(fields[fieldName])
+                })
+            }
+        }
+        return cFields
+    }
+
+    static copyFormCtrl(formCtrl) {
+        return {
+            valid: formCtrl.valid,
+            invalid: formCtrl.invalid,
+            untouched: formCtrl.untouched,
+            touched: formCtrl.touched,
+            pristine: formCtrl.pristine,
+            dirty: formCtrl.dirty,
+            unchanged: formCtrl.unchanged,
+            changed: formCtrl.changed,
+            fields: FormEventDispatcher.copyFormFields(formCtrl.fields),
+            values: FormEventDispatcher.copyFormValues(formCtrl.values),
+            files: FormEventDispatcher.copyFormFiles(formCtrl.files),
+        }
     }
 
     static dispatchRegisterForm(form) {
-        const payload = FormEventDispatcher.copy({detail: {form}})
+        const payload = {detail: {form}}
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.REGISTER_FORM, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchUnregisterForm(form) {
-        const payload = FormEventDispatcher.copy({detail: {form}})
+        const payload = {detail: {form}}
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchSubmitForm(form, formRef) {
-        const payload = FormEventDispatcher.copy({detail: {form, formRef}})
+        const payload = {detail: {form, formRef}}
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchResetForm(form) {
-        const payload = FormEventDispatcher.copy({detail: {form}})
+        const payload = {detail: {form}}
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FORM_RESETED, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchRegisterField(form, field, fieldCtrl) {
-        const payload = FormEventDispatcher.copy({detail: {form, field, fieldCtrl}})
+        const payload = {detail: {form, field, fieldCtrl: FormEventDispatcher.copyFieldCtrl(fieldCtrl)}}
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.REGISTER_FIELD, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchUnregisterField(form, field) {
-        const payload = FormEventDispatcher.copy({detail: {form, field}})
+        const payload = {detail: {form, field}}
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchFieldPropsChanged(form, field, props) {
-        const payload = FormEventDispatcher.copy({detail: {form, field, props}})
+        const payload = {detail: {form, field, props: FormEventDispatcher.copyFieldCtrlProps(props)}}
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_PROPS_CHANGED, payload)
         document.dispatchEvent(event)
     }
 
-    static dispatchFieldChanged(form, field, value) {
-        const payload = FormEventDispatcher.copy({detail: {form, field, value}})
+    static dispatchFieldChanged(form, field, value, files) {
+        const payload = {detail: {form, field, value, files: FormEventDispatcher.copyFiles(files)}}
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchFieldBlur(form, field) {
-        const payload = FormEventDispatcher.copy({detail: {form, field}})
+        const payload = {detail: {form, field}}
         const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_BLURRED, payload)
         document.dispatchEvent(event)
     }
 
     static forwardSubmitFormEvent(form, values, formCtrl, formRef) {
-        const payload = FormEventDispatcher.copy({detail: {values, formCtrl, formRef}})
+        const payload = {detail: {values, formRef, formCtrl: FormEventDispatcher.copyFormCtrl(formCtrl)}}
         const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${form}`, payload)
         document.dispatchEvent(event)
     }
     
     static forwardFieldChangedEvent(form, field, fieldCtrl) {
-        const payload = FormEventDispatcher.copy({detail: {form, field, fieldCtrl}})
+        const payload = {detail: {form, field, fieldCtrl: FormEventDispatcher.copyFieldCtrl(fieldCtrl)}}
         const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, payload)
         document.dispatchEvent(event)
     }
     
     static forwardFormChangedEvent(form, formCtrl) {
-        const payload = FormEventDispatcher.copy({detail: {form, formCtrl}})
+        const payload = {detail: {form, formCtrl: FormEventDispatcher.copyFormCtrl(formCtrl)}}
         const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_CHANGED}#${form}`, payload)
         document.dispatchEvent(event)
     }
@@ -106,13 +244,17 @@ export class FormEventDispatcher {
 export class FormProvider extends React.Component {
 
     static propTypes = {
-
+        customValidators: PropTypes.arrayOf(PropTypes.shape({
+            name: PropTypes.string.isRequired,
+            validate: PropTypes.func.isRequired
+        }))
     }
 
     constructor(props) {
         super(props)
         this.state = {
-            forms: {}
+            forms: {},
+            customValidators: {}
         }
         this.subscribe = this.subscribe.bind(this)
         this.unsubscribe = this.unsubscribe.bind(this)
@@ -136,6 +278,14 @@ export class FormProvider extends React.Component {
         // }
         // window.sessionStorage.setItem(PROVIDER_FLAG, 'true')
         this.subscribe()
+        const newState = {
+            customValidators: {},
+        }
+        const {customValidators = []} = this.props
+        customValidators.forEach(validator => {
+            newState.customValidators[validator.name] = validator.validate
+        })
+        this.setState(newState)
     }
 
     componentWillUnmount() {
@@ -173,7 +323,7 @@ export class FormProvider extends React.Component {
                 this.onUnregisterField(payload.form, payload.field)
                 break
             case EVENTS.FIELD_CHANGED:
-                this.onFieldChanged(payload.form, payload.field, payload.value)
+                this.onFieldChanged(payload.form, payload.field, payload.value, payload.files)
                 break
             case EVENTS.FIELD_PROPS_CHANGED:
                 this.onFieldPropsChanged(payload.form, payload.field, payload.props)
@@ -202,6 +352,7 @@ export class FormProvider extends React.Component {
                 forms[formName] = {
                     __instances: 1,
                     formName,
+                    validating: false,
                     valid: true,
                     invalid: false,
                     untouched: true,
@@ -211,7 +362,8 @@ export class FormProvider extends React.Component {
                     unchanged: true,
                     changed: false,
                     fields: {},
-                    values: {}
+                    values: {},
+                    files: {}
                 }
             }
             return {forms}
@@ -230,7 +382,7 @@ export class FormProvider extends React.Component {
                 }
                 this.updateFieldCtrl(formName, fieldCtrl, fieldCtrl.initialValue)
                 FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, fieldCtrl)
-
+                
                 form.fields[fieldName] = fieldCtrl
                 form.values[fieldName] = fieldCtrl.value
                 this.updateFormCtrl(formName, form)
@@ -277,7 +429,7 @@ export class FormProvider extends React.Component {
         })
     }
 
-    onFieldChanged(formName, fieldName, value) {
+    onFieldChanged(formName, fieldName, value, files) {
         this.setState((state) => {
             if(state.forms[formName]) {
                 if(state.forms[formName].fields[fieldName]) {
@@ -286,11 +438,16 @@ export class FormProvider extends React.Component {
                     const fieldCtrl = form.fields[fieldName]
                     fieldCtrl.dirty = true
                     fieldCtrl.pristine = false
-                    this.updateFieldCtrl(formName, fieldCtrl, value)
-                    FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, fieldCtrl
-                    )
+                    this.updateFieldCtrl(formName, fieldCtrl, value, files)
+                    FormEventDispatcher.forwardFieldChangedEvent(formName, fieldName, fieldCtrl)
                     if(!form.values) form.values = {}
                     form.values[fieldName] = value
+                    if(!form.files) form.files = {}
+                    if(files) {
+                        form.files[fieldName] = files
+                    } else if(form.files[fieldName]) {
+                        delete form.files[fieldName]
+                    }
                     this.updateFormCtrl(formName, form)
                     return {forms}
                 }
@@ -326,6 +483,7 @@ export class FormProvider extends React.Component {
     }
     
     updateFormCtrl(formName, form) {
+        form.validating = false
         form.valid = true
         form.invalid = false
         form.untouched = true
@@ -336,6 +494,7 @@ export class FormProvider extends React.Component {
         form.changed = false
         Object.keys(form.fields).forEach(fieldName => {
             const field = form.fields[fieldName]
+            if(field.validating) form.validating = true
             if(!field.valid) form.valid = false
             if(field.invalid) form.invalid = true
             if(!field.untouched) form.untouched = false
@@ -355,27 +514,33 @@ export class FormProvider extends React.Component {
         }
     }
 
-    updateFieldCtrl(formName, fieldCtrl, value) {
+    updateFieldCtrl(formName, fieldCtrl, value, files) {
         const errors = []
+        const {customValidators = {}} = this.state
         const {
             initialValue,
             props: {
+                name = null,
                 type = 'text', 
-                required, 
-                pattern, 
-                match, 
-                integer,
-                min,
-                max,
-                minLength,
-                maxLength,
+                required = null, 
+                pattern = null, 
+                match = null, 
+                integer = null,
+                min = null,
+                max = null,
+                minLength = null,
+                maxLength = null,
+                extensions = [],
+                accept = null, 
+                maxSize = null,
+                validate = []
             }
         } = fieldCtrl
 
         if(required && !value) errors.push(this.createValidationError('required'))
-        else if(pattern && pattern instanceof RegExp && !pattern.test(value)) errors.push(this.createValidationError('pattern', {value, pattern}))
-        else if(pattern && !new RegExp(pattern).test(value)) errors.push(this.createValidationError('pattern', {value, pattern}))
-        else if(match) {
+        else if(pattern != null && pattern instanceof RegExp && !pattern.test(value)) errors.push(this.createValidationError('pattern', {value, pattern}))
+        else if(pattern  != null && !new RegExp(pattern).test(value)) errors.push(this.createValidationError('pattern', {value, pattern}))
+        else if(match != null) {
             const form = this.state.forms[formName]
             if(form && form.values[match] != value) errors.push(this.createValidationError('match', {value, match}))
         } else {
@@ -383,11 +548,36 @@ export class FormProvider extends React.Component {
             if(type === 'number') {
                 if(integer && !INTEGER_REGEX.test(value)) errors.push(this.createValidationError('integer', {value}))
                 if(!integer && !FLOAT_REGEX.test(value)) errors.push(this.createValidationError('float', {value}))
-                if(min && +value < min) errors.push(this.createValidationError('min', {value, min}))
-                if(max && +value > max) errors.push(this.createValidationError('max', {value, max}))
+                if(min != null && +value < min) errors.push(this.createValidationError('min', {value, min}))
+                if(max != null && +value > max) errors.push(this.createValidationError('max', {value, max}))
+            } else if(type === 'file' && files && files.length) {
+                files.forEach(file => {
+                    if(extensions && extensions.length) {
+                        const matchedExtensions = extensions.filter(extension => {
+                            const regex = new RegExp(`\\.${extension.replace(/\./, '')}$`, 'i')
+                            return regex.test(file.name)
+                        })
+                        if(!matchedExtensions.length) errors.push(this.createValidationError('extension', {value, file, extensions}))
+                    } else if(accept) {
+                        const matchedAccepts = accept.replace(/ /g, '').split(',').filter(mimetype => new RegExp(`^${mimetype.replace(/\*/g, '.*')}$`).test(file.type))
+                        if(!matchedAccepts.length) errors.push(this.createValidationError('accept', {value, file, accept}))
+                    }
+                    if(maxSize != null && file.size > +maxSize) errors.push(this.createValidationError('maxSize', {value, file, maxSize}))
+                })
             } else {
-                if(minLength && value && value.length < minLength) errors.push(this.createValidationError('minLength', {value, minLength}))
-                if(maxLength && value && value.length > maxLength) errors.push(this.createValidationError('maxLength', {value, maxLength}))
+                if(minLength != null && value && value.length < minLength) errors.push(this.createValidationError('minLength', {value, minLength}))
+                if(maxLength != null && value && value.length > maxLength) errors.push(this.createValidationError('maxLength', {value, maxLength}))
+            }
+            if(validate.length && Object.keys(customValidators).length) {
+                validate.forEach(validatorSpec => {
+                    let validatorName = validatorSpec
+                    const params = {value, ...validatorSpec.params}
+                    if(typeof validatorSpec === 'object') {
+                        validatorName = validatorSpec.name
+                    }
+                    let validator = customValidators[validatorName]
+                    if(validator && !validator(value, params, files)) errors.push(this.createValidationError(validatorName, params))
+                })
             }
         }
 

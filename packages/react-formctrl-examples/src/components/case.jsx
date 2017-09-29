@@ -1,7 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import SyntaxHighlighter from 'react-syntax-highlighter/dist/light';
-import { github as theme } from 'react-syntax-highlighter/dist/styles';
+import {HighlightJsx, HighlightJson} from './highlight'
 import {SubmitValuesPopup} from './submit-values'
 
 export function Json({ json, title, maxHeight, children }) {
@@ -29,9 +28,9 @@ export function Json({ json, title, maxHeight, children }) {
                         </div>
                         <div className="card-body">
                             <div style={style}>
-                                <SyntaxHighlighter language="json" style={theme}>
+                                <HighlightJson>
                                     {content}
-                                </SyntaxHighlighter>
+                                </HighlightJson>
                             </div>
                         </div>
                     </div>
@@ -89,9 +88,9 @@ export class Case extends React.Component {
                         </div>
                         <div className="card-body">
                             {code !== '' && (
-                                <SyntaxHighlighter showLineNumbers={true} language="javascript" style={theme}>
+                                <HighlightJsx>
                                     {code}
-                                </SyntaxHighlighter>
+                                </HighlightJsx>
                             )}
                         </div>
                     </div>
