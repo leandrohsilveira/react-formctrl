@@ -46,7 +46,11 @@ export class NavbarDropdown extends React.Component {
 
     injectClickEvent(child) {
         if(child.type === NavbarDropdownItem) {
-            return React.cloneElement(child, {...child.props, onClick: this.handleToggleClick})
+            const clickHandler = () => {
+                this.handleToggleClick()
+                this.props.onClick()
+            }
+            return React.cloneElement(child, {...child.props, onClick: clickHandler})
         }
         return child
     }
@@ -60,7 +64,6 @@ export class NavbarDropdown extends React.Component {
         const dropdownItems = React.Children.map(children, child => this.injectClickEvent(child))
         return (
             <li className={this.getToggleClass('nav-item dropdown')}>
-                <div className="backdrop" onClick={this.handleToggleClick}></div>
                 <a href="javascript:void(0)" onClick={this.handleToggleClick} className="nav-link dropdown-toggle">{text}</a>
                 <div className={this.getToggleClass('dropdown-menu')}>
                     {dropdownItems}
@@ -90,7 +93,7 @@ export class Navbar extends React.Component {
     getNavbarTogglerClasses() {
         const {open} = this.state
         if(open) {
-            return 'navbar-toggler'
+            return 'navbar-toggler show'
         } else {
             return 'navbar-toggler collapsed'
         }
@@ -125,7 +128,9 @@ export class Navbar extends React.Component {
                             aria-expanded={open+''} 
                             onClick={this.handleToggleNavbarClick}
                             aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
+                            <div></div>
+                            <div></div>
+                            <div></div>
                     </button>
             
                     <div className={`navbar-collapse ${this.getNavbarCollapseClasses()}`} id={id}>
