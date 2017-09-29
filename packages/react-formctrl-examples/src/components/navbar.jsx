@@ -60,6 +60,7 @@ export class NavbarDropdown extends React.Component {
         const dropdownItems = React.Children.map(children, child => this.injectClickEvent(child))
         return (
             <li className={this.getToggleClass('nav-item dropdown')}>
+                <div className="backdrop" onClick={this.handleToggleClick}></div>
                 <a href="javascript:void(0)" onClick={this.handleToggleClick} className="nav-link dropdown-toggle">{text}</a>
                 <div className={this.getToggleClass('dropdown-menu')}>
                     {dropdownItems}
