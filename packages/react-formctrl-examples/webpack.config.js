@@ -37,6 +37,7 @@ module.exports = (env) => {
                 'modules/prismjs/themes/prism-coy.css',
                 'modules/bootstrap/dist/css/bootstrap-grid.min.css',
                 'modules/bootstrap/dist/css/bootstrap.min.css',
+                'modules/font-awesome/scss/font-awesome.scss'
             ]
         },
         output: {
