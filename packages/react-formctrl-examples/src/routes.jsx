@@ -19,11 +19,12 @@ export function Routes({branch = 'master'}) {
 
     const examplePath = 'react-formctrl-examples/src/cases'
     const rawExampleUrl = `${rootUrl}/packages/${examplePath}`
+    const rawLibraryUrl = `${rootUrl}/packages/react-formctrl`
     return (
         <Route path="/" render={() => (
             <div>
                 <Route exact path="/" render={() => (
-                    <ReadMe path={`${rootUrl}/README.md`} />
+                    <ReadMe path={`${rawLibraryUrl}/README.md`} />
                 )} />
 
                 <Route exact path="/basic" render={() => (
