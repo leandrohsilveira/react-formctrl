@@ -3,6 +3,7 @@ src
 example
 docs
 spec
+test
 public
 .*rc
 .eslintignore
