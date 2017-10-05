@@ -9,9 +9,9 @@ import {inputInject} from '../tests-utils'
 
 configure({adapter: new Adapter()})
 
-describe('About the FormProvider component', () => {
+describe('About the <FormProvider /> component', () => {
 
-    describe('The Form registration behaviour', () => {
+    describe('The <Form /> registration behaviour', () => {
 
         const formName = 'testForm'
 
@@ -24,43 +24,43 @@ describe('About the FormProvider component', () => {
             ))
         })
 
-        describe('When Form is registered', () => {
+        describe('When <Form /> is registered', () => {
             
-            test(`A Form instance named "${formName}" exists`, () => {
+            test(`A <Form /> instance named "${formName}" exists`, () => {
                 const formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
             })
 
-            test('The Form instance has formName property', () => {
+            test('The <Form /> instance has formName property', () => {
                 const formCtrl = dom.state('forms')[formName]
                 expect(formCtrl.formName).toBe(formName)
             })
 
-            test('The Form instance has no fields', () => {
+            test('The <Form /> instance has no fields', () => {
                 const formCtrl = dom.state('forms')[formName]
                 expect(Object.keys(formCtrl.fields)).toHaveLength(0)
             })
 
-            test('The Form instance has no values', () => {
+            test('The <Form /> instance has no values', () => {
                 const formCtrl = dom.state('forms')[formName]
                 expect(Object.keys(formCtrl.values)).toHaveLength(0)
             })
 
-            test('The Form instance has no files', () => {
+            test('The <Form /> instance has no files', () => {
                 const formCtrl = dom.state('forms')[formName]
                 expect(Object.keys(formCtrl.files)).toHaveLength(0)
             })
 
         })
 
-        describe('When Form is unregistered', () => {
+        describe('When <Form /> is unregistered', () => {
 
             beforeEach(() => {
                 dom.setProps({children: null})
                 dom.update()
             })
 
-            test(`A Form instance named "${formName}" does not exists`, () => {
+            test(`A <Form /> instance named "${formName}" does not exists`, () => {
                 const formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeUndefined()
             })
@@ -69,7 +69,7 @@ describe('About the FormProvider component', () => {
 
     })
 
-    describe('The Field registration behaviour', () => {
+    describe('The <Field /> registration behaviour', () => {
         const formName = 'testForm'
         const fieldName = 'testField'
         
@@ -86,14 +86,14 @@ describe('About the FormProvider component', () => {
             ))
         })
 
-        describe('When Field is registered', () => {
+        describe('When <Field /> is registered', () => {
 
-            test(`The Form instance has a field named "${fieldName}"`, () => {
+            test(`The <Form /> instance has a field named "${fieldName}"`, () => {
                 const formCtrl = dom.state('forms')[formName]
                 expect(Object.keys(formCtrl.fields)).toContain(fieldName)
             })
 
-            test(`The Form instance has a value entry named "${fieldName}"`, () => {
+            test(`The <Form /> instance has a value entry named "${fieldName}"`, () => {
                 const formCtrl = dom.state('forms')[formName]
                 expect(Object.keys(formCtrl.values)).toContain(fieldName)
             })
@@ -107,12 +107,12 @@ describe('About the FormProvider component', () => {
         //         field.update()
         //     })
 
-        //     test(`The Form instance has not a field named "${fieldName}"`, () => {
+        //     test(`The <Form /> instance has not a field named "${fieldName}"`, () => {
         //         const formCtrl = dom.state('forms')[formName]
         //         expect(Object.keys(formCtrl.fields)).toHaveLength(0)
         //     })
 
-        //     test(`The Form instance has not a value entry named "${fieldName}"`, () => {
+        //     test(`The <Form /> instance has not a value entry named "${fieldName}"`, () => {
         //         const formCtrl = dom.state('forms')[formName]
         //         expect(Object.keys(formCtrl.values)).toHaveLength(0)
         //     })

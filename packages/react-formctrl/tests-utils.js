@@ -6,3 +6,8 @@ export const inputInject = (fieldCtrl) => ({
     onChange: fieldCtrl.onChange,
     onBlur: fieldCtrl.onBlur
 })
+
+export const formControlInject = (formCtrl) => ({
+    name: formCtrl.formName, 
+    formCtrl
+})

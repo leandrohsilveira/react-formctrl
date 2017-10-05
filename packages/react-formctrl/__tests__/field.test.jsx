@@ -9,7 +9,7 @@ import {inputInject} from '../tests-utils'
 
 configure({adapter: new Adapter()})
 
-describe('About the Field component', () => {
+describe('About the <Field /> component', () => {
 
     describe('The field interaction behaviour', () => {
 
