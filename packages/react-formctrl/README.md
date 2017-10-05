@@ -1,4 +1,4 @@
-# React Form CTRL
+# React Form CTRL [![Build Status](https://travis-ci.org/leandrohsilveira/react-formctrl.svg?branch=master)](https://travis-ci.org/leandrohsilveira/react-formctrl)
 A lightweight React form library inspired by Angular's forms and Redux-Form.
 
 Bundle size: 26.5 KB (09/29/2017, v1.1.1)
