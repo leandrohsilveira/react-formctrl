@@ -220,6 +220,7 @@ dirty | boolean | `true` if any field of the form has changed it's value one or 
 unchanged | boolean | `true` if all fields values of the form are exactly equals it's initial values.
 changed | boolean | `true` if any field value of the form aren't exactly equals it's initial value.
 values | object{string: string} | The fields values of the form: `{[fieldName]: [fieldValue]}`.
+files | object{string: File[]} | The selected files of each file field of the form.
 fields | object{string: FieldStateController} | The fields controllers of the form: `{[fieldName]: [fieldCtrl]}`
 setFieldValue | Function | Method to programmatically change a field value: `props.formCtrl.setFieldValue('fieldName', 'newValue')`.
 
@@ -259,6 +260,7 @@ type | string | The input field type.
 onChange | HTMLEventHandler | The field change event handler: `(e) => handleChange(e.target.value)`.
 onBlur | HTMLEventHandler | The field blur event handler: `(e) => handleBlur(e.target.name)`.
 value | string | The current field value.
+files | File[] | The selected files of the field.
 ctrl | FieldStateController | The field controller.
 
 ```jsx
@@ -325,6 +327,7 @@ dirty | boolean | `true` if the field has changed it's value one or more times s
 unchanged | boolean | `true` if the field value is exactly equals it's initial value.
 changed | boolean | `true` if the field value isn't exactly equals it's initial value.
 value | string | The value of the field.
+files | File[] | The field selected files.
 errors | ValidationError[] | An array of strings with all current validation errors of the field.
 props | FieldStateProperties | Some properties of the Field.
 
