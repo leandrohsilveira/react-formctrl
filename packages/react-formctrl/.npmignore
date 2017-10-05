@@ -3,6 +3,8 @@ src
 example
 docs
 spec
+__tests__
+tests-utils.js
 public
 .*rc
 .eslintignore
