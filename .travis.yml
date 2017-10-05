@@ -3,3 +3,4 @@ node_js:
   - "6"
   - "7"
 install: "cd packages/react-formctrl && yarn"
+script: "cd packages/react-formctrl && npm test && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
