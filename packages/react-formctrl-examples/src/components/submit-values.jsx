@@ -78,7 +78,6 @@ export class SubmitValuesPopup extends React.Component {
 
     render() {
         const {show, formName, values, files} = this.state
-        console.log('SubmitValuesPopup.render', formName, values, files)
         return (
             <div className={`submit-values${show ? ' show' : ''}`}>
                 <div className="card">

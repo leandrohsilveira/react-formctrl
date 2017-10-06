@@ -79,7 +79,7 @@ export class Case extends React.Component {
             <div className="case clearfix">
                 <SubmitValuesPopup></SubmitValuesPopup>
                 <div className="case-display">
-                    {children}
+                    {React.cloneElement(children, { ...children.props, ...this.props })}
                 </div>
                 <div className="case-code">
                     <div className="card">
