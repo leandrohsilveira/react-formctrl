@@ -2,10 +2,6 @@ const INTEGER_REGEX = /^-?\d+?$/
 const FLOAT_REGEX = /^-?\d+(\.\d+)?$/
 const EMAIL_REGEX = /\S+@\S+\.\S+/
 
-function shouldValidateFile(props, files) {
-    return props.type === 'file' && files && files.length
-}
-
 export class Validator {
 
     constructor(name) {
@@ -20,11 +16,17 @@ export class Validator {
         return true
     }
 
-    createValidationError(params) {
-        return {
-            key: this.name,
-            params: params
+    createValidationError(value, files, params) {
+        const error = {
+            key: this.name
         }
+        if(Object.keys(params).length || value || (files && files.length)) {
+            error.params = {...params}
+            if(value) error.params.value = value
+            if(files && files.length) error.params.files = files
+        }
+        return error
+
     }
 
 }
@@ -56,7 +58,7 @@ export class PatternValidator extends Validator {
     }
 
     shouldValidate(props, value, files) {
-        return !!props.pattern && (shouldValidateFile(props, files) || !!value)
+        return !!value && !!props.pattern
     }
 
     getRegExp(props) {
@@ -288,10 +290,12 @@ export function validate(validators = [], props, value, files) {
         const errors = []
         matchedValidators.forEach(validator => {
             const result = validator.validate(props, value, files)
-            if(typeof result === 'boolean' && !result) {
-                errors.push(validator.createValidationError({}))
+            if(typeof result === 'boolean') {
+                if(!result) {
+                    errors.push(validator.createValidationError(value, files, {}))
+                }
             } else {
-                errors.push(validator.createValidationError(result))
+                errors.push(validator.createValidationError(value, files, result))
             }
         })
         return errors
