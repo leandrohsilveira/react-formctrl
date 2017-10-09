@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import {Validator} from '../validator/validator'
+
 declare interface CustomPropertiesInjection {
     [propertyInjectionName: string]: any;
 }
@@ -316,29 +318,15 @@ declare interface FieldStateController {
 
 }
 
-declare interface CustomValidator {
-
-    /**
-     * The name of the validator to be referenced on Fields which shoud be validated.
-     */
-    name: string;
-
-    /**
-     * The validator function to be executed when the Field component refers to this validator's name.
-     */
-    validate(value: string, params?: any): boolean;
-
-}
-
 declare interface FormProviderProps extends React.Props<any> {
 
-    customValidators?: CustomValidator[];
+    validators?: Validator[];
 
 }
 
 declare interface FormProviderState {
     forms: {[formName: string]: FormStateController},
-    customValidators?: any;
+    validators?: any;
 }
 
 declare class FormProvider extends React.Component<FormProviderProps, FormProviderState> {
