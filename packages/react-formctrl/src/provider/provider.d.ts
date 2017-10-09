@@ -343,32 +343,6 @@ declare interface FormProviderState {
 
 declare class FormProvider extends React.Component<FormProviderProps, FormProviderState> {
 
-    subscribe(): void;
-
     onEvent(event: CustomEvent): void;
-
-    onRegisterForm(formName: string): void;
-
-    onRegisterField(formName: string, fieldName: string, fieldCtrl: FieldStateController): void;
-
-    onUnregisterForm(formName: string): void;
-
-    onUnregisterField(formName: string, fieldName: string): void;
-
-    onFieldChanged(formName: string, fieldName: string, value: string, files?: File[]): void;
-
-    onFieldPropsChanged(formName: string, fieldName: string, props: FieldStateProperties): void;
-
-    onFieldBlurred(formName: string, fieldName: string): void;
-    
-    updateFormCtrl(formName: string, formCtrl: FormStateController): void;
-
-    updateFieldCtrl(formName: string, fieldCtrl: FieldStateController, value: string): void;
-
-    onFormSubmited(formName: string, formRef: string): void;
-
-    onFormReseted(formName: string): void;
-
-    unsubscribe(): void;
 
 }
