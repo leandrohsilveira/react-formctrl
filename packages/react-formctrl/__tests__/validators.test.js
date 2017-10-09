@@ -27,8 +27,8 @@ function validate(validator, props, when, specs) {
         specs.forEach(spec => {
             test(`With value "${getSpecValue(spec)}"`, () => {
                 let result = null
-                if(validator.shouldValidate(props, spec.value, spec.files)) {
-                    result = validator.validate(props, spec.value, spec.files)
+                if(validator.shouldValidate(spec.formCtrl || {}, props, spec.value, spec.files)) {
+                    result = validator.validate(spec.formCtrl || {}, props, spec.value, spec.files)
                 }
                 expect(result).toEqual(spec.expect)
             })

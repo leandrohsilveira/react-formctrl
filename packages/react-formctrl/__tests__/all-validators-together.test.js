@@ -29,7 +29,7 @@ function describeValidate(validators, props, when, specs) {
     describe(when, () => {
         specs.forEach(spec => {
             test(`With value "${getSpecValue(spec)}"`, () => {
-                let result = validate(validators, props, spec.value, spec.files)
+                let result = validate(validators, spec.formCtrl || {}, props, spec.value, spec.files)
                 expect(result).toEqual(spec.expect)
             })
         })
