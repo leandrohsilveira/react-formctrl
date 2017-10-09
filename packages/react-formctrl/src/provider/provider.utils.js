@@ -54,6 +54,8 @@ export function copyError(error) {
             else params[paramName] = param
         })
         output.params = params
+    } else {
+        output.params = undefined
     }
     return output
 }
@@ -67,6 +69,8 @@ export function copyErrors(errors) {
 
 export function copyFieldCtrl(fieldCtrl) {
     return {
+        __instances: fieldCtrl.__instances,
+        validating: fieldCtrl.validating,
         valid: fieldCtrl.valid,
         invalid: fieldCtrl.invalid,
         untouched: fieldCtrl.untouched,
@@ -124,6 +128,9 @@ export function copyFormFields(fields) {
 
 export function copyFormCtrl(formCtrl) {
     return {
+        __instances: formCtrl.__instances,
+        formName: formCtrl.formName,
+        validating: formCtrl.validating,
         valid: formCtrl.valid,
         invalid: formCtrl.invalid,
         untouched: formCtrl.untouched,
