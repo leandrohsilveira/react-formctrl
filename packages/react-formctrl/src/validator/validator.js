@@ -8,11 +8,11 @@ export class Validator {
         this.name = name
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return true;
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         return true
     }
 
@@ -37,11 +37,11 @@ export class RequiredValidator extends Validator {
         super('required')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return !!props.required
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         if(props.type === 'file') {
             return !!files && !!files.length
         } else {
@@ -57,7 +57,7 @@ export class PatternValidator extends Validator {
         super('pattern')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return !!value && !!props.pattern
     }
 
@@ -69,7 +69,7 @@ export class PatternValidator extends Validator {
         }
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         const pattern = this.getRegExp(props)
         return !pattern.test(value) ? {pattern} : true
     }
@@ -82,11 +82,11 @@ export class EmailValidator extends Validator {
         super('email')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return !!value && props.type === 'email'
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         return EMAIL_REGEX.test(value)
     }
 
@@ -98,11 +98,11 @@ export class IntegerValidator extends Validator {
         super('integer')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return !!value && props.type === 'number' && props.integer
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         return INTEGER_REGEX.test(value)
     }
 
@@ -114,11 +114,11 @@ export class FloatValidator extends Validator {
         super('float')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return !!value && props.type === 'number' && !props.integer
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         return FLOAT_REGEX.test(value)
     }
 
@@ -130,11 +130,11 @@ export class MinLengthValidator extends Validator {
         super('minLength')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return !!value && props.minLength !== undefined && props.minLength !== null
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         return (value+'').length < +props.minLength ? {length: (value+'').length, minLength: +props.minLength} : true
     }
 
@@ -146,11 +146,11 @@ export class MaxLengthValidator extends Validator {
         super('maxLength')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return !!value && props.maxLength !== undefined && props.maxLength !== null
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         return (value+'').length > +props.maxLength ? {length: (value+'').length, maxLength: props.maxLength} : true
     }
 
@@ -162,11 +162,11 @@ export class MinValidator extends Validator {
         super('min')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return !!value && props.type === 'number' && props.min !== undefined && props.min !== null
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         return +value < +props.min ? {min: +props.min} : true
     }
 
@@ -178,12 +178,29 @@ export class MaxValidator extends Validator {
         super('max')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return !!value && props.type === 'number' && props.max !== undefined && props.max !== null
     }
     
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         return +value > +props.max ? {max: +props.max} : true
+    }
+
+}
+
+export class MatchValidator extends Validator {
+
+    constructor() {
+        super('match')
+    }
+
+    shouldValidate(formCtrl, props, value, files) {
+        return !!value && !!props.match && formCtrl && formCtrl.values && formCtrl.fields[props.match]
+    }
+
+    validate(formCtrl, props, value, files) {
+        const matchValue = formCtrl.values[props.match]
+        return value !== matchValue ? {match: props.match} : true
     }
 
 }
@@ -194,11 +211,11 @@ export class FileAcceptValidator extends Validator {
         super('accept')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return props.type === 'file' && !!props.accept && files && files.length
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         const unmatchedFiles = files.filter(file => {
             const matchedAccepts = props.accept.replace(/ /g, '').split(',').filter(mimetype => new RegExp(`^${mimetype.replace(/\*/g, '.*')}$`).test(file.type))
             return matchedAccepts.length === 0
@@ -214,11 +231,11 @@ export class FileExtensionValidator extends Validator {
         super('extensions')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return props.type === 'file' && props.extensions && props.extensions.length && files && files.length
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         const unmatchedFiles = files.filter(file => {
             const matchedAccepts = props.extensions.filter(extension => {
                 const regex = new RegExp(`\\.${extension.replace(/\./, '')}$`, 'i')
@@ -237,11 +254,11 @@ export class FileMaxSizeValidator extends Validator {
         super('maxSize')
     }
 
-    shouldValidate(props, value, files) {
+    shouldValidate(formCtrl, props, value, files) {
         return props.type === 'file' && +props.maxSize > 0 && files && files.length
     }
 
-    validate(props, value, files) {
+    validate(formCtrl, props, value, files) {
         const unmatchedFiles = files.filter(file => {
             return file.size > +props.maxSize
         })
@@ -262,6 +279,7 @@ export function getDefaultValidators() {
     validators.push(new MaxLengthValidator())
     validators.push(new MinValidator())
     validators.push(new MaxValidator())
+    validators.push(new MatchValidator())
     validators.push(new FileAcceptValidator())
     validators.push(new FileExtensionValidator())
     validators.push(new FileMaxSizeValidator())
@@ -284,12 +302,12 @@ export function combineValidators(customValidators = []) {
 
 }
 
-export function validate(validators = [], props, value, files) {
-    const matchedValidators = validators.filter(validator =>  validator.shouldValidate(props, value, files))
+export function validate(validators = [], formCtrl, props, value, files) {
+    const matchedValidators = validators.filter(validator =>  validator.shouldValidate(formCtrl, props, value, files))
     if(matchedValidators && matchedValidators.length) {
         const errors = []
         matchedValidators.forEach(validator => {
-            const result = validator.validate(props, value, files)
+            const result = validator.validate(formCtrl, props, value, files)
             if(typeof result === 'boolean') {
                 if(!result) {
                     errors.push(validator.createValidationError(value, files, {}))
