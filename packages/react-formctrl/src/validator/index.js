@@ -31,6 +31,14 @@ export class Validator {
 
 }
 
+export class CustomValidator extends Validator {
+
+    shouldValidate(formCtrl, props, value, files) {
+        return !!value && props.validate && (props.validate === this.name || !!props.validate.find(_val => _val === this.name))
+    }
+
+}
+
 export class RequiredValidator extends Validator {
 
     constructor() {

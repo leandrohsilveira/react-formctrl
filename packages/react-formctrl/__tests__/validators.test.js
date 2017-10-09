@@ -10,7 +10,7 @@ import {
     FileAcceptValidator,
     FileExtensionValidator,
     FileMaxSizeValidator
-} from '../src/validator/validator'
+} from '../src/validator'
 
 function getSpecValue(spec) {
     if(spec) {

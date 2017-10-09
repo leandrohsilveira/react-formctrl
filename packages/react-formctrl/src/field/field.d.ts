@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { DefaultFieldInjectedProps, CustomPropertiesInjection, FieldStateController, FieldEvent, ValidatorSpec } from '../provider/provider';
+import { DefaultFieldInjectedProps, CustomPropertiesInjection, FieldStateController, FieldEvent } from '../provider/provider';
 
 declare interface FieldProps extends React.Props<any> {
 
@@ -72,7 +72,7 @@ declare interface FieldProps extends React.Props<any> {
     /**
      * An array of custom validators registered on FormProvider component.
      */
-    validate?: (string|ValidatorSpec)[];
+    validate?: string|string[];
 
     /**
      * A collection of accepted mimetypes separated by comma.
