@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { FormEventDispatcher, REACT_FORMCTRL } from '../provider/provider'
+import { FormEventDispatcher } from '../provider/provider'
+import { REACT_FORMCTRL } from '../provider/provider.actions'
 
 export class Field extends React.Component {
 
