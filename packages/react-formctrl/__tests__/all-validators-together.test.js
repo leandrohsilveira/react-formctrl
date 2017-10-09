@@ -1,19 +1,9 @@
 import {
-    RequiredValidator,
-    PatternValidator,
-    IntegerValidator,
-    FloatValidator,
-    MinLengthValidator,
-    MaxLengthValidator,
-    MinValidator,
-    MaxValidator,
-    FileAcceptValidator,
-    FileExtensionValidator,
-    FileMaxSizeValidator,
+    CustomValidator,
 
     combineValidators,
     validate
-} from '../src/validator/validator'
+} from '../src/validator'
 
 function getSpecValue(spec) {
     if(spec) {
@@ -36,9 +26,23 @@ function describeValidate(validators, props, when, specs) {
     })
 }
 
+class NoAdminValidator extends CustomValidator {
+
+    constructor() {
+        super('noadmin')
+    }
+
+    validate(formCtrl, props, value, files) {
+        return !/^admin$/i.test(value)
+    }
+
+}
+
 describe('About all validators together', () => {
 
-    const validators = combineValidators([])
+    const validators = combineValidators([
+        new NoAdminValidator()
+    ])
     
     describeValidate(validators, {}, 'When has not any prop', [
         {value: '', expect: null},
@@ -282,6 +286,36 @@ describe('About all validators together', () => {
         {value: 150, expect: [{key: 'max', params: {value: 150, max: 50.3}}]},
         {value: 150.0, expect: [{key: 'max', params: {value: 150.0, max: 50.3}}]},
         {value: 150.5, expect: [{key: 'max', params: {value: 150.5, max: 50.3}}]},
+    ])
+
+    describeValidate(validators, {validate: 'noadmin'}, 'When has a validate prop (custom validation)', [
+        {value: '', expect: null},
+        {value: '9', expect: []},
+        {value: '999', expect: []},
+        {value: '9.', expect: []},
+        {value: '9.5', expect: []},
+        {value: '9.0', expect: []},
+        {value: '999Te', expect: []},
+        {value: 'Te999', expect: []},
+        {value: 'Test', expect: []},
+        {value: 'admin', expect: [{key: 'noadmin', params: {value: 'admin'}}]},
+        {value: 'ADMIN', expect: [{key: 'noadmin', params: {value: 'ADMIN'}}]},
+        {value: 'AdMiN', expect: [{key: 'noadmin', params: {value: 'AdMiN'}}]},
+    ])
+
+    describeValidate(validators, {validate: ['noadmin']}, 'When has an array of validate prop (custom validation)', [
+        {value: '', expect: null},
+        {value: '9', expect: []},
+        {value: '999', expect: []},
+        {value: '9.', expect: []},
+        {value: '9.5', expect: []},
+        {value: '9.0', expect: []},
+        {value: '999Te', expect: []},
+        {value: 'Te999', expect: []},
+        {value: 'Test', expect: []},
+        {value: 'admin', expect: [{key: 'noadmin', params: {value: 'admin'}}]},
+        {value: 'ADMIN', expect: [{key: 'noadmin', params: {value: 'ADMIN'}}]},
+        {value: 'AdMiN', expect: [{key: 'noadmin', params: {value: 'AdMiN'}}]},
     ])
 
     describeValidate(validators, {type: 'file', accept: 'image/png'}, 'When has file type and a accept prop', [

@@ -16,7 +16,7 @@ import {
     REACT_FORMCTRL_NAME
 } from './provider.actions'
 
-import {combineValidators} from '../validator/validator'
+import {combineValidators} from '../validator'
 
 import {copyFieldCtrl, copyFormCtrl} from './provider.utils'
 

@@ -1,6 +1,6 @@
 
 import {REACT_FORMCTRL} from './provider.actions'
-import {validate} from '../validator/validator'
+import {validate} from '../validator'
 
 const INTEGER_REGEX = /^-?\d+?$/
 const FLOAT_REGEX = /^-?\d+(\.\d+)?$/

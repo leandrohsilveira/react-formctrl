@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import {Validator} from '../validator/validator'
+import {Validator} from '../validator'
 
 declare interface CustomPropertiesInjection {
     [propertyInjectionName: string]: any;
@@ -179,12 +179,6 @@ declare interface FormStateController {
     fields: {[fieldName: string]: FieldStateController};
 
 }
-
-declare interface ValidatorSpec {
-    name: string;
-    props?: any;
-}
-
 
 /**
  * The properties of a registered form field on FormProvider.
