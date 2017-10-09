@@ -8,7 +8,7 @@ const INTEGER_REGEX = /^-?\d+?$/
 const FLOAT_REGEX = /^-?\d+(\.\d+)?$/
 const EMAIL_REGEX = /\S+@\S+\.\S+/
 
-const PROVIDER_FLAG = `${REACT_FORMCTRL_NAME}.FormProvider`
+const PROVIDER_EVENT = `${REACT_FORMCTRL_NAME}.FormProvider`
 
 export const REACT_FORMCTRL = {
     EVENTS: {
@@ -168,58 +168,60 @@ export class FormEventDispatcher {
     }
 
     static dispatchRegisterForm(form) {
-        const payload = {detail: {form}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.REGISTER_FORM, payload)
+        const payload = {detail: { type: REACT_FORMCTRL.EVENTS.REGISTER_FORM, payload: {form}}}
+        const event = new CustomEvent(PROVIDER_EVENT, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchUnregisterForm(form) {
-        const payload = {detail: {form}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, payload)
+        const payload = {detail: { type: REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, payload: {form}}}
+        const event = new CustomEvent(PROVIDER_EVENT, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchSubmitForm(form, formRef) {
-        const payload = {detail: {form, formRef}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, payload)
+        const payload = {detail: { type: REACT_FORMCTRL.EVENTS.FORM_SUBMITED, payload: {form, formRef}}}
+        const event = new CustomEvent(PROVIDER_EVENT, payload)
         document.dispatchEvent(event)
     }
     
     static dispatchResetForm(form) {
-        const payload = {detail: {form}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FORM_RESETED, payload)
+        const payload = {detail: { type: REACT_FORMCTRL.EVENTS.FORM_RESETED, payload: {form}}}
+        const event = new CustomEvent(PROVIDER_EVENT, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchRegisterField(form, field, fieldCtrl) {
-        const payload = {detail: {form, field, fieldCtrl: FormEventDispatcher.copyFieldCtrl(fieldCtrl)}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.REGISTER_FIELD, payload)
+        const payload = {detail: { type: REACT_FORMCTRL.EVENTS.REGISTER_FIELD, payload: {form, field, fieldCtrl: FormEventDispatcher.copyFieldCtrl(fieldCtrl)}}}
+        const event = new CustomEvent(PROVIDER_EVENT, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchUnregisterField(form, field) {
-        const payload = {detail: {form, field}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, payload)
+        const payload = {detail: { type: REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, payload: {form, field}}}
+        const event = new CustomEvent(PROVIDER_EVENT, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchFieldPropsChanged(form, field, props) {
-        const payload = {detail: {form, field, props: FormEventDispatcher.copyFieldCtrlProps(props)}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_PROPS_CHANGED, payload)
+        const payload = {detail: { type: REACT_FORMCTRL.EVENTS.FIELD_PROPS_CHANGED, payload: {form, field, props: FormEventDispatcher.copyFieldCtrlProps(props)}}}
+        const event = new CustomEvent(PROVIDER_EVENT, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchFieldChanged(form, field, value, files) {
-        const payload = {detail: {form, field, value, files: FormEventDispatcher.copyFiles(files)}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, payload)
+        const payload = {detail: { type: REACT_FORMCTRL.EVENTS.FIELD_CHANGED, payload: {form, field, value, files: FormEventDispatcher.copyFiles(files)}}}
+        const event = new CustomEvent(PROVIDER_EVENT, payload)
         document.dispatchEvent(event)
     }
 
     static dispatchFieldBlur(form, field) {
-        const payload = {detail: {form, field}}
-        const event = new CustomEvent(REACT_FORMCTRL.EVENTS.FIELD_BLURRED, payload)
+        const payload = {detail: { type: REACT_FORMCTRL.EVENTS.FIELD_BLURRED, payload: {form, field}}}
+        const event = new CustomEvent(PROVIDER_EVENT, payload)
         document.dispatchEvent(event)
     }
+
+
 
     static forwardSubmitFormEvent(form, values, formCtrl, formRef) {
         const payload = {detail: {values, formRef, formCtrl: FormEventDispatcher.copyFormCtrl(formCtrl)}}
@@ -256,8 +258,6 @@ export class FormProvider extends React.Component {
             forms: {},
             customValidators: {}
         }
-        this.subscribe = this.subscribe.bind(this)
-        this.unsubscribe = this.unsubscribe.bind(this)
         this.onEvent = this.onEvent.bind(this)
         this.onRegisterForm = this.onRegisterForm.bind(this)
         this.onUnregisterForm = this.onUnregisterForm.bind(this)
@@ -273,11 +273,7 @@ export class FormProvider extends React.Component {
     }
 
     componentWillMount() {
-        // if (window.sessionStorage.getItem(PROVIDER_FLAG)) {
-        //     throw 'Two instances of FormProvided found, only one instance can exists because events erros may occur.'
-        // }
-        // window.sessionStorage.setItem(PROVIDER_FLAG, 'true')
-        this.subscribe()
+        document.addEventListener(PROVIDER_EVENT, this.onEvent)
         const newState = {
             customValidators: {},
         }
@@ -289,25 +285,13 @@ export class FormProvider extends React.Component {
     }
 
     componentWillUnmount() {
-        // window.sessionStorage.removeItem(PROVIDER_FLAG)
-        this.unsubscribe()
-    }
-
-    subscribe() {
-        document.addEventListener(REACT_FORMCTRL.EVENTS.REGISTER_FORM, this.onEvent)
-        document.addEventListener(REACT_FORMCTRL.EVENTS.REGISTER_FIELD, this.onEvent)
-        document.addEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, this.onEvent)
-        document.addEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, this.onEvent)
-        document.addEventListener(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, this.onEvent)
-        document.addEventListener(REACT_FORMCTRL.EVENTS.FIELD_BLURRED, this.onEvent)
-        document.addEventListener(REACT_FORMCTRL.EVENTS.FIELD_PROPS_CHANGED, this.onEvent)
-        document.addEventListener(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, this.onEvent)
-        document.addEventListener(REACT_FORMCTRL.EVENTS.FORM_RESETED, this.onEvent)
+        document.removeEventListener(PROVIDER_EVENT, this.onEvent)
     }
 
     onEvent(event) {
-        const type = event.type
-        const payload = event.detail
+        const detail = event.detail
+        const type = detail.type
+        const payload = detail.payload
         const EVENTS = REACT_FORMCTRL.EVENTS
         switch(type) {
             case EVENTS.REGISTER_FORM:
@@ -616,18 +600,6 @@ export class FormProvider extends React.Component {
             this.updateFormCtrl(formName, form)
             return state
         })
-    }
-
-    unsubscribe() {
-        document.removeEventListener(REACT_FORMCTRL.EVENTS.REGISTER_FORM, this.onEvent)
-        document.removeEventListener(REACT_FORMCTRL.EVENTS.REGISTER_FIELD, this.onEvent)
-        document.removeEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FORM, this.onEvent)
-        document.removeEventListener(REACT_FORMCTRL.EVENTS.UNREGISTER_FIELD, this.onEvent)
-        document.removeEventListener(REACT_FORMCTRL.EVENTS.FIELD_CHANGED, this.onEvent)
-        document.removeEventListener(REACT_FORMCTRL.EVENTS.FIELD_BLURRED, this.onEvent)
-        document.removeEventListener(REACT_FORMCTRL.EVENTS.FIELD_PROPS_CHANGED, this.onEvent)
-        document.removeEventListener(REACT_FORMCTRL.EVENTS.FORM_SUBMITED, this.onEvent)
-        document.removeEventListener(REACT_FORMCTRL.EVENTS.FORM_RESETED, this.onEvent)
     }
 
     render() {
