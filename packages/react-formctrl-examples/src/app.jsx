@@ -13,7 +13,9 @@ import {AppLayout} from './layout/layout'
 
 import './app.scss'
 
-GoogleAnalytics.initialize('UA-107666080-1');
+if(gaId) {
+    GoogleAnalytics.initialize(gaId);
+}
 
 class NoAdminValidator extends CustomValidator {
 
