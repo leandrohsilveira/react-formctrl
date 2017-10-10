@@ -34,7 +34,7 @@
     "analyze:dev": "node ./src/analyze.js --output=./public/packages.sizes.json",
     "predev": "npm run analyze:dev",
     "dev": "webpack-dev-server --progress --colors --hot --env.profile=dev --env.gaId='UA-107666080-2'",
-    "predocs": "npm run analyze",
+    "postdocs": "npm run analyze",
     "docs": "webpack --progress -p --env.profile=docs --env.gaId=UA-107666080-1"
   },
   "dependencies": {
