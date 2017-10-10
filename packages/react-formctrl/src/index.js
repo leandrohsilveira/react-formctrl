@@ -6,3 +6,4 @@ export {
 
 export {Form, FormControl} from './form/form'
 export {Field} from './field/field'
+export {Validator, CustomValidator} from './validator'

@@ -385,18 +385,18 @@ describe('About the <Field /> component', () => {
                     expect(fieldCtrl).toBeDefined()
                 })
 
-                test('The form is invalid', () => {
-                    expect(formCtrl.valid).toBeFalsy()
-                    expect(formCtrl.invalid).toBeTruthy()
+                test('The form is valid', () => {
+                    expect(formCtrl.valid).toBeTruthy()
+                    expect(formCtrl.invalid).toBeFalsy()
                 })
 
-                test('The field is invalid', () => {
-                    expect(fieldCtrl.valid).toBeFalsy()
-                    expect(fieldCtrl.invalid).toBeTruthy()
+                test('The field is valid', () => {
+                    expect(fieldCtrl.valid).toBeTruthy()
+                    expect(fieldCtrl.invalid).toBeFalsy()
                 })
 
-                test('The field contains a "email" error message', () => {
-                    expect(fieldCtrl.errors).toContainEqual({key: 'email', params: {value: ''}})
+                test('The field does not contains errors messages', () => {
+                    expect(fieldCtrl.errors).toHaveLength(0)
                 })
 
             })
@@ -520,18 +520,18 @@ describe('About the <Field /> component', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The form is invalid', () => {
-                expect(formCtrl.valid).toBeFalsy()
-                expect(formCtrl.invalid).toBeTruthy()
+            test('The form is valid', () => {
+                expect(formCtrl.valid).toBeTruthy()
+                expect(formCtrl.invalid).toBeFalsy()
             })
 
-            test('The field is invalid', () => {
-                expect(fieldCtrl.valid).toBeFalsy()
-                expect(fieldCtrl.invalid).toBeTruthy()
+            test('The field is valid', () => {
+                expect(fieldCtrl.valid).toBeTruthy()
+                expect(fieldCtrl.invalid).toBeFalsy()
             })
-
-            test('The field contains a "float" error message', () => {
-                expect(fieldCtrl.errors).toContainEqual({key: 'float', params: {value: ''}})
+            
+            test('The field does not contains errors messages', () => {
+                expect(fieldCtrl.errors).toHaveLength(0)
             })
 
         })
@@ -658,17 +658,18 @@ describe('About the <Field /> component', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The form is invalid', () => {
-                expect(formCtrl.valid).toBeFalsy()
-                expect(formCtrl.invalid).toBeTruthy()
+            test('The form is valid', () => {
+                expect(formCtrl.valid).toBeTruthy()
+                expect(formCtrl.invalid).toBeFalsy()
             })
 
-            test('The field is invalid', () => {
-                expect(fieldCtrl.valid).toBeFalsy()
-                expect(fieldCtrl.invalid).toBeTruthy()
+            test('The field is valid', () => {
+                expect(fieldCtrl.valid).toBeTruthy()
+                expect(fieldCtrl.invalid).toBeFalsy()
             })
-            test('The field contains a "integer" error message', () => {
-                expect(fieldCtrl.errors).toContainEqual({key: 'integer', params: {value: ''}})
+            
+            test('The field does not contains errors messages', () => {
+                expect(fieldCtrl.errors).toHaveLength(0)
             })
 
         })

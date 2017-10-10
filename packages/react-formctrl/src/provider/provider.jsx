@@ -16,6 +16,8 @@ import {
     REACT_FORMCTRL_NAME
 } from './provider.actions'
 
+import {combineValidators} from '../validator'
+
 import {copyFieldCtrl, copyFormCtrl} from './provider.utils'
 
 import {formProviderReducer} from './provider.reducer'
@@ -97,20 +99,17 @@ export class FormProvider extends React.Component {
         super(props)
         this.state = {
             forms: {},
-            customValidators: {}
+            validators: {}
         }
         this.onEvent = this.onEvent.bind(this)
     }
 
     componentWillMount() {
         document.addEventListener(PROVIDER_EVENT, this.onEvent)
+        const {validators = []} = this.props
         const newState = {
-            customValidators: {},
+            validators: combineValidators(validators),
         }
-        const {customValidators = []} = this.props
-        customValidators.forEach(validator => {
-            newState.customValidators[validator.name] = validator.validate
-        })
         this.setState(newState)
     }
 

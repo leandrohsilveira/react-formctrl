@@ -1,5 +1,6 @@
 
 import {REACT_FORMCTRL} from './provider.actions'
+import {validate} from '../validator'
 
 const INTEGER_REGEX = /^-?\d+?$/
 const FLOAT_REGEX = /^-?\d+(\.\d+)?$/
@@ -174,13 +175,6 @@ function onFormReseted(state, formName) {
     return {forms}
 }
 
-function createValidationError(key, params) {
-    return {
-        key,
-        params
-    }
-}
-
 function updateFormCtrl(formName, form) {
     form.validating = false
     form.valid = true
@@ -206,71 +200,12 @@ function updateFormCtrl(formName, form) {
 }
 
 function updateFieldCtrl(state, formName, fieldCtrl, value, files) {
-    const errors = []
-    const {customValidators = {}} = state
     const {
         initialValue,
-        props: {
-            name = null,
-            type = 'text', 
-            required = null, 
-            pattern = null, 
-            match = null, 
-            integer = null,
-            min = null,
-            max = null,
-            minLength = null,
-            maxLength = null,
-            extensions = [],
-            accept = null, 
-            maxSize = null,
-            validate = []
-        }
+        props
     } = fieldCtrl
 
-    if(required && !value) errors.push(createValidationError('required'))
-    else if(pattern != null && pattern instanceof RegExp && !pattern.test(value)) errors.push(createValidationError('pattern', {value, pattern}))
-    else if(pattern  != null && !new RegExp(pattern).test(value)) errors.push(createValidationError('pattern', {value, pattern}))
-    else if(match != null) {
-        const form = state.forms[formName]
-        if(form && form.values[match] != value) errors.push(createValidationError('match', {value, match}))
-    } else {
-        if(type === 'email' && !EMAIL_REGEX.test(value)) errors.push(createValidationError('email', {value}))
-        if(type === 'number') {
-            if(integer && !INTEGER_REGEX.test(value)) errors.push(createValidationError('integer', {value}))
-            if(!integer && !FLOAT_REGEX.test(value)) errors.push(createValidationError('float', {value}))
-            if(min != null && +value < min) errors.push(createValidationError('min', {value, min}))
-            if(max != null && +value > max) errors.push(createValidationError('max', {value, max}))
-        } else if(type === 'file' && files && files.length) {
-            files.forEach(file => {
-                if(extensions && extensions.length) {
-                    const matchedExtensions = extensions.filter(extension => {
-                        const regex = new RegExp(`\\.${extension.replace(/\./, '')}$`, 'i')
-                        return regex.test(file.name)
-                    })
-                    if(!matchedExtensions.length) errors.push(createValidationError('extension', {value, file, extensions}))
-                } else if(accept) {
-                    const matchedAccepts = accept.replace(/ /g, '').split(',').filter(mimetype => new RegExp(`^${mimetype.replace(/\*/g, '.*')}$`).test(file.type))
-                    if(!matchedAccepts.length) errors.push(createValidationError('accept', {value, file, accept}))
-                }
-                if(maxSize != null && file.size > +maxSize) errors.push(createValidationError('maxSize', {value, file, maxSize}))
-            })
-        } else {
-            if(minLength != null && value && value.length < minLength) errors.push(createValidationError('minLength', {value, minLength}))
-            if(maxLength != null && value && value.length > maxLength) errors.push(createValidationError('maxLength', {value, maxLength}))
-        }
-        if(validate.length && Object.keys(customValidators).length) {
-            validate.forEach(validatorSpec => {
-                let validatorName = validatorSpec
-                const params = {value, ...validatorSpec.params}
-                if(typeof validatorSpec === 'object') {
-                    validatorName = validatorSpec.name
-                }
-                let validator = customValidators[validatorName]
-                if(validator && !validator(value, params, files)) errors.push(createValidationError(validatorName, params))
-            })
-        }
-    }
+    const errors = validate(state.validators, state.forms[formName], props, value, files) || []
 
     fieldCtrl.value = value;
     fieldCtrl.errors = errors;

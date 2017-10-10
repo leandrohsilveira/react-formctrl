@@ -7,24 +7,37 @@ import {FormProvider} from 'react-formctrl'
 import {SubmitValuesPopup} from './components/submit-values'
 import {Routes} from './routes'
 
+import {CustomValidator} from 'react-formctrl/lib/validator'
+
 import {AppLayout} from './layout/layout'
 
 import './app.scss'
 
-GoogleAnalytics.initialize('UA-107666080-1');
+if(gaId) {
+    GoogleAnalytics.initialize(gaId);
+}
+
+class NoAdminValidator extends CustomValidator {
+
+    constructor() {
+        super('noadmin')
+    }
+
+    validate(formCtrl, props, value, files) {
+        return !/^admin$/i.test(value)
+    }
+
+}
+
 
 export function App(props) {
 
-    const customValidators = [{
-        name: 'noadmin',
-        validate: (value) => {
-            if(value) return !(/^admin$/i.test(value))
-            return true
-        }
-    }]
+    const customValidators = [
+        new NoAdminValidator()
+    ]
 
     return (
-        <FormProvider customValidators={customValidators}>
+        <FormProvider validators={customValidators}>
             <HashRouter>
                 <AppLayout>
                     <Routes />

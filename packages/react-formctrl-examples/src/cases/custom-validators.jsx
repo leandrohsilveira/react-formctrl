@@ -2,6 +2,8 @@ import React from 'react'
 
 import {FormProvider, FormControl, Form, Field} from 'react-formctrl'
 
+import {CustomValidator} from 'react-formctrl/lib/validator'
+
 import {SubmitValuesPopup} from '../components/submit-values'
 
 function Input({name, label, type, onChange, onBlur, value, ctrl: {valid, invalid, dirty, errors}}) {
@@ -23,12 +25,12 @@ function Input({name, label, type, onChange, onBlur, value, ctrl: {valid, invali
 function CustomValidatorForm({onSubmit, formCtrl: {formName, invalid, unchanged}}) {
     return (
         <Form name={formName} onSubmit={onSubmit}>
-            <Field form={formName} name="username" validate={["noadmin"]} required>
-                <Input label="Username (required, not admin)"></Input>
+            <Field form={formName} name="username1" validate={["noadmin"]} required>
+                <Input label="Username 1 (required, not admin)"></Input>
             </Field>
 
-            <Field form={formName} name="username" validate={[{name: "noadmin"}]} required>
-                <Input label="Username (required, not admin)"></Input>
+            <Field form={formName} name="username2" validate= "noadmin" required>
+                <Input label="Username 2 (required, not admin)"></Input>
             </Field>
 
             <button type="submit" className="btn btn-primary" disabled={invalid || unchanged}>Submit</button>
@@ -51,14 +53,22 @@ export function CustomValidatorExample() {
     )
 }
 
+class NoAdminValidator extends CustomValidator {
+    
+    constructor() {
+        super('noadmin') // This constructor parameter defines the error message key
+    }
+
+    validate(formCtrl, props, value, files) {
+        return !/^admin$/i.test(value)
+    }
+
+}
+
 function App() {
-    const customValidators = [{
-        name: 'noadmin',
-        validate: (value) => {
-            if(value) return !(/^admin$/i.test(value))
-            return true
-        }
-    }]
+    const customValidators = [
+        new NoAdminValidator()
+    ]
     return (
         <FormProvider customValidators={customValidators}>
             <CustomValidatorExample></CustomValidatorExample>

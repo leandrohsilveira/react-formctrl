@@ -13,6 +13,7 @@ import { UserFormApp } from './cases/user-form'
 import { CustomValidatorExample } from './cases/custom-validators'
 import { FieldsExample } from './cases/fields'
 import { ReadMe } from './components/read-me'
+import {BundleSize} from './components/bundle-size'
 
 import GoogleAnalytics from 'react-ga';
 
@@ -25,14 +26,16 @@ class AnalyticsRoute extends React.Component {
     }
 
     track(location) {
-        const page = location.pathname;
-        console.debug(`Sending page view request to Google Analytics: ${page}`)
-        const { options } = this.props
-        GoogleAnalytics.set({
-            page,
-            ...options,
-        });
-        GoogleAnalytics.pageview(page);
+        if(gaId) {
+            const page = location.pathname;
+            console.debug(`Sending page view request to Google Analytics: ${page}`)
+            const { options } = this.props
+            GoogleAnalytics.set({
+                page,
+                ...options,
+            });
+            GoogleAnalytics.pageview(page);
+        }
     }
 
     loadChildren(props, child) {
@@ -59,7 +62,10 @@ export function Routes({ branch = 'master' }) {
         <Route path="/" render={({location}) => (
             <div>
                 <AnalyticsRoute location={location} exact path="/">
-                    <ReadMe path={`${rawLibraryUrl}/README.md`} />
+                    <div>
+                        <BundleSize />
+                        <ReadMe path={`${rawLibraryUrl}/README.md`} />
+                    </div>
                 </AnalyticsRoute>
 
                 <AnalyticsRoute location={location} exact path="/basic">
