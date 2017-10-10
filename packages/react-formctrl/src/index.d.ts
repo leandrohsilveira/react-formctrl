@@ -33,6 +33,11 @@ import {
     FieldState
 } from './field/field';
 
+import {
+    Validator,
+    CustomValidator
+} from './validator'
+
 export {
     FormControl, 
     FormControlProps, 
@@ -61,5 +66,8 @@ export {
 
     Field,
     FieldProps,
-    FieldState
+    FieldState,
+
+    Validator,
+    CustomValidator
 };

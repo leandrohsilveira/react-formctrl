@@ -9,3 +9,7 @@ declare interface Validator {
     createValidationError(value: string, files: File[], params: {[key:string]: any}): ValidationError;
 
 }
+
+declare interface CustomValidator extends Validator {
+
+}
