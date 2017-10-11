@@ -2,14 +2,16 @@ import React from 'react'
 
 import {Navbar, NavbarItem, NavbarDropdown, NavbarDropdownItem, NavbarDropdownHeader, NavbarDropdownDivider} from '../components/navbar'
 
+import GoogleAnalytics from 'react-ga'
+
 import {composeUrl} from '../utils/url.utils'
 
 const CHANGE_TITLE_EVENT = 'react-formctrl-examples.changeTitle'
 
 export class AppMenuEventDispatcher {
 
-    static changeTitle(title) {
-        const event = new CustomEvent(CHANGE_TITLE_EVENT, {detail: title})
+    static changeTitle(title, page, pageProps) {
+        const event = new CustomEvent(CHANGE_TITLE_EVENT, {detail: {title, page, pageProps}})
         document.dispatchEvent(event)
     }
 }
@@ -24,16 +26,25 @@ export class AppMenu extends React.Component {
         this.changeTitle = this.changeTitle.bind(this)
     }
 
-    componenetWillMount() {
+    componentWillMount() {
         document.addEventListener(CHANGE_TITLE_EVENT, this.changeTitle)
     }
-
-    componenetWillUnmount() {
+    
+    componentWillUnmount() {
         document.removeEventListener(CHANGE_TITLE_EVENT, this.changeTitle)
     }
 
-    changeTitle({detail}) {
-        this.setState(state => ({title: `RFCTRL - ${detail}`}))
+    changeTitle({detail: {title, page, pageProps}}) {
+        const _title = `RFCTRL - ${title}`
+        document.title = _title
+        if(gaId) {
+            GoogleAnalytics.set({
+                page,
+                ...pageProps,
+            });
+            GoogleAnalytics.pageview(page);
+        }
+        this.setState(state =>({title: _title}))
     }
 
     render() {
