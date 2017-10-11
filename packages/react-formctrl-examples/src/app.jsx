@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {HashRouter, NavLink} from 'react-router-dom'
+import {HashRouter, NavLink, Route, Switch} from 'react-router-dom'
 import GoogleAnalytics from 'react-ga';
 
 import {FormProvider} from 'react-formctrl'
@@ -29,6 +29,15 @@ class NoAdminValidator extends CustomValidator {
 
 }
 
+function AppContent(props) {
+    const url = props.match.url === '/' ? '' : props.match.url
+    // console.debug('AppContent.render match.url', url)
+    return (
+        <AppLayout url={url}>
+            <Routes {...props} />
+        </AppLayout>
+    )
+}
 
 export function App(props) {
 
@@ -39,9 +48,10 @@ export function App(props) {
     return (
         <FormProvider validators={customValidators}>
             <HashRouter>
-                <AppLayout>
-                    <Routes />
-                </AppLayout>
+                <Switch>
+                    <Route path="/branches/:branch" component={AppContent} />
+                    <Route path="/" component={AppContent} />
+                </Switch>
             </HashRouter>
         </FormProvider>
     )

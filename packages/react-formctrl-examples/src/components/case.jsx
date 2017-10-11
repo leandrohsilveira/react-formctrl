@@ -1,7 +1,7 @@
 import React from 'react'
-import axios from 'axios'
 import {HighlightJsx, HighlightJson} from './highlight'
 import {SubmitValuesPopup} from './submit-values'
+import {AjaxGet} from '../components/ajax'
 
 export function Json({ json, title, maxHeight, children }) {
     let content = json
@@ -40,40 +40,28 @@ export function Json({ json, title, maxHeight, children }) {
     )
 }
 
+function HighlightRemoteCode({data}) {
+    if(data) {
+        return (
+            <HighlightJsx>
+                {data}
+            </HighlightJsx>
+        )
+    }
+    return <div>Loading code example from GitHub...</div>
+}
+
 export class Case extends React.Component {
 
     constructor(props) {
         super(props)
         this.state = {
-            code: '',
-            cancelTokenSource: axios.CancelToken.source()
+            code: ''
         }
-    }
-
-    componentWillMount() {
-        const { url } = this.props
-        const requestConfig = {
-            cancelToken: this.state.cancelTokenSource.token
-        }
-        axios.get(url, requestConfig)
-            .then(response => {
-                this.setState(state => ({ code: response.data }))
-            })
-            .catch(thrown => {
-                if (axios.isCancel(thrown)) {
-                    console.debug('Request canceled: ', thrown.message)
-                } else {
-                    console.error(thrown)
-                }
-            })
-    }
-
-    componentWillUnmount() {
-        this.state.cancelTokenSource.cancel('Component\'s request source unmounted.')
     }
 
     render() {
-        const { children, fileName } = this.props
+        const { children, fileName, url } = this.props
         const { code } = this.state
         return (
             <div className="case clearfix">
@@ -87,11 +75,9 @@ export class Case extends React.Component {
                             <h4>Code: <small>{fileName}</small></h4>
                         </div>
                         <div className="card-body">
-                            {code !== '' && (
-                                <HighlightJsx>
-                                    {code}
-                                </HighlightJsx>
-                            )}
+                            <AjaxGet url={url}>
+                                <HighlightRemoteCode />
+                            </AjaxGet>
                         </div>
                     </div>
                 </div>
