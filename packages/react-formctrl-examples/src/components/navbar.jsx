@@ -114,9 +114,9 @@ export class Navbar extends React.Component {
     getNavbarTogglerClasses() {
         const {open} = this.state
         if(open) {
-            return 'navbar-toggler show'
+            return 'icon-navbar-toggler show'
         } else {
-            return 'navbar-toggler collapsed'
+            return 'icon-navbar-toggler collapsed'
         }
     }
 
@@ -130,28 +130,36 @@ export class Navbar extends React.Component {
     }
 
     render() {
-        const {id, title, className = 'sticky-top navbar-dark bg-primary', containerClassName, children} = this.props
+        const {
+            id, 
+            title, 
+            expand = 'md',
+            className = 'sticky-top navbar-dark bg-primary', 
+            containerClassName = '', 
+            children} = this.props
         const {open} = this.state
 
         const navbarItems = React.Children.map(children, child => React.cloneElement(child, {...child.props, onClick: this.handleToggleNavbarClick}))
 
         return (
-            <nav className={`navbar navbar-expand-md ${className}`}>
-                <div className={containerClassName}>
+            <nav className={`navbar navbar-expand-${expand} ${className}`}>
+                <div className={`container justify-content-between ${containerClassName}`}>
                     {!!title && (
                         <a className="navbar-brand" href="#">{title}</a>
                     )}
                     <button type="button" 
-                            className={this.getNavbarTogglerClasses()} 
+                            className="navbar-toggler" 
                             data-toggle="collapse" 
                             data-target={`#${id}`} 
                             aria-controls={id} 
                             aria-expanded={open+''} 
                             onClick={this.handleToggleNavbarClick}
                             aria-label="Toggle navigation">
-                            <div></div>
-                            <div></div>
-                            <div></div>
+                            <div className={this.getNavbarTogglerClasses()}>
+                                <div></div>
+                                <div></div>
+                                <div></div>
+                            </div>
                     </button>
             
                     <div className={`navbar-collapse ${this.getNavbarCollapseClasses()}`} id={id}>

@@ -51,7 +51,7 @@ export class AppMenu extends React.Component {
         const {url} = this.props
         const {title = 'RFCTRL'} = this.state
         return (
-            <Navbar id="appMenuNavbar" title={title} containerClassName="container">
+            <Navbar id="appMenuNavbar" expand="lg" title={title}>
                 <NavbarItem to={composeUrl(url, '')} icon="home">Home</NavbarItem>
                 <NavbarItem to={composeUrl(url, 'fields')} icon="list">Fields usage</NavbarItem>
                 <NavbarDropdown text="Examples" icon="code">
