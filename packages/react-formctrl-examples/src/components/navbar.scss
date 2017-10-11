@@ -1,5 +1,9 @@
 .navbar {
 
+    > .container {
+        padding-top: 0 !important;
+    }
+
     -webkit-box-shadow: 0px 6px 10px -4px rgba(0,0,0,0.46);
 	-moz-box-shadow: 0px 6px 10px -4px rgba(0,0,0,0.46);
 	box-shadow: 0px 6px 10px -4px rgba(0,0,0,0.46);
@@ -26,11 +30,11 @@
         }
     }
 
-    .navbar-toggler {
+    .icon-navbar-toggler {
         margin-top: 5px;
         position: relative;
-        width: 40px;
-        height: 30px;
+        width: 22px;
+        height: 24px;
         transition: all 300ms cubic-bezier(.61,.01,.42,1);
         cursor: pointer;
         background: transparent;
