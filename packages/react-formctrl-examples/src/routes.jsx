@@ -18,7 +18,7 @@ import { UserFormApp } from './cases/user-form'
 import { CustomValidatorExample } from './cases/custom-validators'
 import { FieldsExample } from './cases/fields'
 
-import GoogleAnalytics from 'react-ga';
+import {composeUrl} from './utils/url.utils'
 
 const github = {
 
@@ -43,8 +43,8 @@ const github = {
     }
 }
 
-function Route({ title, path, exact, children }) {
-    return <ReactRoute path={path} exact={exact} render={(_props) => (
+function Route({ title, base, path, exact, children }) {
+    return <ReactRoute path={composeUrl(base, path)} exact={exact} render={(_props) => (
         <Page title={title} location={_props.location}>
             {React.cloneElement(children, { ...children.props, ..._props })}
         </Page>
@@ -53,7 +53,7 @@ function Route({ title, path, exact, children }) {
 
 export function Routes({ history, match, location }) {
     const { params: { branch = 'master' } } = match
-    
+
     const url = match.url === '/' ? '' : match.url
     const examplePath = 'src/cases'
 
@@ -62,9 +62,8 @@ export function Routes({ history, match, location }) {
 
     const handleChange = (value) => {
         const path = location.pathname.replace(match.url, '')
-        console.log(path)
         if (value === 'master') return history.push(path)
-        return history.push(`/branches/${value}/${path}`)
+        return history.push(`/branches/${composeUrl(value, path)}`)
     }
 
     return (
@@ -76,59 +75,59 @@ export function Routes({ history, match, location }) {
                 <AppBadges branch={branch} />
             </div>
 
-            <Route title="Read me" exact path={`${url}/`}>
+            <Route base={url} title="Read me" exact path="/">
                 <ReadMe path={`${rawLibraryUrl}/README.md`} />
             </Route>
 
-            <Route title="Basic form example" exact path={`${url}/basic`}>
+            <Route base={url} title="Basic form example" exact path="basic">
                 <Case fileName={`${examplePath}/basic-form.jsx`} url={`${rawExampleUrl}/basic-form.jsx`}>
                     <BasicForm />
                 </Case>
             </Route>
 
-            <Route title="Basic form example 2" path={`${url}/more`}>
+            <Route base={url} title="Basic form example 2" path="more">
                 <Case fileName={`${examplePath}/moreofbasic-form.jsx`} url={`${rawExampleUrl}/moreofbasic-form.jsx`}>
                     <MoreOfBasicForm />
                 </Case>
             </Route>
 
-            <Route title="Field validation example" path={`${url}/validation`}>
+            <Route base={url} title="Field validation example" path="validation">
                 <Case fileName={`${examplePath}/field-validation.jsx`} url={`${rawExampleUrl}/field-validation.jsx`}>
                     <FieldValidationForm />
                 </Case>
             </Route>
 
-            <Route title="FormControl usage" path={`${url}/form-control`}>
+            <Route base={url} title="FormControl usage" path="form-control">
                 <Case fileName={`${examplePath}/form-control-example.jsx`} url={`${rawExampleUrl}/form-control-example.jsx`}>
                     <FormControlExample />
                 </Case>
             </Route>
 
-            <Route title="Synchronized forms" path={`${url}/sync-forms`}>
+            <Route base={url} title="Synchronized forms" path="sync-forms">
                 <Case fileName={`${examplePath}/synchronized-forms.jsx`} url={`${rawExampleUrl}/synchronized-forms.jsx`}>
                     <SynchronizedForms />
                 </Case>
             </Route>
 
-            <Route title="Form values manipulation" path={`${url}/form-values-manipulation`}>
+            <Route base={url} title="Form values manipulation" path="form-values-manipulation">
                 <Case fileName={`${examplePath}/form-values-manipulation.jsx`} url={`${rawExampleUrl}/form-values-manipulation.jsx`}>
                     <FormValuesManipulationExample />
                 </Case>
             </Route>
 
-            <Route title="User form example" path={`${url}/users`}>
+            <Route base={url} title="User form example" path="users">
                 <Case fileName={`${examplePath}/user-form.jsx`} url={`${rawExampleUrl}/user-form.jsx`}>
                     <UserFormApp />
                 </Case>
             </Route>
 
-            <Route title="Custom validators example" path={`${url}/custom-validators`}>
+            <Route base={url} title="Custom validators example" path="custom-validators">
                 <Case fileName={`${examplePath}/custom-validators.jsx`} url={`${rawExampleUrl}/custom-validators.jsx`}>
                     <CustomValidatorExample />
                 </Case>
             </Route>
 
-            <Route title="Fields usage" path={`${url}/fields`}>
+            <Route base={url} title="Fields usage" path="fields">
                 <Case fileName={`${examplePath}/fields.jsx`} url={`${rawExampleUrl}/fields.jsx`}>
                     <FieldsExample />
                 </Case>
