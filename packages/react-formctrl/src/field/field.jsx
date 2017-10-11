@@ -41,13 +41,10 @@ export class Field extends React.Component {
             PropTypes.number,
             PropTypes.string
         ]),
-        validate: PropTypes.arrayOf(PropTypes.oneOfType([
+        validate: PropTypes.oneOfType([
             PropTypes.string,
-            PropTypes.shape({
-                name: PropTypes.string.isRequired,
-                params: PropTypes.any      
-            })
-        ]))
+            PropTypes.arrayOf(PropTypes.string)
+        ])
     }
 
     constructor(props) {
