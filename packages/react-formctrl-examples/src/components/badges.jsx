@@ -2,7 +2,11 @@ import React from 'react'
 
 import axios from 'axios'
 
-export class BundleSize extends React.Component {
+const SHIELDS_IO_URL = 'https://img.shields.io/badge'
+const SNYK_IO_URL = 'https://snyk.io/test/github/leandrohsilveira/react-formctrl/badge.svg'
+
+import "./badges.scss"
+export class AppBadges extends React.Component {
 
     constructor(props) {
         super(props)
@@ -55,16 +59,21 @@ export class BundleSize extends React.Component {
     }
 
     render() {
+        const {branch = 'master'} = this.props
         const {calculated, minified, gzipped} = this.state
         if(calculated) {
             return (
-                <div>
-                    <div>
-                        <img src={`https://img.shields.io/badge/minified-${this.parseKb(minified)} Kb-${this.getMinifiedColor(minified)}.svg`} alt="Minified bundle size"/>
-                    </div>
-                    <div>
-                        <img src={`https://img.shields.io/badge/gzipped-${this.parseKb(gzipped)} Kb-${this.getGzippedColor(gzipped)}.svg`} alt="Gzipped bundle size"/>
-                    </div>
+                <div className="badges">
+                    <a href={`https://travis-ci.org/leandrohsilveira/react-formctrl?branch=${branch}`}>
+                        <img src={`https://travis-ci.org/leandrohsilveira/react-formctrl.svg?branch=${branch}`} alt="Travis CI Status"/>
+                    </a>
+                    <a href={`https://coveralls.io/github/leandrohsilveira/react-formctrl?branch=${branch}`}>
+                        <img src={`https://coveralls.io/repos/github/leandrohsilveira/react-formctrl/badge.svg?branch=${branch}`} alt='Coverage Status' />
+                    </a>
+                    <img src={`${SHIELDS_IO_URL}/minified-${this.parseKb(minified)} Kb-${this.getMinifiedColor(minified)}.svg`} alt="Minified bundle size" />
+                    <img src={`${SHIELDS_IO_URL}/gzipped-${this.parseKb(gzipped)} Kb-${this.getGzippedColor(gzipped)}.svg`} alt="Gzipped bundle size" />
+                    <img src={`${SNYK_IO_URL}?targetFile=packages%2Freact-formctrl%2Fpackage.json`} alt="Known Vulnerabilities" />
+
                 </div>
             )
         }
