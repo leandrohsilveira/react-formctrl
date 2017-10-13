@@ -1,6 +1,6 @@
 
 import {REACT_FORMCTRL} from './provider.actions'
-import {validate} from '../validator'
+import {validate, combineValidators} from '../validator'
 
 const INTEGER_REGEX = /^-?\d+?$/
 const FLOAT_REGEX = /^-?\d+(\.\d+)?$/
@@ -29,6 +29,8 @@ export function formProviderReducer(state = {forms: {}}, action) {
             return onFormSubmited(state, payload.form, payload.formRef)
         case EVENTS.FORM_RESETED:
             return onFormReseted(state, payload.form)
+        case EVENTS.REGISTER_VALIDATORS:
+            return {...state, validators: combineValidators(payload.validators || [])}
         default:
             return state
     }

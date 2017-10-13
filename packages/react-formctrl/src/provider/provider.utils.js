@@ -144,3 +144,54 @@ export function copyFormCtrl(formCtrl) {
         files: copyFormFiles(formCtrl.files),
     }
 }
+
+export function compareFieldProps(props1, props2) {
+    if(props1 === props2) return true
+    if (props1.name !== props2.name) return false
+    if (props1.form !== props2.form) return false
+    if (props1.type !== props2.type) return false
+    if (props1.required !== props2.required) return false
+    if (props1.pattern !== props2.pattern) return false
+    if (props1.match !== props2.match) return false
+    if (props1.integer !== props2.integer) return false
+    if (props1.min !== props2.min) return false
+    if (props1.max !== props2.max) return false
+    if (props1.minLength !== props2.minLength) return false
+    if (props1.maxLength !== props2.maxLength) return false
+    if (props1.accept !== props2.accept) return false
+    if (!compareArrays(props1.extensions, props2.extensions)) return false
+    if (props1.maxSize !== props2.maxSize) return false
+    if (!compareArrays(props1.validate, props2.validate)) return false
+    return true
+}
+
+export function compareArrays(array1, array2) {
+    if(typeof array1 !== typeof array2) return false
+    if(Array.isArray(array1) !== Array.isArray(array2)) return false
+    if(array1 === array2) return true
+
+    if(Array.isArray(array1) && Array.isArray(array2)) {
+        // if the other array is a falsy value, return
+        if ((array1 && !array2) || (!array1 && array2))
+            return false;
+    
+        // compare lengths - can save a lot of time 
+        if (array1.length != array2.length)
+            return false;
+    
+        for (var i = 0, l=array1.length; i < l; i++) {
+            // Check if we have nested arrays
+            if (array1[i] instanceof Array && array2[i] instanceof Array) {
+                // recurse into the nested array2s
+                if (!compareArrays(array1[i], array2[i]))
+                    return false;       
+            }           
+            else if (array1[i] != array2[i]) { 
+                // Warning - two different object instances will never be equal: {x:20} != {x:20}
+                return false;   
+            }           
+        }       
+        return true;
+    }
+    return false;
+}

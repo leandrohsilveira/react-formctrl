@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import { FormEventDispatcher } from '../provider/provider'
 import { REACT_FORMCTRL } from '../provider/provider.actions'
+import { compareFieldProps } from '../provider/provider.utils'
 
 export class Field extends React.Component {
 
@@ -49,6 +50,15 @@ export class Field extends React.Component {
 
     constructor(props) {
         super(props)
+
+        this.onChange = this.onChange.bind(this)
+        this.handleFieldChangeForward = this.handleFieldChangeForward.bind(this)
+        this.handleChange = this.handleChange.bind(this)
+        this.handleBlur = this.handleBlur.bind(this)
+        this.getChildProps = this.getChildProps.bind(this)
+        this.inject = this.inject.bind(this)
+        this.getFieldProps = this.getFieldProps.bind(this)
+
         this.state = {
             valid: true,
             invalid: false,
@@ -62,31 +72,9 @@ export class Field extends React.Component {
             value: '',
             files: [],
             initialValue: props.initialValue || '',
-            props: {
-                name: props.name,
-                form: props.form,
-                type: props.type,
-                required: props.required,
-                pattern: props.pattern,
-                match: props.match,
-                integer: props.integer,
-                min: props.min,
-                max: props.max,
-                minLength: props.minLength,
-                maxLength: props.maxLength,
-                accept: props.accept,
-                extensions: props.extensions || [],
-                maxSize: props.maxSize,
-                validate: props.validate
-            }
+            props: this.getFieldProps(props)
         }
 
-        this.onChange = this.onChange.bind(this)
-        this.handleFieldChangeForward = this.handleFieldChangeForward.bind(this)
-        this.handleChange = this.handleChange.bind(this)
-        this.handleBlur = this.handleBlur.bind(this)
-        this.getChildProps = this.getChildProps.bind(this)
-        this.inject = this.inject.bind(this)
     }
 
     componentWillMount() {
@@ -99,10 +87,38 @@ export class Field extends React.Component {
         FormEventDispatcher.dispatchRegisterField(form, name, this.state)
     }
 
+
+    componentWillReceiveProps(nextProps) {
+        const nextFieldProps = this.getFieldProps(nextProps)
+        if(!compareFieldProps(this.state.props, nextFieldProps)) {
+            FormEventDispatcher.dispatchFieldPropsChanged(this.props.form, this.props.name, nextFieldProps)
+        }
+    }
+
     componentWillUnmount() {
         const { form, name } = this.props
         document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${name}`, this.handleFieldChangeForward)
         FormEventDispatcher.dispatchUnregisterField(form, name)
+    }
+
+    getFieldProps(props) {
+        return {
+            name: props.name,
+            form: props.form,
+            type: props.type,
+            required: props.required,
+            pattern: props.pattern,
+            match: props.match,
+            integer: props.integer,
+            min: props.min,
+            max: props.max,
+            minLength: props.minLength,
+            maxLength: props.maxLength,
+            accept: props.accept,
+            extensions: props.extensions || [],
+            maxSize: props.maxSize,
+            validate: props.validate
+        }
     }
 
     onChange(fieldCtrl) {
