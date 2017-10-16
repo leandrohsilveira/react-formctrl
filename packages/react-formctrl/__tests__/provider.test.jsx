@@ -5,7 +5,7 @@ import {mount, configure} from 'enzyme';
 
 import {FormProvider, Form, Field} from '../src'
 
-import {inputInject} from '../tests-utils'
+import {inputInject} from './field.test'
 
 configure({adapter: new Adapter()})
 

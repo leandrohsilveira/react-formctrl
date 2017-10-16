@@ -12,11 +12,9 @@ import {
     onFieldBlur,
     onSubmitForm,
     onResetForm,
-    REACT_FORMCTRL,
+    onRegisterValidators,
     REACT_FORMCTRL_NAME
 } from './provider.actions'
-
-import {combineValidators} from '../validator'
 
 import {copyFieldCtrl, copyFormCtrl} from './provider.utils'
 
@@ -81,6 +79,12 @@ export class FormEventDispatcher {
         document.dispatchEvent(event)
     }
 
+    static dispatchRegisterValidators(validators) {
+        const payload = {detail: onRegisterValidators(validators)}
+        const event = new CustomEvent(PROVIDER_EVENT, payload)
+        document.dispatchEvent(event)
+    }
+
 }
 
 
@@ -107,10 +111,7 @@ export class FormProvider extends React.Component {
     componentWillMount() {
         document.addEventListener(PROVIDER_EVENT, this.onEvent)
         const {validators = []} = this.props
-        const newState = {
-            validators: combineValidators(validators),
-        }
-        this.setState(newState)
+        FormEventDispatcher.dispatchRegisterValidators(validators)
     }
 
     componentWillUnmount() {

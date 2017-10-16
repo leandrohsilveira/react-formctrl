@@ -142,11 +142,7 @@ export class FormControl extends React.Component {
 
     render() {
         const {children} = this.props
-        let child = children
-        if(Array.isArray(children)) {
-            child = children[0]
-        }
-        return React.cloneElement(child, {...child.props, ...this.inject()})
+        return React.cloneElement(children, {...children.props, ...this.inject()})
     }
 
 }

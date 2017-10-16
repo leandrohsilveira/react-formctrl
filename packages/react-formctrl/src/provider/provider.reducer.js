@@ -1,6 +1,6 @@
 
 import {REACT_FORMCTRL} from './provider.actions'
-import {validate} from '../validator'
+import {validate, combineValidators} from '../validator'
 
 const INTEGER_REGEX = /^-?\d+?$/
 const FLOAT_REGEX = /^-?\d+(\.\d+)?$/
@@ -29,6 +29,8 @@ export function formProviderReducer(state = {forms: {}}, action) {
             return onFormSubmited(state, payload.form, payload.formRef)
         case EVENTS.FORM_RESETED:
             return onFormReseted(state, payload.form)
+        case EVENTS.REGISTER_VALIDATORS:
+            return {...state, validators: combineValidators(payload.validators)}
         default:
             return state
     }
@@ -43,7 +45,6 @@ function onRegisterForm(state, formName) {
         forms[formName] = {
             __instances: 1,
             formName,
-            validating: false,
             valid: true,
             invalid: false,
             untouched: true,
@@ -81,17 +82,14 @@ function onRegisterField(state, formName, fieldName, fieldCtrl) {
 }
 
 function onUnregisterForm(state, formName) {
-    if(state.forms[formName]) {
-        const forms = {...state.forms}
-        const form = forms[formName]
-        if(form.__instances > 1) {
-            form.__instances--
-        } else {
-            delete forms[formName]
-        }
-        return {forms}
+    const forms = {...state.forms}
+    const form = forms[formName]
+    if(form.__instances > 1) {
+        form.__instances--
+    } else {
+        delete forms[formName]
     }
-    return state
+    return {forms}
 }
 
 function onUnregisterField(state, formName, fieldName) {
@@ -120,14 +118,8 @@ function onFieldChanged(state, formName, fieldName, value, files) {
             fieldCtrl.dirty = true
             fieldCtrl.pristine = false
             updateFieldCtrl(state, formName, fieldCtrl, value, files)
-            if(!form.values) form.values = {}
             form.values[fieldName] = value
-            if(!form.files) form.files = {}
-            if(files) {
-                form.files[fieldName] = files
-            } else if(form.files[fieldName]) {
-                delete form.files[fieldName]
-            }
+            form.files[fieldName] = files
             updateFormCtrl(formName, form)
             return {forms}
         }
@@ -176,7 +168,6 @@ function onFormReseted(state, formName) {
 }
 
 function updateFormCtrl(formName, form) {
-    form.validating = false
     form.valid = true
     form.invalid = false
     form.untouched = true
@@ -187,7 +178,6 @@ function updateFormCtrl(formName, form) {
     form.changed = false
     Object.keys(form.fields).forEach(fieldName => {
         const field = form.fields[fieldName]
-        if(field.validating) form.validating = true
         if(!field.valid) form.valid = false
         if(field.invalid) form.invalid = true
         if(!field.untouched) form.untouched = false

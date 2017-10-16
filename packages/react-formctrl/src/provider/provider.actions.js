@@ -15,6 +15,7 @@ export const REACT_FORMCTRL = {
         FIELD_BLURRED: `${REACT_FORMCTRL_NAME}.fieldBlurred`,
         FORM_SUBMITED: `${REACT_FORMCTRL_NAME}.formSubmited`,
         FORM_RESETED: `${REACT_FORMCTRL_NAME}.formReseted`,
+        REGISTER_VALIDATORS: `${REACT_FORMCTRL_NAME}.registerValidators`,
     }
 }
 
@@ -78,5 +79,12 @@ export function onFieldBlur(form, field) {
     return { 
         type: REACT_FORMCTRL.EVENTS.FIELD_BLURRED, 
         payload: {form, field}
+    }
+}
+
+export function onRegisterValidators(validators) {
+    return {
+        type: REACT_FORMCTRL.EVENTS.REGISTER_VALIDATORS,
+        payload: {validators}
     }
 }

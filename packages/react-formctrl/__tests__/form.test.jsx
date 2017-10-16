@@ -5,8 +5,12 @@ import {mount, configure} from 'enzyme';
 
 import {FormProvider, Form, FormControl, Field} from '../src'
 
-import {inputInject, formControlInject} from '../tests-utils'
+import {inputInject} from './field.test'
 
+export const formControlInject = (formCtrl) => ({
+    name: formCtrl.formName, 
+    formCtrl
+})
 
 configure({adapter: new Adapter()})
 
@@ -29,61 +33,127 @@ describe('About <Form /> component', () => {
         const fieldValue1 = "fieldValue1"
         const fieldValue2 = "fieldValue2"
 
-        let dom, submited, form, input1, input2
-        beforeEach(() => {
-            submited = null
-            dom = mount((
-                <FormProvider>
-                    <Form name={formName1} onSubmit={(values) => submited = values}>
-                        <Input form={formName1} name={fieldName1} />
-                        <Input form={formName1} name={fieldName2} />
-                    </Form>
-                </FormProvider>
-            ))
-            form = dom.find(Form)
-            input1 = dom.find(`input[name="${fieldName1}"]`)
-            input2 = dom.find(`input[name="${fieldName2}"]`)
+        describe('With the submit handler attached', () => {
+
+            let dom, submited, form, input1, input2
+            beforeEach(() => {
+                submited = null
+                dom = mount((
+                    <FormProvider>
+                        <Form name={formName1} onSubmit={(values) => submited = values}>
+                            <Input form={formName1} name={fieldName1} />
+                            <Input form={formName1} name={fieldName2} />
+                        </Form>
+                    </FormProvider>
+                ))
+                form = dom.find(Form)
+                input1 = dom.find(`input[name="${fieldName1}"]`)
+                input2 = dom.find(`input[name="${fieldName2}"]`)
+            })
+    
+            describe('When is submited', () => {
+    
+                test('With empty values', () => {
+                    form.simulate('submit')
+    
+                    expect(submited).toEqual({[fieldName1]: '', [fieldName2]: ''})
+                })
+    
+                test('With filled fields', () => {
+    
+                    input1.simulate('change', {target: {value: fieldValue1}})
+                    input2.simulate('change', {target: {value: fieldValue2}})
+                    form.simulate('submit')
+    
+                    expect(submited).toEqual({[fieldName1]: fieldValue1, [fieldName2]: fieldValue2})
+                })
+    
+            })
+    
+            describe('When is reseted and then submited', () => {
+                
+                test('With empty values before reset', () => {
+                    form.simulate('reset')
+                    form.simulate('submit')
+                    
+                    expect(submited).toEqual({[fieldName1]: '', [fieldName2]: ''})
+                })
+                
+                test('With filled fields before reset', () => {
+                    
+                    input1.simulate('change', {target: {value: fieldValue1}})
+                    input2.simulate('change', {target: {value: fieldValue2}})
+                    form.simulate('reset')
+                    form.simulate('submit')
+                    
+                    expect(submited).toEqual({[fieldName1]: '', [fieldName2]: ''})
+                })
+    
+            })
+
         })
 
-        describe('When is submited', () => {
+        describe('Without an submit handler', () => {
 
-            test('With empty values', () => {
-                form.simulate('submit')
-
-                expect(submited).toEqual({[fieldName1]: '', [fieldName2]: ''})
+            let dom, form, input1, input2, formCtrl
+            beforeEach(() => {
+                dom = mount((
+                    <FormProvider>
+                        <Form name={formName1}>
+                            <Input form={formName1} name={fieldName1} />
+                            <Input form={formName1} name={fieldName2} />
+                        </Form>
+                    </FormProvider>
+                ))
+                form = dom.find(Form)
+                formCtrl = dom.state('forms')[formName1]
+                input1 = dom.find(`input[name="${fieldName1}"]`)
+                input2 = dom.find(`input[name="${fieldName2}"]`)
             })
 
-            test('With filled fields', () => {
-
-                input1.simulate('change', {target: {value: fieldValue1}})
-                input2.simulate('change', {target: {value: fieldValue2}})
-                form.simulate('submit')
-
-                expect(submited).toEqual({[fieldName1]: fieldValue1, [fieldName2]: fieldValue2})
+            describe('When is submited', () => {
+                
+                test('With empty values', () => {
+                    form.simulate('submit')
+    
+                    expect(formCtrl.values).toEqual({[fieldName1]: '', [fieldName2]: ''})
+                })
+    
+                test('With filled fields', () => {
+    
+                    input1.simulate('change', {target: {value: fieldValue1}})
+                    input2.simulate('change', {target: {value: fieldValue2}})
+                    form.simulate('submit')
+    
+                    expect(formCtrl.values).toEqual({[fieldName1]: fieldValue1, [fieldName2]: fieldValue2})
+                })
+    
             })
+    
+            describe('When is reseted and then submited', () => {
+                
+                test('With empty values before reset', () => {
+                    form.simulate('reset')
+                    form.simulate('submit')
+                    
+                    expect(formCtrl.values).toEqual({[fieldName1]: '', [fieldName2]: ''})
+                })
+                
+                test('With filled fields before reset', () => {
+                    
+                    input1.simulate('change', {target: {value: fieldValue1}})
+                    input2.simulate('change', {target: {value: fieldValue2}})
+                    form.simulate('reset')
+                    form.simulate('submit')
+                    
+                    expect(formCtrl.values).toEqual({[fieldName1]: '', [fieldName2]: ''})
+                })
+    
+            })
+
 
         })
 
-        describe('When is reseted and then submited', () => {
-            
-            test('With empty values before reset', () => {
-                form.simulate('reset')
-                form.simulate('submit')
-                
-                expect(submited).toEqual({[fieldName1]: '', [fieldName2]: ''})
-            })
-            
-            test('With filled fields before reset', () => {
-                
-                input1.simulate('change', {target: {value: fieldValue1}})
-                input2.simulate('change', {target: {value: fieldValue2}})
-                form.simulate('reset')
-                form.simulate('submit')
-                
-                expect(submited).toEqual({[fieldName1]: '', [fieldName2]: ''})
-            })
-
-        })
 
     })
 
@@ -91,30 +161,78 @@ describe('About <Form /> component', () => {
 
 describe('About <FormControl /> component', () => {
     
-    const formName = 'formName1'
     const FormTest = ({name, children}) => <Form name={name}>{children}</Form>
+    const formName = 'formName1'
 
+    describe('The <FormControl/> children', () => {
+
+        test('With two or more childrens', () => {
+
+            expect(() => {
+                mount((
+                    <FormProvider>
+                        <FormControl form={formName} inject={formControlInject}>
+                            <FormTest />
+                            <FormTest />
+                        </FormControl>
+                    </FormProvider>
+                ))
+            }).toThrowError(`The FormControl component for "${formName}" should have only one child, but has 2.`)
+
+        })
+    })
+    
     describe('The <FormControl /> property injection', () => {
+        
+        describe('With the inject property', () => {
 
-        let dom, form
-        beforeEach(() => {
-
-            dom = mount((
-                <FormProvider>
-                    <FormControl form={formName} inject={formControlInject}>
-                        <FormTest />
-                    </FormControl>
-                </FormProvider>
-            ))
-            form = dom.find(FormTest)
+            let dom, form
+            beforeEach(() => {
+    
+                dom = mount((
+                    <FormProvider>
+                        <FormControl form={formName} inject={formControlInject}>
+                            <FormTest />
+                        </FormControl>
+                    </FormProvider>
+                ))
+                form = dom.find(FormTest)
+            })
+    
+            test('Injects formCtrl property', () => {
+                expect(form.prop('formCtrl')).toBeDefined()
+            })
+    
+            test('Injects name (formName) property', () => {
+                expect(form.prop('name')).toBe(formName)
+            })
         })
 
-        test('Injects formCtrl property', () => {
-            expect(form.prop('formCtrl')).toBeDefined()
-        })
+        describe('Without the inject property', () => {
 
-        test('Injects form (formName) property', () => {
-            expect(form.prop('name')).toBe(formName)
+            const FormTest2 = ({formCtrl, children}) => <Form name={formCtrl.formName}>{children}</Form>
+
+            let dom, form
+            beforeEach(() => {
+    
+                dom = mount((
+                    <FormProvider>
+                        <FormControl form={formName}>
+                            <FormTest2 />
+                        </FormControl>
+                    </FormProvider>
+                ))
+                form = dom.find(FormTest2)
+            })
+    
+            test('Does not injects formCtrl property', () => {
+                expect(form.prop('formCtrl')).toBeDefined()
+            })
+            
+            test('Does not injects name (formName) property', () => {
+                expect(form.prop('name')).not.toBeDefined()
+            })
+
         })
 
     })
