@@ -79,7 +79,7 @@ export class FormEventDispatcher {
         document.dispatchEvent(event)
     }
 
-    static dispatchRegisterValidators(validators = []) {
+    static dispatchRegisterValidators(validators) {
         const payload = {detail: onRegisterValidators(validators)}
         const event = new CustomEvent(PROVIDER_EVENT, payload)
         document.dispatchEvent(event)

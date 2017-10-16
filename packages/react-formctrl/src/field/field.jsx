@@ -191,10 +191,6 @@ export class Field extends React.Component {
     render() {
         const { inject } = this
         const { children } = this.props
-        let child = children
-        if (Array.isArray(children)) {
-            child = children[0]
-        }
-        return React.cloneElement(child, { ...child.props, ...inject() })
+        return React.cloneElement(children, { ...children.props, ...inject() })
     }
 }
