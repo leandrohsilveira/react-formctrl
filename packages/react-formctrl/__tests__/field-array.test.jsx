@@ -35,9 +35,8 @@ function provide(fieldArray) {
         </FormProvider>
     ))
 
-    const formCtrl = dom.state('forms')[formName]
     return {
-        dom, formCtrl
+        dom, formCtrl: () => dom.state('forms')[formName]
     }
 
 }
@@ -48,10 +47,10 @@ function FieldsGroup({form, name, startEmpty}) {
             <div>
                 {ctrls.map(({entry, removeEntry}, index) => (
                     <div key={index}>
-                        <FieldArrayEntry entry={entry} name={fieldArrayField1} inject={inputInject}>
+                        <FieldArrayEntry entry={entry} name={fieldArrayField1} inject={inputInject} required>
                             <input className={`input-${fieldArrayField1}-${index}`} />
                         </FieldArrayEntry>
-                        <FieldArrayEntry entry={entry} name={fieldArrayField2} inject={inputInject}>
+                        <FieldArrayEntry entry={entry} name={fieldArrayField2} inject={inputInject} required>
                             <input className={`input-${fieldArrayField2}-${index}`} />
                         </FieldArrayEntry>
                         <button className={`btn-remove-entry-${index}`} type="button" onClick={() => removeEntry()}>Remove</button>        
@@ -68,9 +67,6 @@ describe('About <FieldArray/> component', () => {
 
     describe('The <FieldArray/> registration', () => {
 
- 
-
-
         describe('When the FieldArray starts with an empty entry (default behaviour)', () => {
             let dom, formCtrl
             beforeEach(() => {
@@ -79,12 +75,19 @@ describe('About <FieldArray/> component', () => {
                     <FieldsGroup form={formName} name={fieldArrayName} />
                 ))
                 expect(provider).toBeDefined()
-                expect(provider.dom).toBeDefined()
-                expect(provider.formCtrl).toBeDefined()
 
                 dom = provider.dom
-                formCtrl = provider.formCtrl
+                formCtrl = provider.formCtrl()
 
+                expect(dom).toBeDefined()
+                expect(formCtrl).toBeDefined()
+
+
+            })
+
+            test('The form is invalid', () => {
+                expect(formCtrl.valid).toBeFalsy()
+                expect(formCtrl.invalid).toBeTruthy()
             })
 
             test('FormCtrl contains an array with an empty entry on values property', () => {
@@ -108,11 +111,51 @@ describe('About <FieldArray/> component', () => {
                 
             })
 
-
         })
 
+    })
 
-        
+    describe('The <FieldArrayEntry /> interaction', () => {
+
+        const fieldValue = 'test'
+
+        describe('Changed the first field in the first entry', () => {
+            let dom, formCtrl, input, fieldCtrl, values
+            beforeEach(() => {
+    
+                const provider = provide((
+                    <FieldsGroup form={formName} name={fieldArrayName} />
+                ))
+                expect(provider).toBeDefined()
+                dom = provider.dom
+                formCtrl = provider.formCtrl()
+                
+                expect(dom).toBeDefined()
+                expect(formCtrl).toBeDefined()
+                
+                input = dom.find(`input-${fieldArrayField1}-0`)
+                input.simulate('change', {target: {value: fieldValue}})
+                formCtrl = provider.formCtrl()
+                fieldCtrl = formCtrl.fields[fieldArrayName][0][fieldArrayField1]
+                values =  formCtrl.values[fieldArrayName][0]
+            })
+
+            test('The form still invalid', () => {
+                expect(formCtrl.valid).toBeFalsy()
+                expect(formCtrl.invalid).toBeTruthy()
+            })
+
+            test('The first field in the first entry is valid', () => {
+                expect(fieldCtrl.valid).toBeTruthy()
+                expect(fieldCtrl.invalid).toBeFalsy()
+            })
+
+            test(`The value of the first field in the first entry is ${fieldValue}`, () => {
+                expect(fieldCtrl.value).toBe(fieldValue)
+                expect(values[fieldArrayField1]).toBe(fieldValue)
+            })
+
+        })
 
     })
 
