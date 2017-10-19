@@ -2,6 +2,11 @@ import * as React from 'react';
 
 import {Validator} from '../validator'
 
+declare interface Dispatcher {
+    subscribe(): void;    
+    unsubscribe(): void;    
+}
+
 declare interface CustomPropertiesInjection {
     [propertyInjectionName: string]: any;
 }
@@ -233,7 +238,7 @@ declare interface FieldStateProperties {
     /**
      * An array of custom validators registered on FormProvider component.
      */
-    validate?: (string|ValidatorSpec)[]
+    validate?: string|string[]
 
     /**
      * A collection of accepted mimetypes separated by comma.
