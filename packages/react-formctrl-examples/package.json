@@ -35,7 +35,7 @@
     "predev": "npm run analyze:dev",
     "dev": "webpack-dev-server --progress --colors --hot --env.profile=dev --env.gaId='UA-107666080-2'",
     "postdocs": "npm run analyze",
-    "docs": "webpack --progress -p --env.profile=docs --env.gaId=UA-107666080-1"
+    "docs": "webpack --progress -p --env.profile=docs --env.gaId='UA-107666080-1'"
   },
   "dependencies": {
     "axios": "^0.16.2",
