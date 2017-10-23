@@ -74,7 +74,7 @@ module.exports = (env) => {
         plugins: [
             // new StyleLintPlugin(),
             new webpack.optimize.CommonsChunkPlugin({
-                name: 'vendor',
+                name: 'vendor'
             }),
             new HtmlWebpackPlugin({
                 hash: true,
@@ -83,6 +83,9 @@ module.exports = (env) => {
                 inject: 'body'
             }),
             new ExtractTextPlugin('bundle.css', { allChunks: true }),
+            new webpack.DefinePlugin({
+                gaId: env && env.gaId
+            })
         ],
         performance: {
             hints: false

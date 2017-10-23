@@ -1,5 +1,7 @@
 import * as React from 'react';
 
+import {Validator} from '../validator'
+
 declare interface CustomPropertiesInjection {
     [propertyInjectionName: string]: any;
 }
@@ -178,12 +180,6 @@ declare interface FormStateController {
 
 }
 
-declare interface ValidatorSpec {
-    name: string;
-    props?: any;
-}
-
-
 /**
  * The properties of a registered form field on FormProvider.
  */
@@ -316,59 +312,19 @@ declare interface FieldStateController {
 
 }
 
-declare interface CustomValidator {
-
-    /**
-     * The name of the validator to be referenced on Fields which shoud be validated.
-     */
-    name: string;
-
-    /**
-     * The validator function to be executed when the Field component refers to this validator's name.
-     */
-    validate(value: string, params?: any): boolean;
-
-}
-
 declare interface FormProviderProps extends React.Props<any> {
 
-    customValidators?: CustomValidator[];
+    validators?: Validator[];
 
 }
 
 declare interface FormProviderState {
     forms: {[formName: string]: FormStateController},
-    customValidators?: any;
+    validators?: any;
 }
 
 declare class FormProvider extends React.Component<FormProviderProps, FormProviderState> {
 
-    subscribe(): void;
-
     onEvent(event: CustomEvent): void;
-
-    onRegisterForm(formName: string): void;
-
-    onRegisterField(formName: string, fieldName: string, fieldCtrl: FieldStateController): void;
-
-    onUnregisterForm(formName: string): void;
-
-    onUnregisterField(formName: string, fieldName: string): void;
-
-    onFieldChanged(formName: string, fieldName: string, value: string, files?: File[]): void;
-
-    onFieldPropsChanged(formName: string, fieldName: string, props: FieldStateProperties): void;
-
-    onFieldBlurred(formName: string, fieldName: string): void;
-    
-    updateFormCtrl(formName: string, formCtrl: FormStateController): void;
-
-    updateFieldCtrl(formName: string, fieldCtrl: FieldStateController, value: string): void;
-
-    onFormSubmited(formName: string, formRef: string): void;
-
-    onFormReseted(formName: string): void;
-
-    unsubscribe(): void;
 
 }

@@ -25,11 +25,11 @@ function AppFeatures() {
     )
 }
 
-export function AppLayout({children}) {
+export function AppLayout({url, children}) {
     return (
         <div className="layout">
             <AppBanner />
-            <AppMenu />
+            <AppMenu url={url} />
             <div className="container">
                 {children}
             </div>

@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import {FormEventDispatcher, REACT_FORMCTRL} from '../provider/provider'
+import {FormEventDispatcher} from '../provider/provider'
+import {REACT_FORMCTRL} from '../provider/provider.actions'
 
 export class Form extends React.Component {
 
@@ -37,7 +38,7 @@ export class Form extends React.Component {
     componentWillMount() {
         const {name} = this.props
         document.addEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${name}`, this.handleFormSubmitForward)
-        FormEventDispatcher.dispatchRegisterForm(name, )
+        FormEventDispatcher.dispatchRegisterForm(name)
     }
     
     handleFormSubmitForward(event) {
@@ -141,11 +142,7 @@ export class FormControl extends React.Component {
 
     render() {
         const {children} = this.props
-        let child = children
-        if(Array.isArray(children)) {
-            child = children[0]
-        }
-        return React.cloneElement(child, {...child.props, ...this.inject()})
+        return React.cloneElement(children, {...children.props, ...this.inject()})
     }
 
 }

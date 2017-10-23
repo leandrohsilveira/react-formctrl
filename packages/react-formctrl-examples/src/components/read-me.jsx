@@ -1,32 +1,24 @@
 import React from 'react'
 
-import axios from 'axios'
-
+import {AjaxGet} from '../components/ajax'
 import {Markdown} from './markdown'
 
-export class ReadMe extends React.Component {
-
-    constructor(props) {
-        super(props)
-        this.state = {
-            content: null
-        }
+function RemoteMarkdown({data}) {
+    if(data) {
+        return (
+            <Markdown>
+                {data}
+            </Markdown>
+        )
+    } else {
+        return <div>Loading README.md from GitHub...</div>
     }
+}
 
-    componentWillMount() {
-        const { path } = this.props
-        axios.get(path)
-            .then(response => this.setState({ content: response.data }))
-    }
-
-    render() {
-        if (this.state.content) {
-            return (
-                <Markdown>
-                    {this.state.content}
-                </Markdown>
-            )
-        }
-        return null
-    }
+export function ReadMe({path}) {
+    return (
+        <AjaxGet url={path}>
+            <RemoteMarkdown />
+        </AjaxGet>
+    )
 }

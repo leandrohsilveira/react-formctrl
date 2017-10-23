@@ -1,4 +1,9 @@
 .markdown {
+
+    > p:first-child {
+        display: none;
+    }
+
     table {
         display: block;
         width: 100%;
