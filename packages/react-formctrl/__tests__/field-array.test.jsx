@@ -41,9 +41,9 @@ function provide(fieldArray) {
 
 }
 
-function FieldsGroup({form, name, startEmpty}) {
+function FieldsGroup({form, name, withEmptyEntry}) {
     return (
-        <FieldArray form={form} name={name} startEmpty={startEmpty} render={({ctrls, pushEntry}) => (
+        <FieldArray form={form} name={name} withEmptyEntry={withEmptyEntry} render={({ctrls, pushEntry}) => (
             <div>
                 {ctrls.map(({entry, removeEntry}, index) => (
                     <div key={index}>
