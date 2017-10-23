@@ -5,7 +5,7 @@
 # React Form CTRL 
 A lightweight React form library inspired by Angular's forms and Redux-Form.
 
-Bundle size: 26.5 KB (09/29/2017, v1.1.1)
+Bundle size: 29.6 KB (5.9 KB gzipped) (09/29/2017, v1.2.0)
 
 ## Quick start
 
