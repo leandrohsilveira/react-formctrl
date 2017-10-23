@@ -1,50 +1,70 @@
 import {REACT_FORMCTRL} from './provider.actions'
 import {copyFieldCtrl, copyFormCtrl} from './provider.utils'
 
-function forwardSubmitFormEvent(form, values, formCtrl, formRef) {
-    const payload = {detail: {values, formRef, formCtrl: copyFormCtrl(formCtrl)}}
-    const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${form}`, payload)
+function forwardEvent(eventName, detail) {
+    const payload = {detail}
+    const event = new CustomEvent(eventName, payload)
     document.dispatchEvent(event)
 }
 
-function forwardFieldChangedEvent(form, field, fieldCtrl) {
-    const payload = {detail: {form, field, fieldCtrl: copyFieldCtrl(fieldCtrl)}}
-    const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, payload)
-    document.dispatchEvent(event)
+function forwardSubmitFormEvent(state, payload) {
+    const formName = payload.form
+    const formRef = payload.formRef
+    const formCtrl = state.forms[formName]
+    if(formCtrl) {
+        const values = formCtrl.values
+        forwardEvent(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${formName}`, {values, formRef, formCtrl: copyFormCtrl(formCtrl)})
+    }
 }
 
-function forwardFormChangedEvent(form, formCtrl) {
-    const payload = {detail: {form, formCtrl: copyFormCtrl(formCtrl)}}
-    const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_CHANGED}#${form}`, payload)
-    document.dispatchEvent(event)
+function forwardFieldChangedEvent(state, payload) {
+    const form = payload.form
+    const field = payload.field
+    const formCtrl = state.forms[form]
+    if(formCtrl) {
+        const fieldCtrl = formCtrl.fields[field]
+        forwardEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, {form, field, fieldCtrl: copyFieldCtrl(fieldCtrl)})
+    }
+}
+
+function forwardFormChangedEvent(state, payload) {
+    const form = payload.form
+    const formCtrl = state.forms[form]
+    if(formCtrl) {
+        forwardEvent(`${REACT_FORMCTRL.EVENTS.FORM_CHANGED}#${form}`, {form, formCtrl: copyFormCtrl(formCtrl)})
+    }
+}
+
+function forwardFormResetEvent(state, payload) {
+    const form = payload.form
+    const formCtrl = state.forms[form]
+    if(formCtrl) {
+        Object.keys(formCtrl.fields).forEach(field => {
+            const fieldCtrl = formCtrl.fields[field]
+            forwardEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, {form, field, fieldCtrl: copyFieldCtrl(fieldCtrl)})
+        })
+    }
 }
 
 export function formProviderEffects(state, action) {
+    const EVENTS = REACT_FORMCTRL.EVENTS
     const type = action.type
     const payload = action.payload
-    const EVENTS = REACT_FORMCTRL.EVENTS
-    const formName = payload.form
-    const fieldName = payload.field
-    const formCtrl = state.forms[formName]
-    const fieldCtrl = fieldName && formCtrl ? formCtrl.fields[fieldName] : null
     switch(type) {
         case EVENTS.FIELD_BLURRED:
         case EVENTS.REGISTER_FIELD:
         case EVENTS.FIELD_CHANGED:
         case EVENTS.FIELD_PROPS_CHANGED:
-            forwardFieldChangedEvent(formName, fieldName, fieldCtrl)
-            forwardFormChangedEvent(formName, formCtrl)
+            forwardFieldChangedEvent(state, payload)
+            forwardFormChangedEvent(state, payload)
             break
             
         case EVENTS.FORM_SUBMITED:
-            forwardSubmitFormEvent(formName, formCtrl.values, formCtrl, payload.formRef)
+            forwardSubmitFormEvent(state, payload)
             break
         case EVENTS.FORM_RESETED:
-            Object.keys(formCtrl.fields).forEach(_fieldName => {
-                const _field = formCtrl.fields[_fieldName]
-                forwardFieldChangedEvent(formName, _fieldName, _field)
-            })
-            forwardFormChangedEvent(formName, formCtrl)
+            forwardFormResetEvent(state, payload)
+            forwardFormChangedEvent(state, payload)
             break
         case EVENTS.REGISTER_FORM:
         case EVENTS.UNREGISTER_FORM:

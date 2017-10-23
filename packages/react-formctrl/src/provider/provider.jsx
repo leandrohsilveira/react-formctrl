@@ -13,6 +13,10 @@ import {
     onSubmitForm,
     onResetForm,
     onRegisterValidators,
+    onFieldArrayEntryPush,
+    onFieldArrayEntryRemove,
+    onRegisterFieldArray,
+    onUnregisterFieldArray,
     REACT_FORMCTRL_NAME
 } from './provider.actions'
 
@@ -25,70 +29,65 @@ const PROVIDER_EVENT = `${REACT_FORMCTRL_NAME}.FormProvider`
 
 export class FormEventDispatcher {
 
-    static dispatchRegisterForm(form) {
-        const payload = {detail: onRegisterForm(form)}
+    static dispatchProviderEvent(detail) {
+        const payload = {detail}
         const event = new CustomEvent(PROVIDER_EVENT, payload)
         document.dispatchEvent(event)
+    }
+
+    static dispatchRegisterForm(form) {
+        FormEventDispatcher.dispatchProviderEvent(onRegisterForm(form))
     }
     
     static dispatchUnregisterForm(form) {
-        const payload = {detail: onUnregisterForm(form)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        FormEventDispatcher.dispatchProviderEvent(onUnregisterForm(form))
     }
     
     static dispatchSubmitForm(form, formRef) {
-        const payload = {detail: onSubmitForm(form, formRef)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        FormEventDispatcher.dispatchProviderEvent(onSubmitForm(form, formRef))
     }
     
     static dispatchResetForm(form) {
-        const payload = {detail: onResetForm(form)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        FormEventDispatcher.dispatchProviderEvent(onResetForm(form))
     }
 
     static dispatchRegisterField(form, field, fieldCtrl) {
-        const payload = {detail: onRegisterField(form, field, fieldCtrl)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        FormEventDispatcher.dispatchProviderEvent(onRegisterField(form, field, fieldCtrl))
     }
 
     static dispatchUnregisterField(form, field) {
-        const payload = {detail: onUnregisterField(form, field)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        FormEventDispatcher.dispatchProviderEvent(onUnregisterField(form, field))
     }
 
     static dispatchFieldPropsChanged(form, field, props) {
-        const payload = {detail: onFieldPropsChanged(form, field, props)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        FormEventDispatcher.dispatchProviderEvent(onFieldPropsChanged(form, field, props))
     }
 
     static dispatchFieldChanged(form, field, value, files) {
-        const payload = {detail: onFieldChanged(form, field, value, files)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        FormEventDispatcher.dispatchProviderEvent(onFieldChanged(form, field, value, files))
     }
 
     static dispatchFieldBlur(form, field) {
-        const payload = {detail: onFieldBlur(form, field)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        FormEventDispatcher.dispatchProviderEvent(onFieldBlur(form, field))
+    }
+
+    static dispatchRegisterFieldArray(form, name, withEmptyEntry, initialValues) {
+        FormEventDispatcher.dispatchProviderEvent(onRegisterFieldArray(form, name, withEmptyEntry, initialValues))
     }
 
     static dispatchRegisterValidators(validators) {
-        const payload = {detail: onRegisterValidators(validators)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        FormEventDispatcher.dispatchProviderEvent(onRegisterValidators(validators))
+    }
+
+    static dispatchFieldArrayEntryPush(form, name, initialValues) {
+        FormEventDispatcher.dispatchProviderEvent(onFieldArrayEntryPush(form, name, initialValues))
+    }
+    
+    static dispatchFieldArrayEntryRemove(form, name, index) {
+        FormEventDispatcher.dispatchProviderEvent(onFieldArrayEntryRemove(form, name, index))
     }
 
 }
-
-
-
 
 export class FormProvider extends React.Component {
 

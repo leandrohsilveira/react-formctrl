@@ -10,17 +10,48 @@ export class FieldArray extends React.Component {
     static propTypes = {
         form: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
-        startEmpty: PropTypes.bool,
+        render: PropTypes.func.isRequired,
+        withEmptyEntry: PropTypes.bool,
         initialValues: PropTypes.arrayOf(PropTypes.any),
-        render: PropTypes.func
     }
 
     constructor(props) {
         super(props)
 
         this.state = {
-            ctrls: []
+            entries: []
         }
+        
+        this.handleFieldArrayChangeForward = this.handleFieldArrayChangeForward.bind(this)
+        this.bindDispatchFieldArrayEntryPush = this.bindDispatchFieldArrayEntryPush.bind(this)
+        this.bindDispatchFieldArrayEntryRemove = this.bindDispatchFieldArrayEntryRemove.bind(this)
+    }
+    
+    componentWillMount() {
+        document.addEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_ARRAY_CHANGED}#${form}#${group}`, this.handleFieldArrayChangeForward)
+    }
+
+    handleFieldArrayChangeForward(event) {
+        this.setState(state => {
+            entries: event.detail.entries.map(entry => ({
+                ...entry,
+                removeEntry: this.bindDispatchFieldArrayEntryRemove(entry.index)
+            }))
+        })
+    }
+
+    bindDispatchFieldArrayEntryRemove(index) {
+        const {form, name} = this.props
+        return () => FormEventDispatcher.dispatchFieldArrayEntryRemove(form, name, index)
+    }
+    
+    bindDispatchFieldArrayEntryPush() {
+        const {form, name} = this.props
+        return (initialValues) => FormEventDispatcher.dispatchFieldArrayEntryPush(form, name, initialValues)
+    }
+
+    render() {
+        return this.props.render(this.state.entries, this.bindDispatchFieldArrayEntryPush())
     }
 
 }
@@ -37,8 +68,8 @@ export class FieldArrayEntry extends BaseField {
     }
 
     getFieldId() {
-        const { entry: { form, group } } = this.props
-        return `${form}#${group}`
+        const { entry: { form, group, index }, name } = this.props
+        return `${form}#${group}#${index}#${name}`
     }
 
     dispatchRegisterField() {

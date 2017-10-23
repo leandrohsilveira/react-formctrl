@@ -54,8 +54,6 @@ export function copyError(error) {
             else params[paramName] = param
         })
         output.params = params
-    } else {
-        output.params = undefined
     }
     return output
 }
@@ -116,16 +114,28 @@ export function copyFormFiles(files) {
 }
 
 export function copyFormFields(fields) {
-    const cFields = {}
+    const output = {}
     if(fields) {
         const fieldsNames = Object.keys(fields)
         if(fieldsNames.length) {
             fieldsNames.forEach(fieldName => {
-                cFields[fieldName] = copyFieldCtrl(fields[fieldName])
+                output[fieldName] = copyFieldCtrl(fields[fieldName])
             })
         }
     }
-    return cFields
+    return output
+}
+
+export function copyFieldArray(fieldArray) {
+    return {}
+}
+
+export function copyFormFieldsArrays(fieldsArrays) {
+    const output = {}
+    Object.keys(fieldsArrays).forEach(fieldArrayName => {
+        output[fieldArrayName] = copyFieldArray(fieldsArrays[fieldArrayName])
+    })
+    return output
 }
 
 export function copyFormCtrl(formCtrl) {
@@ -133,7 +143,6 @@ export function copyFormCtrl(formCtrl) {
         return {
             __instances: formCtrl.__instances,
             formName: formCtrl.formName,
-            validating: formCtrl.validating,
             valid: formCtrl.valid,
             invalid: formCtrl.invalid,
             untouched: formCtrl.untouched,
@@ -145,6 +154,7 @@ export function copyFormCtrl(formCtrl) {
             fields: copyFormFields(formCtrl.fields),
             values: copyFormValues(formCtrl.values),
             files: copyFormFiles(formCtrl.files),
+            fieldsArrays: copyFormFieldsArrays(formCtrl.fieldsArrays)
         }
     }
 }
