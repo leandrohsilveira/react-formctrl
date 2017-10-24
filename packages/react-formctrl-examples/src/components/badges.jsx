@@ -65,7 +65,7 @@ export function AppBadges({branch = 'master'}) {
             <a href={`https://coveralls.io/github/leandrohsilveira/react-formctrl?branch=${branch}`}>
                 <img src={`https://coveralls.io/repos/github/leandrohsilveira/react-formctrl/badge.svg?branch=${branch}`} alt='Coverage Status' />
             </a>
-            <AjaxGet url="/packages.sizes.json">
+            <AjaxGet url="packages.sizes.json">
                 <PackageSizesBadges />
             </AjaxGet>
             <img src={`${SNYK_IO_URL}?targetFile=packages%2Freact-formctrl%2Fpackage.json`} alt="Known Vulnerabilities" />
