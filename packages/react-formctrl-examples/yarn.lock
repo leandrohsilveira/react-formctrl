@@ -4396,13 +4396,6 @@ react-dom@^15.6.1:
     object-assign "^4.1.0"
     prop-types "^15.5.10"
 
-react-formctrl@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/react-formctrl/-/react-formctrl-1.1.2.tgz#ac1ba36a2cfe682e154bb6337e8ac5713933b984"
-  dependencies:
-    prop-types "^15.5.7"
-    react "^15.5.0"
-
 react-ga@^2.3.5:
   version "2.3.5"
   resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-2.3.5.tgz#7c3d0c530b2bbe64ceb1faa79be340685aa84a9a"
