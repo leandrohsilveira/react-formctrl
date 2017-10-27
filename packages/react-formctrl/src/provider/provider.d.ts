@@ -233,7 +233,7 @@ declare interface FieldStateProperties {
     /**
      * An array of custom validators registered on FormProvider component.
      */
-    validate?: (string|ValidatorSpec)[]
+    validate?: string|string[];
 
     /**
      * A collection of accepted mimetypes separated by comma.
