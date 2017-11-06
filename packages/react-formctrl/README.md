@@ -7,7 +7,7 @@ A lightweight React form library inspired by Angular's forms and Redux-Form.
 
 Bundle size: 29.6 KB (5.9 KB gzipped) (09/29/2017, v1.2.0)
 
-## Advantages
+## Features
 
 * No schema
 * Declarative
@@ -60,6 +60,17 @@ Now, your field component will need two required props:
 * **form**: the name of the form that the field is attached to;
 * **name**: the name of the field;
 
+And will have some optional properties too:
+* **type**: The input field type.
+* **required**: `true` if the input field is required.
+* **pattern**: The regex to validate the field pattern.
+* **integer**: `true` if when the Field type property is "number" and should validate to integer value.
+* **match**: Another field name that the value of this field should match.
+* **min**: The min number value of a field with type "number".
+* **max**: The max number value of a field with type "number".
+* **minLength**: The min string value length of a field.
+* **maxLength**: The max string value length of a field.
+
 The `controlledField` decorator will inject a `ctrl` property which can be used to access the field state:
 * **valid/invalid**: The field validation state;
 * **pristine/dirty**: The field modification state;
@@ -67,7 +78,7 @@ The `controlledField` decorator will inject a `ctrl` property which can be used 
 * **unchanged/changed**: The field change state (initial value comparison);
 * **errors**: An array of the validation errors: (`[{key: 'email', params: {value: 'email@'}}]`);
 
-The `controlledField` decorator automaticly handles the `value`, `onChange` and `onBlur` properties, so you just need to bind them to a input.
+The `controlledField` decorator automatically handles the `value`, `onChange` and `onBlur` properties, so you just need to bind them to a input.
 
 ### 1.3. Build and decorate your forms:
 ```jsx
