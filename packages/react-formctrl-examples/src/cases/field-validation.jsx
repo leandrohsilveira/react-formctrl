@@ -1,15 +1,15 @@
 import React from 'react'
 
-import {Form, Field} from 'react-formctrl'
-import {SubmitValuesPopup} from '../components/submit-values'
-import {Json} from '../components/case'
+import { Form, controlledField } from 'react-formctrl'
+import { SubmitValuesPopup } from '../components/submit-values'
+import { Json } from '../components/case'
 
-function Input({label, name, value, onChange, onBlur, ctrl}) {
-    const {valid, invalid, dirty, errors} = ctrl
+let Input = ({ label, name, value, onChange, onBlur, ctrl }) => {
+    const { valid, invalid, dirty, errors } = ctrl
 
     const getClassName = () => {
-        if(valid) return 'is-valid'
-        if(dirty && invalid) return 'is-invalid'
+        if (valid) return 'is-valid'
+        if (dirty && invalid) return 'is-invalid'
     }
     return (
         <Json title="Field controller" json={ctrl}>
@@ -20,9 +20,11 @@ function Input({label, name, value, onChange, onBlur, ctrl}) {
                     <div className="invalid-feedback" key={error.key}>{error.key}</div>
                 ))}
             </div>
-        </Json> 
+        </Json>
     )
 }
+
+Input = controlledField()(Input)
 
 export function FieldValidationForm(props) {
     const formName = "fieldValidation"
@@ -35,16 +37,12 @@ export function FieldValidationForm(props) {
                 <Form name={formName} onSubmit={onSubmit}>
                     <div className="card">
                         <div className="card-body">
-                            <Field form={formName} name="name" required>
-                                <Input label="Name (required)"></Input>
-                            </Field>
+                            <Input label="Name (required)" form={formName} name="name" required />
                         </div>
                     </div>
                     <div className="card">
                         <div className="card-body">
-                            <Field form={formName} name="email" type="email" required>
-                                <Input label="E-mail (email and required)"></Input>
-                            </Field>
+                            <Input label="E-mail (email and required)" form={formName} name="email" type="email" required />
                         </div>
                     </div>
                     <div>

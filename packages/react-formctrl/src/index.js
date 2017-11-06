@@ -4,6 +4,7 @@ export {
     FormProvider
 } from './provider/provider'
 
-export {Form, FormControl} from './form/form'
-export {Field} from './field/field'
-export {Validator, CustomValidator} from './validator'
+export { Form, FormControl } from './form/form'
+export { Field } from './field/field'
+export { Validator, CustomValidator } from './validator'
+export * from './decorators'

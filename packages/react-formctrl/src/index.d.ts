@@ -1,9 +1,9 @@
 import {
-    FormControl, 
-    FormControlProps, 
-    FormControlState, 
-    FormProps, 
-    FormState, 
+    FormControl,
+    FormControlProps,
+    FormControlState,
+    FormProps,
+    FormState,
     Form
 } from './form/form';
 
@@ -11,7 +11,7 @@ import {
     FormProviderProps,
     FormProviderState,
     FormProvider,
-    
+
     CustomPropertiesInjection,
     DefaultFieldInjectedProps,
     DefaultFormControlInjectedProps,
@@ -38,18 +38,28 @@ import {
     CustomValidator
 } from './validator'
 
+import {
+    controlledField,
+    ControlledFieldDecorator,
+    ControlledFieldProps,
+
+    controlledForm,
+    ControlledFormDecorator,
+    ControlledFormProps
+} from './decorators'
+
 export {
-    FormControl, 
-    FormControlProps, 
-    FormControlState, 
-    FormProps, 
-    FormState, 
+    FormControl,
+    FormControlProps,
+    FormControlState,
+    FormProps,
+    FormState,
     Form,
 
     FormProviderProps,
     FormProviderState,
     FormProvider,
-    
+
     CustomPropertiesInjection,
     DefaultFieldInjectedProps,
     DefaultFormControlInjectedProps,
@@ -69,5 +79,13 @@ export {
     FieldState,
 
     Validator,
-    CustomValidator
+    CustomValidator,
+
+    controlledField,
+    ControlledFieldDecorator,
+    ControlledFieldProps,
+
+    controlledForm,
+    ControlledFormDecorator,
+    ControlledFormProps
 };

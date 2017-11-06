@@ -1,13 +1,19 @@
 import React from 'react'
 
-import {Form, Field} from 'react-formctrl'
-import {SubmitValuesPopup} from '../components/submit-values'
+import { Form, controlledField } from 'react-formctrl'
+import { SubmitValuesPopup } from '../components/submit-values'
 
-function Input({name, value, onChange}) {
+let Input = ({ name, value, onChange }) => {
     return (
-        <input className="form-control" name={name} value={value} onChange={onChange}></input>
+        <input
+            className="form-control"
+            name={name}
+            value={value}
+            onChange={onChange}
+        />
     )
 }
+Input = controlledField()(Input)
 
 export function BasicForm(props) {
     const formName = "basic"
@@ -20,9 +26,7 @@ export function BasicForm(props) {
                 <Form name={formName} onSubmit={onSubmit}>
                     <div className="form-group">
                         <label htmlFor="simple">Simple:</label>
-                        <Field form={formName} name="simple">
-                            <Input></Input>
-                        </Field>
+                        <Input form={formName} name="simple" />
                     </div>
                     <div>
                         <button className="btn btn-primary" type="submit">Submit</button>

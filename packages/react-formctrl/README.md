@@ -5,13 +5,23 @@
 # React Form CTRL 
 A lightweight React form library inspired by Angular's forms and Redux-Form.
 
-Bundle size: 29.6 KB (5.9 KB gzipped) (09/29/2017, v1.2.0)
+Bundle size: 32.6 KB (6.2 KB gzipped) (11/06/2017, v1.3.0)
 
-## Quick start
+## Features
+
+* No schema
+* Declarative
+* Extremely reusable forms
+* Field level reusability
+* Built-in and custom validators
+* Controlled inputs
+* With decorators
+
+## 1. Quick start
 
 `npm install --save react-formctrl`
 
-### Wrap all your application with:
+### 1.1. Wrap all your application with:
 ```jsx
 export function App(props) {
     return (
@@ -22,10 +32,9 @@ export function App(props) {
 }
 ```
 
-### Then wrap your field component:
+### 1.2. Create and decorate your field component:
 ```jsx
-/* some injected props: */
-function MyInput({label, placeholder, name, type, required, onChange, onBlur, value}) {
+let InputField = ({label, placeholder, name, type, required, onChange, onBlur, value}) => {
 
     const getLabel = () => {
         return required ? `${label}*` : label
@@ -39,101 +48,239 @@ function MyInput({label, placeholder, name, type, required, onChange, onBlur, va
                 onChange={onChange} 
                 onBlur={onBlur}
                 placeholder={placeholder || label}
-                value={value} />
+                value={value} 
+            />
         </div>
     );
 }
-
-function InputField({label, placeholder, form, name, type, initialValue, required, pattern, integer}) {
-    return (
-        <Field form={form} 
-                name={name} 
-                type={type} 
-                initialValue={initialValue} 
-                required={required} 
-                integer={integer}
-                pattern={pattern}>
-            <MyInput label={label} placeholder={placeholder} />
-        </Field>
-    )
-}
-
+InputField = controlledField()(InputField)
 ```
 
-### And build your forms:
+Now, your field component will need two required props:
+* **form**: the name of the form that the field is attached to;
+* **name**: the name of the field;
+
+And will have some optional properties too:
+* **type**: The input field type.
+* **required**: `true` if the input field is required.
+* **pattern**: The regex to validate the field pattern.
+* **integer**: `true` if when the Field type property is "number" and should validate to integer value.
+* **match**: Another field name that the value of this field should match.
+* **min**: The min number value of a field with type "number".
+* **max**: The max number value of a field with type "number".
+* **minLength**: The min string value length of a field.
+* **maxLength**: The max string value length of a field.
+
+The `controlledField` decorator will inject a `ctrl` property which can be used to access the field state:
+* **valid/invalid**: The field validation state;
+* **pristine/dirty**: The field modification state;
+* **untouched/touched**: The field access state (changed on blur);
+* **unchanged/changed**: The field change state (initial value comparison);
+* **errors**: An array of the validation errors: (`[{key: 'email', params: {value: 'email@'}}]`);
+
+The `controlledField` decorator automatically handles the `value`, `onChange` and `onBlur` properties, so you just need to bind them to a input.
+
+### 1.3. Build and decorate your forms:
+```jsx
+let PersonForm = ({form, formCtrl, onSubmit, person = {}}) => (
+    <Form name={form} onSubmit={onSubmit}>
+        <div class="fieldset">
+            <div class="fields-container">
+                <InputField 
+                    form={form} 
+                    name="name" 
+                    label="Name" 
+                    initialValue={person.name} 
+                    required 
+                />
+                <InputField 
+                    form={form} 
+                    name="email" 
+                    type="email" 
+                    label="E-mail" 
+                    initialValue={person.email} 
+                    required 
+                />
+            </div>
+            <div class="buttons-container">
+                <button type="submit" disabled={formCtrl.invalid || formCtrl.unchanged}>Save</button>
+                <button type="reset" disabled={formCtrl.unchanged}>Reset</button>
+            </div>
+        </div>
+    </Form>
+)
+PersonForm = controlledForm()(PersonForm)
+```
+
+Now, your field component will need a required props:
+* **form**: the name of the form that the controller will be attached to;
+
+The `controlledForm` decorator will inject a `formCtrl` property which can be used to access the form state:
+* **valid/invalid**: The form's fields validation state;
+* **pristine/dirty**: The form's fields modification state;
+* **untouched/touched**: The form's fields access state (changed on blur);
+* **unchanged/changed**: The form's fields change state (initial value comparison);
+* **values**: The values of the form (`{[fieldName]: 'fieldValue'}`);
+* **files**: the selected files of the form (`{[fieldName]: File[]}`);
+
+If you need to programatically change a field's value, use: `formCtrl.setFieldValue('fieldName', 'newValue')`.
+Just be careful about the phase that you trigger the change, because this will trigger the Form and related Field update phase. So, ensure the form component update effects don't triggers `setFieldValue` again infinitely.
+
+### 1.4. Finally, use and reuse your forms!
+```jsx
+function CreatePersonRoute() {
+    return <PersonForm form="createPersonForm" />
+}
+
+function EditPersonRoute() {
+    const person = {
+        name: 'Leandro Hinckel Silveira',
+        email: 'leandro.hinckel@gmail.com'
+    }
+    return <PersonForm form="editPersonForm" person={person} />
+}
+```
+
+## 2. Adding custom validation
+
+### 2.1. Create a class that extends CustomValidator
+```jsx
+class NoStupidPassword extends CustomValidator {
+    constructor() {
+        super('stupidpass')
+    }
+    validate(formCtrl, props, value, files) {
+        return !/^123456789$/i.test(value)
+    }
+}
+```
+The string parameter of `super` constructor determines the key name of the validator to use it later.
+
+### 2.2 Declare it on FormProvider component
+```jsx
+function App() {
+    return (
+        <FormProvider validators={[new NoStupidPassword()]}>
+            <UserForm form="userForm">
+        </FormProvider>
+    )
+}
+```
+
+### 2.3 Then activate the validator
+Use the validator's key name passed to the `super` constructor to activate the validation:
 ```jsx
 
-/*
- * EASY REAUSABLE FORMS!
- */
-function UserForm(props) {
-    const formName = props.formCtrl.formName
-    const user = props.user || {name: '', email: ''}
+let UserForm = ({form, formCtrlm onSubmit}) => (
+    <Form name={form} onSubmit={onSubmit}>
+        <InputField 
+            form={form} 
+            name="username" 
+            label="Username" 
+            required 
+        />
+        <InputField 
+            form={form} 
+            name="password" 
+            type="password" 
+            label="Password" 
+            validate="stupidpass"
+            required 
+        />
+        <InputField 
+            form={form} 
+            name="confirmPassword"
+            type="password"
+            label="Confirm password"
+            match="password"
+            validate="stupidpass"
+            required 
+        />
+        <button type="submit" disabled={formCtrl.invalid || formCtrl.unchanged}>Save</button>
+    </Form>
+)
+UserForm = controlledForm()(UserForm)
+```
+
+## 3. Reach field level reusability
+The field level reusability means that even the specific forms fields can be reusable thanks to Form and Field decoupling.
+
+### 3.1 Create form's part components
+```jsx
+function UserInformationsFields({form, user = {}}) {
     return (
-        <div class="form-container">
-            <Form name={formName} onSubmit={props.onSubmit}>
-                <div class="fieldset">
-                    <div class="fields-container">
-                        <InputField form={formName} name="name" label="Name" initialValue={user.name} required />
-                        <InputField form={formName} name="email" type="email" label="E-mail" initialValue={user.email} required />
-                        <InputField form={formName} name="confirmEmail" type="email" label="Confirm e-mail" initialValue={user.email} required match="email" />
-                        <InputField form={formName} name="password" type="password" label="Password" required minLength={8} />
-                        <InputField form={formName} name="confirmPassword" type="password" label="Confirm password" required minLength={8} match="password" />
-                    </div>
-                    <div class="buttons-container">
-                        <button type="submit" disabled={props.formCtrl.invalid || props.formCtrl.unchanged}>Save</button>
-                        <button type="reset" disabled={props.formCtrl.unchanged}>Reset</button>
-                    </div>
-                </div>
-            </Form>
+        <div>
+            <InputField 
+                form={form} 
+                name="name" 
+                label="Full name" 
+                initialValue={user.name} 
+            />
+            <InputField 
+                form={form} 
+                name="email" 
+                type="email" 
+                label="E-mail" 
+                initialValue={user.email} 
+            />
+            <InputField 
+                form={form} 
+                name="confirmEmail" 
+                type="email" 
+                label="Confirm e-mail" 
+                initialValue={user.email} 
+                match="email"
+            />
         </div>
     )
 }
-
-function RegisterUser() {
-    const handleSubmit = (values) => UserService.create(values)
+function UserCredentialsFields({form, user = {}}) {
     return (
-        <FormControl name="registerUserForm">
-            <UserForm onSubmit={postUser} />
-        </FormControl>
+        <div>
+            <InputField 
+                form={form} 
+                name="username" 
+                label="Username" 
+                initialValue={user.username} 
+                required
+                minLength={6}
+                maxLength={18}
+            />
+            <InputField 
+                form={form} 
+                name="password" 
+                type="password" 
+                label="Password" 
+            />
+            <InputField 
+                form={form} 
+                name="confirmPassword" 
+                type="password" 
+                label="Confirm password" 
+                match="password"
+            />
+        </div>
     )
-}
+} 
+```
 
-class UpdateUser extends React.Component {
-
-    constructor(props) {
-        super(props)
-        this.state = {
-            user: null
-        }
-        this.handleSubmit = this.handleSubmit.bind(this)
-    }
-
-    componentWillMount() {
-        UserService.find(this.props.id)
-                    .then(user => this.setState({user}))
-    }
-
-    handleSubmit(values) {
-        UserService.update(this.props.id, values)
-    }
-
-    render() {
-        if(this.state.user) {
-            // Initial values are applied only on componentWillMount phase! Do not load the component with null or empty values!
-            return (
-                <FormControl name="updateUserForm">
-                    <UserForm onSubmit={this.handleSubmit} user={this.state.user} />
-                </FormControl>
-            )
-        } else {
-            return <div>Loading user data...</div>
-        }
-
-    }
-
-}
-
+### 3.2 Reuse them in different forms
+```jsx
+let QuickUserRegistrationForm = ({form, formCtrl, onSubmit}) => (
+    <Form name={form} onSubmit={onSubmit}>
+        <UserCredentialsFields form={form} />
+        <button type="submit" disabled={formCtrl.invalid || formCtrl.unchanged}>Save</button>
+    </Form>
+)
+let FullUserForm = ({form, formCtrl, onSubmit, user = {}}) => (
+    <Form name={form} onSubmit={onSubmit}>
+        <UserInformationsFields form={form} user={user} />
+        <UserCredentialsFields form={form} user={user} />
+        <button type="submit" disabled={formCtrl.invalid || formCtrl.unchanged}>Save</button>
+    </Form>
+)
+QuickUserRegistrationForm = controlledForm(QuickUserRegistrationForm)
+FullUserForm = controlledForm(FullUserForm)
 ```
 
 # Components
@@ -142,9 +289,15 @@ class UpdateUser extends React.Component {
 
 The component that controls all form values and events. There may only be one instance of this component in the application.
 
+### Properties
+
+Name | Type | Default value | Description
+------------ | ------------- | ------------- | --------------
+validators | Validator[] | [] | An array of custom validators.
+
 ## Form
 
-The component that registers the form in FormProvider component and listen to submit and reset form events.
+The component responsible for form's registration and submit handlers.
 
 ### Properties
 
@@ -153,10 +306,6 @@ Name | Type | Default value | Description
 name | string | | The form id and name
 className | string | | The CSS classes for the native form component rendered by this component
 onSubmit | Function | | A submit handler function which receives the form values object by parameter: `(formValues) => doSomething(formValues)`
-
-### Injects
-
-No property are injected into it's childrens by this component.
 
 ## FormControl
 
@@ -172,43 +321,9 @@ inject | Function | | A function responsible for transforming the form controlle
 
 ### Injects
 
-The table below shows the fields of the "formCtrl" property that will be injected by this component into the child component, which can be changed through the "inject" property:
-
-```jsx
-/*
- * The Form component can be a child of it's own FormControl, the FormControl component waits the Form component register to FormProvider.
- */
-function DefaultInjection(props) {
-    return (
-        <Form name={props.formCtrl.formName}>
-            <div>{/*... fields ...*/}</div>
-        </Form>
-    )
-}
-function CustomInjection(props) {
-    return (
-        <Form name={props.injectedFormName}>
-            <div>{/*... fields ...*/}</div>
-        </Form>
-    )
-}
-
-function Page(props) {
-    const defaultInjectionFormName = "defaultForm"
-    const customInjectionFormName = "injectedForm"
-    const inject = (formCtrl) => ({injectedFormName: formCtrl.formName})
-    return (
-        <div>
-            <FormControl form={defaultInjectionFormName}>
-                <DefaultInjection />
-            </FormControl>
-            <FormControl form={customInjectionFormName} inject={inject}>
-                <CustomInjection />
-            </FormControl>
-        </div>
-    )
-}
-```
+Name | Type | Description
+------------ | ------------- | -------------
+formCtrl | FormStateController | The form controller
 
 #### FormStateController
 
@@ -227,7 +342,6 @@ values | object{string: string} | The fields values of the form: `{[fieldName]: 
 files | object{string: File[]} | The selected files of each file field of the form.
 fields | object{string: FieldStateController} | The fields controllers of the form: `{[fieldName]: [fieldCtrl]}`
 setFieldValue | Function | Method to programmatically change a field value: `props.formCtrl.setFieldValue('fieldName', 'newValue')`.
-
 
 ## Field
 
@@ -266,57 +380,6 @@ onBlur | HTMLEventHandler | The field blur event handler: `(e) => handleBlur(e.t
 value | string | The current field value.
 files | File[] | The selected files of the field.
 ctrl | FieldStateController | The field controller.
-
-```jsx
-function InputWrapper(props) {
-    const messages = null
-    if(props.ctrl.invalid) {
-        messages = (
-            <ul>
-                {props.ctrl.errors.map(error => (
-                    <li>{error}</li>
-                ))}
-            </ul>
-        )
-    }
-    return (
-        <div>
-            <input {...props} />
-            {messages}
-        </div>
-    )
-}
-function SomeForm(props) {
-    const formName = props.formCtrl.formName
-    return (
-        <Form formName={formName} onSubmit={props.onSubmit}>
-            <div>
-                {/* The Field props overrides the child props:*/}
-                <Field form={formName} name="nativeInput" type="number">
-                    <input type="text" placeholder="Native input (number)" />
-                </Field>
-
-                <Field form={formName} name="email" type="email" required>
-                    <InputWrapper placeholder="Native input (number)" />
-                </Field>
-
-                <button type="submit" disabled={props.formCtrl.invalid}>Submit</button>
-            </div>
-        </Form>
-    )
-}
-function Page(props) {
-    const handleSubmit(values) {
-        console.log('Values:', values) // # Values: {nativeInput: '50', email: 'email@email.com'}
-    }
-    return (
-        <FormProvider form="someForm">
-            <SomeForm />
-        </FormProvider>
-    )
-}
-
-```
 
 #### FieldStateController
 
