@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { FieldStateProperties } from '../provider/provider';
+import { FieldStateProperties, FieldStateController, FormStateController } from '../provider/provider';
 
 declare interface ControlledFormProps {
 
@@ -7,6 +7,11 @@ declare interface ControlledFormProps {
      * The name of the form to control
      */
     form: string;
+
+    /**
+     * The form state controller
+     */
+    formCtrl?: FormStateController;
 
 }
 
@@ -27,6 +32,31 @@ declare interface ControlledFieldProps extends FieldStateProperties {
      * The name of the field
      */
     name: string;
+
+    /**
+     * The field initial value
+     */
+    initialValue?: string | number;
+
+    /**
+     * The field value (Automatically handled by react-formctrl)
+     */
+    value?: string | number;
+
+    /**
+     * event handler to change event (Automatically handled by react-formctrl)
+     */
+    onChange?: React.ChangeEventHandler<HTMLInputElement>;
+
+    /**
+     * event handler to blur event (Automatically handled by react-formctrl)
+     */
+    onBlur?: React.FocusEventHandler<HTMLInputElement>;
+
+    /**
+     * The field state controller (Automatically handled by react-formctrl)
+     */
+    ctrl?: FieldStateController;
 
 }
 
