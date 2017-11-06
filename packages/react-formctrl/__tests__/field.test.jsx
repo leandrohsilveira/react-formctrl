@@ -1,13 +1,13 @@
 import React from 'react'
 import Adapter from 'enzyme-adapter-react-16'
 
-import {mount, configure, shallow} from 'enzyme';
+import { mount, configure, shallow } from 'enzyme';
 
-import {FormProvider, Form, Field, CustomValidator} from '../src'
+import { FormProvider, Form, CustomValidator, Field, controlledField } from '../src'
 
-configure({adapter: new Adapter()})
+configure({ adapter: new Adapter() })
 
-export const inputInject = (fieldCtrl) => ({
+const inputInject = (fieldCtrl) => ({
     name: fieldCtrl.name,
     type: fieldCtrl.type,
     className: fieldCtrl.className,
@@ -16,9 +16,24 @@ export const inputInject = (fieldCtrl) => ({
     onBlur: fieldCtrl.onBlur
 })
 
-export function InputWrapper({type, onChange, onBlur, value}) {
-    return <input type={type} onChange={onChange} onBlur={onBlur} value={value} />
+let InputWrapper = ({ className, type, onChange, onBlur, value }) => {
+    return (
+        <input
+            className={className}
+            type={type}
+            onChange={onChange}
+            onBlur={onBlur}
+            value={value}
+        />
+    )
 }
+
+export {
+    inputInject,
+    InputWrapper
+}
+
+InputWrapper = controlledField()(InputWrapper)
 
 class NoFieldValueValidator extends CustomValidator {
 
@@ -33,7 +48,7 @@ class NoFieldValueValidator extends CustomValidator {
 }
 
 class NoFieldValue2Validator extends CustomValidator {
-    
+
     constructor() {
         super('noTestValue2')
     }
@@ -85,7 +100,7 @@ describe('About the <Field /> component', () => {
                 </FormProvider>
             ))
             const input = dom.find('input')
-            input.simulate('change', {target: {value: fieldValue}})
+            input.simulate('change', { target: { value: fieldValue } })
 
             const formCtrl = dom.state('forms')[formName]
             expect(formCtrl).toBeDefined()
@@ -98,14 +113,12 @@ describe('About the <Field /> component', () => {
             const dom = mount((
                 <FormProvider validators={[new NoFieldValueValidator()]}>
                     <Form name={formName}>
-                        <Field form={formName} name={fieldName}>
-                            <InputWrapper />
-                        </Field>
+                        <InputWrapper form={formName} name={fieldName} />
                     </Form>
                 </FormProvider>
             ))
             const input = dom.find('input')
-            input.simulate('change', {target: {value: fieldValue}})
+            input.simulate('change', { target: { value: fieldValue } })
 
             const formCtrl = dom.state('forms')[formName]
             expect(formCtrl).toBeDefined()
@@ -139,7 +152,7 @@ describe('About the <Field /> component', () => {
         })
 
         test('The input changes do nothing', () => {
-            dom.find('input').simulate('change', {target: {value: 'test'}})
+            dom.find('input').simulate('change', { target: { value: 'test' } })
             const formCtrl = dom.state('forms')[formName]
             expect(formCtrl).not.toBeDefined()
         })
@@ -162,7 +175,7 @@ describe('About the <Field /> component', () => {
         let input
         let field
         beforeEach(() => {
-            
+
             dom = mount((
                 <FormProvider validators={[new NoFieldValueValidator()]}>
                     <Form name={formName}>
@@ -173,7 +186,7 @@ describe('About the <Field /> component', () => {
                 </FormProvider>
             ))
             field = dom.find(Field).instance()
-            
+
 
             input = dom.find('input')
         })
@@ -181,7 +194,7 @@ describe('About the <Field /> component', () => {
         describe('When Field properties do not changes', () => {
             let formCtrl, fieldCtrl
             beforeEach(() => {
-                field.componentWillReceiveProps({...field.props})
+                field.componentWillReceiveProps({ ...field.props })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl = formCtrl.fields[fieldName]
@@ -203,7 +216,7 @@ describe('About the <Field /> component', () => {
                 test('The field does not contains errors messages', () => {
                     expect(fieldCtrl.errors).toHaveLength(0)
                 })
-                
+
             })
         })
 
@@ -212,7 +225,7 @@ describe('About the <Field /> component', () => {
             let formCtrl, fieldCtrl
             beforeEach(() => {
 
-                field.componentWillReceiveProps({...field.props, required: true})
+                field.componentWillReceiveProps({ ...field.props, required: true })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl = formCtrl.fields[fieldName]
@@ -233,19 +246,19 @@ describe('About the <Field /> component', () => {
                 })
 
                 test('The field contains a "required" error message', () => {
-                    expect(fieldCtrl.errors).toContainEqual({key: 'required'})
+                    expect(fieldCtrl.errors).toContainEqual({ key: 'required' })
                 })
-                
+
             })
 
         })
 
         describe('When Field pattern property changes', () => {
-            
+
             let formCtrl, fieldCtrl
             beforeEach(() => {
-                input.simulate('change', {target: {value: fieldValue}})
-                field.componentWillReceiveProps({...field.props, pattern: /d+/})
+                input.simulate('change', { target: { value: fieldValue } })
+                field.componentWillReceiveProps({ ...field.props, pattern: /d+/ })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl = formCtrl.fields[fieldName]
@@ -265,106 +278,106 @@ describe('About the <Field /> component', () => {
                 })
 
                 test('The field contains a "required" error message', () => {
-                    expect(fieldCtrl.errors).toContainEqual({key: 'pattern', params: {value: fieldValue, pattern: /d+/}})
+                    expect(fieldCtrl.errors).toContainEqual({ key: 'pattern', params: { value: fieldValue, pattern: /d+/ } })
                 })
-                
+
             })
 
             describe('When Field type property changes', () => {
-                
+
                 let formCtrl, fieldCtrl
                 beforeEach(() => {
-                    input.simulate('change', {target: {value: fieldValue}})
-                    field.componentWillReceiveProps({...field.props, type: "email"})
+                    input.simulate('change', { target: { value: fieldValue } })
+                    field.componentWillReceiveProps({ ...field.props, type: "email" })
                     formCtrl = dom.state('forms')[formName]
                     expect(formCtrl).toBeDefined()
                     fieldCtrl = formCtrl.fields[fieldName]
                     expect(fieldCtrl).toBeDefined()
                 })
-    
+
                 describe(`When the field has "${fieldValue}" value`, () => {
-    
+
                     test('The form is invalid', () => {
                         expect(formCtrl.valid).toBeFalsy()
                         expect(formCtrl.invalid).toBeTruthy()
                     })
-    
+
                     test('The field is invalid', () => {
                         expect(fieldCtrl.valid).toBeFalsy()
                         expect(fieldCtrl.invalid).toBeTruthy()
                     })
-    
+
                     test('The field contains a "email" error message', () => {
-                        expect(fieldCtrl.errors).toContainEqual({key: 'email', params: {value: fieldValue}})
+                        expect(fieldCtrl.errors).toContainEqual({ key: 'email', params: { value: fieldValue } })
                     })
-                    
+
                 })
-    
+
             })
 
             describe('When Field integer property changes', () => {
-                
+
                 let formCtrl, fieldCtrl
                 beforeEach(() => {
-                    input.simulate('change', {target: {value: fieldValue}})
-                    field.componentWillReceiveProps({...field.props, type: "number"})
-                    field.componentWillReceiveProps({...field.props, type: "number", integer: true})
+                    input.simulate('change', { target: { value: fieldValue } })
+                    field.componentWillReceiveProps({ ...field.props, type: "number" })
+                    field.componentWillReceiveProps({ ...field.props, type: "number", integer: true })
                     formCtrl = dom.state('forms')[formName]
                     expect(formCtrl).toBeDefined()
                     fieldCtrl = formCtrl.fields[fieldName]
                     expect(fieldCtrl).toBeDefined()
                 })
-    
+
                 describe(`When the field has "${fieldValue}" value`, () => {
-    
+
                     test('The form is invalid', () => {
                         expect(formCtrl.valid).toBeFalsy()
                         expect(formCtrl.invalid).toBeTruthy()
                     })
-    
+
                     test('The field is invalid', () => {
                         expect(fieldCtrl.valid).toBeFalsy()
                         expect(fieldCtrl.invalid).toBeTruthy()
                     })
-    
+
                     test('The field contains a "integer" error message', () => {
-                        expect(fieldCtrl.errors).toContainEqual({key: 'integer', params: {value: fieldValue}})
+                        expect(fieldCtrl.errors).toContainEqual({ key: 'integer', params: { value: fieldValue } })
                     })
-                    
+
                 })
-    
+
             })
 
             describe('When Field validate property changes', () => {
-                
+
                 describe('When validate is string', () => {
 
                     let formCtrl, fieldCtrl
                     beforeEach(() => {
-                        input.simulate('change', {target: {value: fieldValue}})
-                        field.componentWillReceiveProps({...field.props, validate: 'noTestValue'})
+                        input.simulate('change', { target: { value: fieldValue } })
+                        field.componentWillReceiveProps({ ...field.props, validate: 'noTestValue' })
                         formCtrl = dom.state('forms')[formName]
                         expect(formCtrl).toBeDefined()
                         fieldCtrl = formCtrl.fields[fieldName]
                         expect(fieldCtrl).toBeDefined()
                     })
-        
+
                     describe(`When the field has "${fieldValue}" value`, () => {
-        
+
                         test('The form is invalid', () => {
                             expect(formCtrl.valid).toBeFalsy()
                             expect(formCtrl.invalid).toBeTruthy()
                         })
-        
+
                         test('The field is invalid', () => {
                             expect(fieldCtrl.valid).toBeFalsy()
                             expect(fieldCtrl.invalid).toBeTruthy()
                         })
-        
+
                         test('The field contains a "noTestValue" error message', () => {
-                            expect(fieldCtrl.errors).toContainEqual({key: 'noTestValue', params: {value: fieldValue}})
+                            expect(fieldCtrl.errors).toContainEqual({ key: 'noTestValue', params: { value: fieldValue } })
                         })
-                        
+
                     })
 
                 })
@@ -373,99 +386,99 @@ describe('About the <Field /> component', () => {
 
                     let formCtrl, fieldCtrl
                     beforeEach(() => {
-                        input.simulate('change', {target: {value: fieldValue}})
-                        field.componentWillReceiveProps({...field.props, validate: 'noTestValue'})
+                        input.simulate('change', { target: { value: fieldValue } })
+                        field.componentWillReceiveProps({ ...field.props, validate: 'noTestValue' })
                         formCtrl = dom.state('forms')[formName]
                         expect(formCtrl).toBeDefined()
                         fieldCtrl = formCtrl.fields[fieldName]
                         expect(fieldCtrl).toBeDefined()
                     })
-        
+
                     describe(`When the field has "${fieldValue}" value`, () => {
-        
+
                         test('The form is invalid', () => {
                             expect(formCtrl.valid).toBeFalsy()
                             expect(formCtrl.invalid).toBeTruthy()
                         })
-        
+
                         test('The field is invalid', () => {
                             expect(fieldCtrl.valid).toBeFalsy()
                             expect(fieldCtrl.invalid).toBeTruthy()
                         })
-        
+
                         test('The field contains a "noTestValue" error message', () => {
-                            expect(fieldCtrl.errors).toContainEqual({key: 'noTestValue', params: {value: fieldValue}})
+                            expect(fieldCtrl.errors).toContainEqual({ key: 'noTestValue', params: { value: fieldValue } })
                         })
-                        
+
                     })
 
                 })
 
                 describe('When validate is array', () => {
-                    
+
                     let formCtrl, fieldCtrl
                     beforeEach(() => {
-                        input.simulate('change', {target: {value: fieldValue}})
-                        field.componentWillReceiveProps({...field.props, validate: ['noTestValue']})
+                        input.simulate('change', { target: { value: fieldValue } })
+                        field.componentWillReceiveProps({ ...field.props, validate: ['noTestValue'] })
                         formCtrl = dom.state('forms')[formName]
                         expect(formCtrl).toBeDefined()
                         fieldCtrl = formCtrl.fields[fieldName]
                         expect(fieldCtrl).toBeDefined()
                     })
-        
+
                     describe(`When the field has "${fieldValue}" value`, () => {
-        
+
                         test('The form is invalid', () => {
                             expect(formCtrl.valid).toBeFalsy()
                             expect(formCtrl.invalid).toBeTruthy()
                         })
-        
+
                         test('The field is invalid', () => {
                             expect(fieldCtrl.valid).toBeFalsy()
                             expect(fieldCtrl.invalid).toBeTruthy()
                         })
-        
+
                         test('The field contains a "noTestValue" error message', () => {
-                            expect(fieldCtrl.errors).toContainEqual({key: 'noTestValue', params: {value: fieldValue}})
+                            expect(fieldCtrl.errors).toContainEqual({ key: 'noTestValue', params: { value: fieldValue } })
                         })
-                        
+
                     })
 
                 })
 
                 describe('When validate change from string to array', () => {
-                    
+
                     let formCtrl, fieldCtrl
                     beforeEach(() => {
-                        input.simulate('change', {target: {value: fieldValue}})
-                        field.componentWillReceiveProps({...field.props, validate: 'noTestValue'})
-                        field.componentWillReceiveProps({...field.props, validate: ['noTestValue']})
+                        input.simulate('change', { target: { value: fieldValue } })
+                        field.componentWillReceiveProps({ ...field.props, validate: 'noTestValue' })
+                        field.componentWillReceiveProps({ ...field.props, validate: ['noTestValue'] })
                         formCtrl = dom.state('forms')[formName]
                         expect(formCtrl).toBeDefined()
                         fieldCtrl = formCtrl.fields[fieldName]
                         expect(fieldCtrl).toBeDefined()
                     })
-        
+
                     describe(`When the field has "${fieldValue}" value`, () => {
-        
+
                         test('The form is invalid', () => {
                             expect(formCtrl.valid).toBeFalsy()
                             expect(formCtrl.invalid).toBeTruthy()
                         })
-        
+
                         test('The field is invalid', () => {
                             expect(fieldCtrl.valid).toBeFalsy()
                             expect(fieldCtrl.invalid).toBeTruthy()
                         })
-        
+
                         test('The field contains a "noTestValue" error message', () => {
-                            expect(fieldCtrl.errors).toContainEqual({key: 'noTestValue', params: {value: fieldValue}})
+                            expect(fieldCtrl.errors).toContainEqual({ key: 'noTestValue', params: { value: fieldValue } })
                         })
-                        
+
                     })
 
                 })
-    
+
             })
 
         })
@@ -525,9 +538,9 @@ describe('About the <Field /> component', () => {
         describe('When the field is changed', () => {
 
             beforeEach(() => {
-                input.simulate('change', {target: {value: fieldValue}})
+                input.simulate('change', { target: { value: fieldValue } })
             })
-            
+
             test('The fieldCtrl is defined', () => {
                 expect(fieldCtrl).toBeDefined()
             })
@@ -560,7 +573,7 @@ describe('About the <Field /> component', () => {
         const formName = "testForm"
         const fieldName = "testField"
         const fieldValue = "testValue"
-        
+
         let dom
         let input
         beforeEach(() => {
@@ -640,7 +653,7 @@ describe('About the <Field /> component', () => {
             let formCtrl, fieldCtrl
             beforeEach(() => {
                 input.simulate('focus')
-                input.simulate('change', {target: {value: fieldValue}})
+                input.simulate('change', { target: { value: fieldValue } })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl = formCtrl.fields[fieldName]
@@ -669,7 +682,7 @@ describe('About the <Field /> component', () => {
                 expect(formCtrl.untouched).toBeTruthy()
                 expect(formCtrl.touched).toBeFalsy()
             })
-            
+
             test('The field is not empty', () => {
                 expect(fieldCtrl.value).toBe(fieldValue)
             })
@@ -696,7 +709,7 @@ describe('About the <Field /> component', () => {
             let formCtrl, fieldCtrl
             beforeEach(() => {
                 input.simulate('focus')
-                input.simulate('change', {target: {value: fieldValue}})
+                input.simulate('change', { target: { value: fieldValue } })
                 input.simulate('blur')
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
@@ -726,7 +739,7 @@ describe('About the <Field /> component', () => {
                 expect(formCtrl.untouched).toBeFalsy()
                 expect(formCtrl.touched).toBeTruthy()
             })
-            
+
             test('The field is not empty', () => {
                 expect(fieldCtrl.value).toBe(fieldValue)
             })
@@ -753,11 +766,11 @@ describe('About the <Field /> component', () => {
             let formCtrl, fieldCtrl
             beforeEach(() => {
                 input.simulate('focus')
-                input.simulate('change', {target: {value: fieldValue}})
+                input.simulate('change', { target: { value: fieldValue } })
                 input.simulate('blur')
 
                 input.simulate('focus')
-                input.simulate('change', {target: {value: ''}})
+                input.simulate('change', { target: { value: '' } })
                 input.simulate('blur')
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
@@ -834,7 +847,7 @@ describe('About the <Field /> component', () => {
             afterEach(() => {
                 dom.unmount()
                 input = null
-            })    
+            })
 
             describe('When the field is empty', () => {
 
@@ -857,15 +870,15 @@ describe('About the <Field /> component', () => {
                 })
 
                 test('The field contains a "required" error message', () => {
-                    expect(fieldCtrl.errors).toContainEqual({key: 'required'})
+                    expect(fieldCtrl.errors).toContainEqual({ key: 'required' })
                 })
             })
 
             describe('When the field is not empty', () => {
-                
+
                 let formCtrl, fieldCtrl
                 beforeEach(() => {
-                    input.simulate('change', {target: {value: fieldValue}})
+                    input.simulate('change', { target: { value: fieldValue } })
                     formCtrl = dom.state('forms')[formName]
                     expect(formCtrl).toBeDefined()
                     fieldCtrl = formCtrl.fields[fieldName]
@@ -948,7 +961,7 @@ describe('About the <Field /> component', () => {
 
                 let formCtrl, fieldCtrl
                 beforeEach(() => {
-                    input.simulate('change', {target: {value: fieldValue1}})
+                    input.simulate('change', { target: { value: fieldValue1 } })
                     formCtrl = dom.state('forms')[formName]
                     expect(formCtrl).toBeDefined()
                     fieldCtrl = formCtrl.fields[fieldName]
@@ -966,16 +979,16 @@ describe('About the <Field /> component', () => {
                 })
 
                 test('The field contains a "email" error message', () => {
-                    expect(fieldCtrl.errors).toContainEqual({key: 'email', params: {value: fieldValue1}})
+                    expect(fieldCtrl.errors).toContainEqual({ key: 'email', params: { value: fieldValue1 } })
                 })
 
             })
 
             describe(`When the field value is "${fieldValue2}"`, () => {
-                
+
                 let formCtrl, fieldCtrl
                 beforeEach(() => {
-                    input.simulate('change', {target: {value: fieldValue2}})
+                    input.simulate('change', { target: { value: fieldValue2 } })
                     formCtrl = dom.state('forms')[formName]
                     expect(formCtrl).toBeDefined()
                     fieldCtrl = formCtrl.fields[fieldName]
@@ -993,16 +1006,16 @@ describe('About the <Field /> component', () => {
                 })
 
                 test('The field contains a "email" error message', () => {
-                    expect(fieldCtrl.errors).toContainEqual({key: 'email', params: {value: fieldValue2}})
+                    expect(fieldCtrl.errors).toContainEqual({ key: 'email', params: { value: fieldValue2 } })
                 })
 
             })
 
             describe(`When the field value is "${fieldValue3}"`, () => {
-                
+
                 let formCtrl
                 beforeEach(() => {
-                    input.simulate('change', {target: {value: fieldValue3}})
+                    input.simulate('change', { target: { value: fieldValue3 } })
                     formCtrl = dom.state('forms')[formName]
                     expect(formCtrl).toBeDefined()
                 })
@@ -1054,7 +1067,7 @@ describe('About the <Field /> component', () => {
         })
 
         describe('When the field is empty', () => {
-            
+
             let formCtrl, fieldCtrl
             beforeEach(() => {
                 formCtrl = dom.state('forms')[formName]
@@ -1072,7 +1085,7 @@ describe('About the <Field /> component', () => {
                 expect(fieldCtrl.valid).toBeTruthy()
                 expect(fieldCtrl.invalid).toBeFalsy()
             })
-            
+
             test('The field does not contains errors messages', () => {
                 expect(fieldCtrl.errors).toHaveLength(0)
             })
@@ -1081,10 +1094,10 @@ describe('About the <Field /> component', () => {
 
 
         describe(`When the field value is "${fieldValue1}"`, () => {
-            
+
             let formCtrl, fieldCtrl
             beforeEach(() => {
-                input.simulate('change', {target: {value: fieldValue1}})
+                input.simulate('change', { target: { value: fieldValue1 } })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl = formCtrl.fields[fieldName]
@@ -1102,16 +1115,16 @@ describe('About the <Field /> component', () => {
             })
 
             test('The field contains a "float" error message', () => {
-                expect(fieldCtrl.errors).toContainEqual({key: 'float', params: {value: fieldValue1}})
+                expect(fieldCtrl.errors).toContainEqual({ key: 'float', params: { value: fieldValue1 } })
             })
 
         })
 
         describe(`When the field value is "${fieldValue2}"`, () => {
-            
+
             let formCtrl, fieldCtrl
             beforeEach(() => {
-                input.simulate('change', {target: {value: fieldValue2}})
+                input.simulate('change', { target: { value: fieldValue2 } })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl = formCtrl.fields[fieldName]
@@ -1127,7 +1140,7 @@ describe('About the <Field /> component', () => {
                 expect(fieldCtrl.valid).toBeTruthy()
                 expect(fieldCtrl.invalid).toBeFalsy()
             })
-            
+
             test('The field does not contains errors messages', () => {
                 expect(fieldCtrl.errors).toHaveLength(0)
             })
@@ -1135,10 +1148,10 @@ describe('About the <Field /> component', () => {
         })
 
         describe(`When the field value is "${fieldValue3}"`, () => {
-            
+
             let formCtrl, fieldCtrl
             beforeEach(() => {
-                input.simulate('change', {target: {value: fieldValue3}})
+                input.simulate('change', { target: { value: fieldValue3 } })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl = formCtrl.fields[fieldName]
@@ -1164,7 +1177,7 @@ describe('About the <Field /> component', () => {
     })
 
     describe('When the field is of number type and is integer', () => {
-    
+
         const formName = "testForm"
         const fieldName = "testField"
         const fieldValue1 = "testValue"
@@ -1192,7 +1205,7 @@ describe('About the <Field /> component', () => {
         })
 
         describe('When the field is empty', () => {
-            
+
             let formCtrl, fieldCtrl
             beforeEach(() => {
                 formCtrl = dom.state('forms')[formName]
@@ -1210,7 +1223,7 @@ describe('About the <Field /> component', () => {
                 expect(fieldCtrl.valid).toBeTruthy()
                 expect(fieldCtrl.invalid).toBeFalsy()
             })
-            
+
             test('The field does not contains errors messages', () => {
                 expect(fieldCtrl.errors).toHaveLength(0)
             })
@@ -1219,10 +1232,10 @@ describe('About the <Field /> component', () => {
 
 
         describe(`When the field value is "${fieldValue1}"`, () => {
-            
+
             let formCtrl, fieldCtrl
             beforeEach(() => {
-                input.simulate('change', {target: {value: fieldValue1}})
+                input.simulate('change', { target: { value: fieldValue1 } })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl = formCtrl.fields[fieldName]
@@ -1240,16 +1253,16 @@ describe('About the <Field /> component', () => {
             })
 
             test('The field contains a "integer" error message', () => {
-                expect(fieldCtrl.errors).toContainEqual({key: 'integer', params: {value: fieldValue1}})
+                expect(fieldCtrl.errors).toContainEqual({ key: 'integer', params: { value: fieldValue1 } })
             })
 
         })
 
         describe(`When the field value is "${fieldValue2}"`, () => {
-            
+
             let formCtrl, fieldCtrl
             beforeEach(() => {
-                input.simulate('change', {target: {value: fieldValue2}})
+                input.simulate('change', { target: { value: fieldValue2 } })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl = formCtrl.fields[fieldName]
@@ -1267,16 +1280,16 @@ describe('About the <Field /> component', () => {
             })
 
             test('The field contains a "integer" error message', () => {
-                expect(fieldCtrl.errors).toContainEqual({key: 'integer', params: {value: fieldValue2}})
+                expect(fieldCtrl.errors).toContainEqual({ key: 'integer', params: { value: fieldValue2 } })
             })
 
         })
 
         describe(`When the field value is "${fieldValue3}"`, () => {
-            
+
             let formCtrl, fieldCtrl
             beforeEach(() => {
-                input.simulate('change', {target: {value: fieldValue3}})
+                input.simulate('change', { target: { value: fieldValue3 } })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl = formCtrl.fields[fieldName]
@@ -1292,7 +1305,7 @@ describe('About the <Field /> component', () => {
                 expect(fieldCtrl.valid).toBeTruthy()
                 expect(fieldCtrl.invalid).toBeFalsy()
             })
-            
+
             test('The field has no errors messages', () => {
                 expect(fieldCtrl.errors).toHaveLength(0)
             })
@@ -1306,8 +1319,8 @@ describe('About the <Field /> component', () => {
         const formName = "testForm"
         const fieldName1 = "testField1"
         const fieldName2 = "testField2"
-    
-    
+
+
         const fieldValue1 = "testValue"
         const fieldValue2 = "testValue2"
 
@@ -1362,11 +1375,11 @@ describe('About the <Field /> component', () => {
             })
 
             test(`The field "${fieldName1}" contains "required" error message.`, () => {
-                expect(fieldCtrl1.errors).toContainEqual({key: 'required'})
+                expect(fieldCtrl1.errors).toContainEqual({ key: 'required' })
             })
 
             test(`The field "${fieldName2}" contains "required" error message.`, () => {
-                expect(fieldCtrl2.errors).toContainEqual({key: 'required'})
+                expect(fieldCtrl2.errors).toContainEqual({ key: 'required' })
             })
 
         })
@@ -1374,7 +1387,7 @@ describe('About the <Field /> component', () => {
         describe('When only the first field are not empty', () => {
             let formCtrl, fieldCtrl1, fieldCtrl2
             beforeEach(() => {
-                input1.simulate('change', {target: {value: fieldValue1}})
+                input1.simulate('change', { target: { value: fieldValue1 } })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl1 = formCtrl.fields[fieldName1]
@@ -1403,7 +1416,7 @@ describe('About the <Field /> component', () => {
             })
 
             test(`The field "${fieldName2}" contains "required" error message.`, () => {
-                expect(fieldCtrl2.errors).toContainEqual({key: 'required'})
+                expect(fieldCtrl2.errors).toContainEqual({ key: 'required' })
             })
         })
 
@@ -1411,7 +1424,7 @@ describe('About the <Field /> component', () => {
 
             let formCtrl, fieldCtrl1, fieldCtrl2
             beforeEach(() => {
-                input2.simulate('change', {target: {value: fieldValue1}})
+                input2.simulate('change', { target: { value: fieldValue1 } })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl1 = formCtrl.fields[fieldName1]
@@ -1436,20 +1449,20 @@ describe('About the <Field /> component', () => {
             })
 
             test(`The field "${fieldName1}" contains "required" error message.`, () => {
-                expect(fieldCtrl1.errors).toContainEqual({key: 'required'})
+                expect(fieldCtrl1.errors).toContainEqual({ key: 'required' })
             })
 
             test(`The field "${fieldName2}" contains "match" error message.`, () => {
-                expect(fieldCtrl2.errors).toContainEqual({key: 'match', params: {value: fieldValue1, match: fieldName1}})
+                expect(fieldCtrl2.errors).toContainEqual({ key: 'match', params: { value: fieldValue1, match: fieldName1 } })
             })
         })
 
         describe('When both fields has different values', () => {
-            
+
             let formCtrl, fieldCtrl1, fieldCtrl2
             beforeEach(() => {
-                input1.simulate('change', {target: {value: fieldValue1}})
-                input2.simulate('change', {target: {value: fieldValue2}})
+                input1.simulate('change', { target: { value: fieldValue1 } })
+                input2.simulate('change', { target: { value: fieldValue2 } })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl1 = formCtrl.fields[fieldName1]
@@ -1478,17 +1491,17 @@ describe('About the <Field /> component', () => {
             })
 
             test(`The field "${fieldName2}" contains "match" error message.`, () => {
-                expect(fieldCtrl2.errors).toContainEqual({key: 'match', params: {value: fieldValue2, match: fieldName1}})
+                expect(fieldCtrl2.errors).toContainEqual({ key: 'match', params: { value: fieldValue2, match: fieldName1 } })
             })
 
         })
 
         describe('When both fields are not empty and have the same value', () => {
-            
+
             let formCtrl, fieldCtrl1, fieldCtrl2
             beforeEach(() => {
-                input1.simulate('change', {target: {value: fieldValue1}})
-                input2.simulate('change', {target: {value: fieldValue1}})
+                input1.simulate('change', { target: { value: fieldValue1 } })
+                input2.simulate('change', { target: { value: fieldValue1 } })
                 formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeDefined()
                 fieldCtrl1 = formCtrl.fields[fieldName1]
@@ -1519,10 +1532,10 @@ describe('About the <Field /> component', () => {
             test(`The field "${fieldName2}" has no errors messages.`, () => {
                 expect(fieldCtrl2.errors).toHaveLength(0)
             })
-            
+
         })
 
     })
-    
+
 })
 
