@@ -1,9 +1,9 @@
 import React from 'react'
 
-import {Form, Field} from 'react-formctrl'
-import {SubmitValuesPopup} from '../components/submit-values'
+import { Form, controlledField } from 'react-formctrl'
+import { SubmitValuesPopup } from '../components/submit-values'
 
-function Input({label, name, value, onChange}) {
+let Input = ({ label, name, value, onChange }) => {
     return (
         <div className="form-group">
             <label htmlFor={name}>{label}:</label>
@@ -13,6 +13,7 @@ function Input({label, name, value, onChange}) {
         </div>
     )
 }
+Input = controlledField()(Input)
 
 export function MoreOfBasicForm(props) {
     const formName = "moreofbasic"
@@ -23,12 +24,8 @@ export function MoreOfBasicForm(props) {
             <p>This is one more basic example of Form usage, where is possible to provide initial values, and the form reset button will reset to its initial values.</p>
             <div>
                 <Form name={formName} onSubmit={onSubmit}>
-                    <Field form={formName} name="simple">
-                        <Input label="Simple" ></Input>
-                    </Field>
-                    <Field form={formName} name="withInitialValue" initialValue="Initial value">
-                        <Input label="With initial value" ></Input>
-                    </Field>
+                    <Input label="Simple" form={formName} name="simple" />
+                    <Input label="With initial value" form={formName} name="withInitialValue" initialValue="Initial value" />
                     <div>
                         <button className="btn btn-primary" type="submit">Submit</button>
                         <button className="btn btn-default" type="reset">Reset</button>

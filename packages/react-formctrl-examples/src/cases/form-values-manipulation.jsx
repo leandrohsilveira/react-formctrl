@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { Form, Field, FormControl } from 'react-formctrl'
+import { Form, controlledField, controlledForm } from 'react-formctrl'
 import { SubmitValuesPopup } from '../components/submit-values'
 
-function Input({ label, name, value, onChange, onBlur, ctrl: { valid, invalid, touched, errors } }) {
+let InputField = ({ label, name, value, onChange, onBlur, ctrl: { valid, invalid, touched, errors } }) => {
     const getClassName = () => {
         if (valid) return 'is-valid'
         if (touched && invalid) return 'is-invalid'
@@ -19,23 +19,15 @@ function Input({ label, name, value, onChange, onBlur, ctrl: { valid, invalid, t
         </div>
     )
 }
+InputField = controlledField()(InputField)
 
-function InputField({ label, formName, fieldName, type = 'text', required, pattern, className }) {
-    return (
-        <Field form={formName} name={fieldName} type={type} required={required} pattern={pattern} className={className}>
-            <Input label={label}></Input>
-        </Field>
-    )
-}
-
-function SampleForm({ formCtrl, onSubmit }) {
-    const formName = formCtrl.formName
+let SampleForm = ({ form, formCtrl, onSubmit }) => {
     const setRandomAge = () => formCtrl.setFieldValue('age', `${parseInt(Math.random() * 100)}`)
     return (
-        <Form name={formName} onSubmit={onSubmit}>
-            <InputField label="Name (required)" formName={formName} fieldName="name" required></InputField>
-            <InputField label="E-mail (email and required)" formName={formName} fieldName="email" type="email" required></InputField>
-            <InputField label="Age (number and required)" formName={formName} fieldName="age" type="number" required></InputField>
+        <Form name={form} onSubmit={onSubmit}>
+            <InputField label="Name (required)" form={form} name="name" required />
+            <InputField label="E-mail (email and required)" form={form} name="email" type="email" required />
+            <InputField label="Age (number and required)" form={form} name="age" type="number" required />
 
             <div>
                 <button className="btn btn-primary" disabled={formCtrl.invalid} type="submit">Submit</button>
@@ -45,6 +37,7 @@ function SampleForm({ formCtrl, onSubmit }) {
         </Form>
     )
 }
+SampleForm = controlledForm()(SampleForm)
 
 export function FormValuesManipulationExample(props) {
     const formName = "valuesManipulationExampleForm"
@@ -54,9 +47,7 @@ export function FormValuesManipulationExample(props) {
             <h3>Form values manipulation:</h3>
             <p>This is a more complex example of form controller manipulation to programatically change state. Be careful with setValue method, calling it directly on component update phase may result on stack overflow error!</p>
             <div>
-                <FormControl form={formName}>
-                    <SampleForm onSubmit={handleSubmit}></SampleForm>
-                </FormControl>
+                <SampleForm form={formName} onSubmit={handleSubmit}></SampleForm>
             </div>
         </div>
     )

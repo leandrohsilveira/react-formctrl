@@ -1,14 +1,14 @@
 import React from 'react'
 
-import {Route} from 'react-router-dom'
+import { Route } from 'react-router-dom'
 
-import {Field, Form, FormControl} from 'react-formctrl'
+import { Form, controlledField, controlledForm } from 'react-formctrl'
 
-import {Navbar, NavbarItem} from '../components/navbar'
+import { Navbar, NavbarItem } from '../components/navbar'
 
 let SEQUENCE = 1
 const USERS = {
-    '1': {name: 'Leandro', email: 'leandro.hinckel@gmail.com', password: '12345678'}
+    '1': { name: 'Leandro', email: 'leandro.hinckel@gmail.com', password: '12345678' }
 }
 /**
  * 
@@ -29,33 +29,25 @@ class UserService {
         delete values['confirmEmail']
         delete values['confirmPassword']
         const nextId = SEQUENCE++
-        USERS[nextId+''] = values
+        USERS[nextId + ''] = values
     }
 
     static update(id, values) {
         delete values['confirmEmail']
         delete values['confirmPassword']
-        USERS[id+''] = values
+        USERS[id + ''] = values
     }
 
 }
 
-
-/**
- * 
- * 
- * FIELD WRAPPER
- * 
- * 
- */
-function MyInput({label, placeholder, name, type, required,  onChange, onBlur, value, ctrl: {valid, invalid, dirty, errors}}) {
+let InputField = ({ label, placeholder, name, type, required, onChange, onBlur, value, ctrl: { valid, invalid, dirty, errors } }) => {
 
     const getLabel = () => {
         return required ? `${label}*` : label
     }
 
     const getMessages = () => {
-        if(invalid && dirty) {
+        if (invalid && dirty) {
             return errors.map(error => (
                 <div className="invalid-feedback" key={error.key}>{error.key}</div>
             ))
@@ -63,16 +55,16 @@ function MyInput({label, placeholder, name, type, required,  onChange, onBlur, v
     }
 
     const getClassName = () => {
-        if(valid) return 'is-valid'
-        if(dirty && invalid) return 'is-invalid'
+        if (valid) return 'is-valid'
+        if (dirty && invalid) return 'is-invalid'
     }
 
     return (
         <div className="form-group">
             <label htmlFor={name}>{getLabel()}</label>
-            <input className={`form-control ${getClassName()}`} id={name} name={name} 
-                type={type} 
-                onChange={onChange} 
+            <input className={`form-control ${getClassName()}`} id={name} name={name}
+                type={type}
+                onChange={onChange}
                 onBlur={onBlur}
                 placeholder={placeholder || label}
                 value={value} />
@@ -80,42 +72,7 @@ function MyInput({label, placeholder, name, type, required,  onChange, onBlur, v
         </div>
     )
 }
-
-
-/**
- * 
- * 
- * INPUT FIELD
- * 
- * 
- */
-function InputField({
-    label, 
-    placeholder, 
-    form, 
-    name, 
-    type, 
-    initialValue, 
-    match, 
-    required, 
-    pattern, 
-    integer, 
-    minLength}) {
-    return (
-        <Field form={form} 
-                name={name} 
-                type={type} 
-                initialValue={initialValue} 
-                minLength={minLength}
-                match={match}
-                required={required} 
-                integer={integer}
-                pattern={pattern}>
-            <MyInput label={label} placeholder={placeholder} />
-        </Field>
-    )
-}
-
+InputField = controlledField()(InputField)
 
 /**
  * 
@@ -124,9 +81,9 @@ function InputField({
  * 
  * 
  */
-function UserForm(props) {
-    const formName = props.formCtrl.formName
-    const user = props.user || {name: '', email: ''}
+let UserForm = (props) => {
+    const formName = props.form
+    const user = props.user || { name: '', email: '' }
     return (
         <div className="form-container">
             <Form name={formName} onSubmit={props.onSubmit}>
@@ -145,6 +102,7 @@ function UserForm(props) {
         </div>
     )
 }
+UserForm = controlledForm()(UserForm)
 
 
 /**
@@ -161,11 +119,7 @@ function RegisterUser(props) {
         props.history.goBack()
     }
 
-    return (
-        <FormControl name="registerUserForm">
-            <UserForm onSubmit={handleSubmit} />
-        </FormControl>
-    )
+    return <UserForm form="registerUserForm" onSubmit={handleSubmit} />
 }
 
 /**
@@ -188,9 +142,9 @@ class UpdateUser extends React.Component {
     componentWillMount() {
         const id = this.props.match.params.id
         UserService.find(id)
-                    .then(user => {
-                        this.setState({user})
-                    })
+            .then(user => {
+                this.setState({ user })
+            })
     }
 
     handleSubmit(values) {
@@ -200,12 +154,8 @@ class UpdateUser extends React.Component {
     }
 
     render() {
-        if(this.state.user) {
-            return (
-                <FormControl name="updateUserForm">
-                    <UserForm onSubmit={this.handleSubmit} user={this.state.user} />
-                </FormControl>
-            )
+        if (this.state.user) {
+            return <UserForm form="updateUserForm" onSubmit={this.handleSubmit} user={this.state.user} />
         } else {
             return <span>Loading user data...</span>
         }
@@ -227,7 +177,7 @@ function UserList(props) {
     let content = (
         <tr><td colSpan={4}>Users list is empty</td></tr>
     )
-    if(usersIds.length > 0) {
+    if (usersIds.length > 0) {
         content = usersIds.map(userId => (
             <tr key={userId}>
                 <th scope="row">{userId}</th>
@@ -252,13 +202,13 @@ function UserList(props) {
                 </tr>
             </thead>
             <tbody>
-               {content}
+                {content}
             </tbody>
         </table>
     )
 }
 
-function Menu({path}) {
+function Menu({ path }) {
     return (
         <Navbar id="userFormNavbar" className="navbar-dark bg-dark" title='user-crud-example'>
             <NavbarItem to={`${path}`}>User List</NavbarItem>
@@ -280,7 +230,7 @@ export function UserFormApp(props) {
         <div className="card">
             <Menu path={path}></Menu>
             <div className="card-body">
-                <div style={{marginTop: 10}}>
+                <div style={{ marginTop: 10 }}>
                     <Route path={`${path}`} render={(props) => (
                         <div>
                             <Route path={`${path}`} exact component={UserList}></Route>
