@@ -1,15 +1,17 @@
-import {FormStateController, FieldStateProperties, ValidationError} from '../provider/provider'
+import { FormStateController, FieldStateProperties, ValidationError } from '../provider/provider'
 
-declare interface Validator {
+declare class Validator {
+
+    constructor(validatorKey: string);
 
     shouldValidate(formCtrl: FormStateController, props: FieldStateProperties, value: string, files: File[]): boolean;
 
-    validate(formCtrl: FormStateController, props: FieldStateProperties, value: string, files: File[]): boolean|{[key: string]: any};
+    validate(formCtrl: FormStateController, props: FieldStateProperties, value: string, files: File[]): boolean | { [key: string]: any };
 
-    createValidationError(value: string, files: File[], params: {[key:string]: any}): ValidationError;
+    createValidationError(value: string, files: File[], params: { [key: string]: any }): ValidationError;
 
 }
 
-declare interface CustomValidator extends Validator {
+declare class CustomValidator extends Validator {
 
 }
