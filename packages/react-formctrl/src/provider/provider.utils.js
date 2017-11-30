@@ -1,10 +1,16 @@
+export function dispatchEvent(type, payload) {
+    const event = document.createEvent('CustomEvent')
+    event.initCustomEvent(type, false, false, payload)
+    document.dispatchEvent(event)
+}
+
 export function copyFiles(selectedFiles) {
-    if(selectedFiles) {
-        if(Array.isArray(selectedFiles)) {
+    if (selectedFiles) {
+        if (Array.isArray(selectedFiles)) {
             return copyArray(selectedFiles)
         } else {
             const files = []
-            for(var i = 0; i < selectedFiles.length; i++) {
+            for (var i = 0; i < selectedFiles.length; i++) {
                 const file = selectedFiles.item(i)
                 files.push(file)
             }
@@ -15,7 +21,7 @@ export function copyFiles(selectedFiles) {
 }
 
 export function copyArray(array) {
-    if(array) {
+    if (array) {
         return array.map(item => item)
     }
     return []
@@ -45,12 +51,12 @@ export function copyError(error) {
     const output = {
         key: error.key
     }
-    if(error.params) {
+    if (error.params) {
         const params = {}
         Object.keys(error.params).forEach(paramName => {
             const param = error.params[paramName]
-            if(Array.isArray(param)) params[paramName] = copyArray(param)
-            else if(param instanceof FileList) params[paramName] = copyFiles(param)
+            if (Array.isArray(param)) params[paramName] = copyArray(param)
+            else if (param instanceof FileList) params[paramName] = copyFiles(param)
             else params[paramName] = param
         })
         output.params = params
@@ -61,14 +67,14 @@ export function copyError(error) {
 }
 
 export function copyErrors(errors) {
-    if(errors && errors.length) {
+    if (errors && errors.length) {
         return errors.map(error => copyError(error))
     }
     return errors
 }
 
 export function copyFieldCtrl(fieldCtrl) {
-    if(fieldCtrl) {
+    if (fieldCtrl) {
         return {
             __instances: fieldCtrl.__instances,
             validating: fieldCtrl.validating,
@@ -91,9 +97,9 @@ export function copyFieldCtrl(fieldCtrl) {
 
 export function copyFormValues(values) {
     const cValues = {}
-    if(values) {
+    if (values) {
         const fieldsNames = Object.keys(values)
-        if(fieldsNames.length) {
+        if (fieldsNames.length) {
             fieldsNames.forEach(fieldName => {
                 cValues[fieldName] = values[fieldName]
             })
@@ -104,9 +110,9 @@ export function copyFormValues(values) {
 
 export function copyFormFiles(files) {
     const cFiles = {}
-    if(files) {
+    if (files) {
         const fieldsNames = Object.keys(files)
-        if(fieldsNames.length) {
+        if (fieldsNames.length) {
             fieldsNames.forEach(fieldName => {
                 cFiles[fieldName] = copyFiles(files[fieldName])
             })
@@ -117,9 +123,9 @@ export function copyFormFiles(files) {
 
 export function copyFormFields(fields) {
     const cFields = {}
-    if(fields) {
+    if (fields) {
         const fieldsNames = Object.keys(fields)
-        if(fieldsNames.length) {
+        if (fieldsNames.length) {
             fieldsNames.forEach(fieldName => {
                 cFields[fieldName] = copyFieldCtrl(fields[fieldName])
             })
@@ -129,7 +135,7 @@ export function copyFormFields(fields) {
 }
 
 export function copyFormCtrl(formCtrl) {
-    if(formCtrl) {
+    if (formCtrl) {
         return {
             __instances: formCtrl.__instances,
             formName: formCtrl.formName,
@@ -150,13 +156,13 @@ export function copyFormCtrl(formCtrl) {
 }
 
 export function comparePatterns(pattern1, pattern2) {
-    if(pattern1 === pattern2) return true
-    if(pattern1 && pattern2) return pattern1.toString() === pattern2.toString()
+    if (pattern1 === pattern2) return true
+    if (pattern1 && pattern2) return pattern1.toString() === pattern2.toString()
     return false
 }
 
 export function compareFieldProps(props1, props2) {
-    if(props1 === props2) return true
+    if (props1 === props2) return true
     if (props1.name !== props2.name) return false
     if (props1.form !== props2.form) return false
     if (props1.type !== props2.type) return false
@@ -177,28 +183,28 @@ export function compareFieldProps(props1, props2) {
 
 export function compareArrays(array1, array2) {
     if ((array1 && !array2) || (!array1 && array2)) return false;
-    if(typeof array1 !== typeof array2) return false
-    if(Array.isArray(array1) !== Array.isArray(array2)) return false
-    if(array1 === array2) return true
+    if (typeof array1 !== typeof array2) return false
+    if (Array.isArray(array1) !== Array.isArray(array2)) return false
+    if (array1 === array2) return true
 
-    if(Array.isArray(array1) && Array.isArray(array2)) {
-    
+    if (Array.isArray(array1) && Array.isArray(array2)) {
+
         // compare lengths - can save a lot of time 
         if (array1.length != array2.length)
             return false;
-    
-        for (var i = 0, l=array1.length; i < l; i++) {
+
+        for (var i = 0, l = array1.length; i < l; i++) {
             // Check if we have nested arrays
             if (array1[i] instanceof Array && array2[i] instanceof Array) {
                 // recurse into the nested array2s
                 if (!compareArrays(array1[i], array2[i]))
-                    return false;       
-            }           
-            else if (array1[i] != array2[i]) { 
+                    return false;
+            }
+            else if (array1[i] != array2[i]) {
                 // Warning - two different object instances will never be equal: {x:20} != {x:20}
-                return false;   
-            }           
-        }       
+                return false;
+            }
+        }
         return true;
     }
     return false;
