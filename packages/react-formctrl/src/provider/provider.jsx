@@ -16,79 +16,66 @@ import {
     REACT_FORMCTRL_NAME
 } from './provider.actions'
 
-import {copyFieldCtrl, copyFormCtrl} from './provider.utils'
+import { copyFieldCtrl, copyFormCtrl, dispatchEvent } from './provider.utils'
 
-import {formProviderReducer} from './provider.reducer'
-import {formProviderEffects} from './provider.effects'
+import { formProviderReducer } from './provider.reducer'
+import { formProviderEffects } from './provider.effects'
 
 const PROVIDER_EVENT = `${REACT_FORMCTRL_NAME}.FormProvider`
 
 export class FormEventDispatcher {
 
     static dispatchRegisterForm(form) {
-        const payload = {detail: onRegisterForm(form)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        const payload = onRegisterForm(form)
+        dispatchEvent(PROVIDER_EVENT, payload)
     }
-    
+
     static dispatchUnregisterForm(form) {
-        const payload = {detail: onUnregisterForm(form)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        const payload = onUnregisterForm(form)
+        dispatchEvent(PROVIDER_EVENT, payload)
     }
-    
+
     static dispatchSubmitForm(form, formRef) {
-        const payload = {detail: onSubmitForm(form, formRef)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        const payload = onSubmitForm(form, formRef)
+        dispatchEvent(PROVIDER_EVENT, payload)
     }
-    
+
     static dispatchResetForm(form) {
-        const payload = {detail: onResetForm(form)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        const payload = onResetForm(form)
+        dispatchEvent(PROVIDER_EVENT, payload)
     }
 
     static dispatchRegisterField(form, field, fieldCtrl) {
-        const payload = {detail: onRegisterField(form, field, fieldCtrl)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        const payload = onRegisterField(form, field, fieldCtrl)
+        dispatchEvent(PROVIDER_EVENT, payload)
     }
 
     static dispatchUnregisterField(form, field) {
-        const payload = {detail: onUnregisterField(form, field)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        const payload = onUnregisterField(form, field)
+        dispatchEvent(PROVIDER_EVENT, payload)
     }
 
     static dispatchFieldPropsChanged(form, field, props) {
-        const payload = {detail: onFieldPropsChanged(form, field, props)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        const payload = onFieldPropsChanged(form, field, props)
+        dispatchEvent(PROVIDER_EVENT, payload)
     }
 
     static dispatchFieldChanged(form, field, value, files) {
-        const payload = {detail: onFieldChanged(form, field, value, files)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        const payload = onFieldChanged(form, field, value, files)
+        dispatchEvent(PROVIDER_EVENT, payload)
     }
 
     static dispatchFieldBlur(form, field) {
-        const payload = {detail: onFieldBlur(form, field)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        const payload = onFieldBlur(form, field)
+        dispatchEvent(PROVIDER_EVENT, payload)
     }
 
     static dispatchRegisterValidators(validators) {
-        const payload = {detail: onRegisterValidators(validators)}
-        const event = new CustomEvent(PROVIDER_EVENT, payload)
-        document.dispatchEvent(event)
+        const payload = onRegisterValidators(validators)
+        dispatchEvent(PROVIDER_EVENT, payload)
     }
 
 }
-
-
-
 
 export class FormProvider extends React.Component {
 
@@ -110,7 +97,7 @@ export class FormProvider extends React.Component {
 
     componentWillMount() {
         document.addEventListener(PROVIDER_EVENT, this.onEvent)
-        const {validators = []} = this.props
+        const { validators = [] } = this.props
         FormEventDispatcher.dispatchRegisterValidators(validators)
     }
 
@@ -128,7 +115,7 @@ export class FormProvider extends React.Component {
     }
 
     render() {
-        const {children} = this.props
+        const { children } = this.props
         return children;
     }
 

@@ -1,22 +1,19 @@
-import {REACT_FORMCTRL} from './provider.actions'
-import {copyFieldCtrl, copyFormCtrl} from './provider.utils'
+import { REACT_FORMCTRL } from './provider.actions'
+import { copyFieldCtrl, copyFormCtrl, dispatchEvent } from './provider.utils'
 
 function forwardSubmitFormEvent(form, values, formCtrl, formRef) {
-    const payload = {detail: {values, formRef, formCtrl: copyFormCtrl(formCtrl)}}
-    const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${form}`, payload)
-    document.dispatchEvent(event)
+    const payload = { values, formRef, formCtrl: copyFormCtrl(formCtrl) }
+    dispatchEvent(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${form}`, payload)
 }
 
 function forwardFieldChangedEvent(form, field, fieldCtrl) {
-    const payload = {detail: {form, field, fieldCtrl: copyFieldCtrl(fieldCtrl)}}
-    const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, payload)
-    document.dispatchEvent(event)
+    const payload = { form, field, fieldCtrl: copyFieldCtrl(fieldCtrl) }
+    dispatchEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, payload)
 }
 
 function forwardFormChangedEvent(form, formCtrl) {
-    const payload = {detail: {form, formCtrl: copyFormCtrl(formCtrl)}}
-    const event = new CustomEvent(`${REACT_FORMCTRL.EVENTS.FORM_CHANGED}#${form}`, payload)
-    document.dispatchEvent(event)
+    const payload = { form, formCtrl: copyFormCtrl(formCtrl) }
+    dispatchEvent(`${REACT_FORMCTRL.EVENTS.FORM_CHANGED}#${form}`, payload)
 }
 
 export function formProviderEffects(state, action) {
@@ -27,7 +24,7 @@ export function formProviderEffects(state, action) {
     const fieldName = payload.field
     const formCtrl = state.forms[formName]
     const fieldCtrl = fieldName && formCtrl ? formCtrl.fields[fieldName] : null
-    switch(type) {
+    switch (type) {
         case EVENTS.FIELD_BLURRED:
         case EVENTS.REGISTER_FIELD:
         case EVENTS.FIELD_CHANGED:
@@ -35,7 +32,7 @@ export function formProviderEffects(state, action) {
             forwardFieldChangedEvent(formName, fieldName, fieldCtrl)
             forwardFormChangedEvent(formName, formCtrl)
             break
-            
+
         case EVENTS.FORM_SUBMITED:
             forwardSubmitFormEvent(formName, formCtrl.values, formCtrl, payload.formRef)
             break

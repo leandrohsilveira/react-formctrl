@@ -48,6 +48,8 @@ import {
     ControlledFormProps
 } from './decorators'
 
+import { dispatchEvent } from './provider/provider.utils'
+
 export {
     FormControl,
     FormControlProps,
@@ -87,5 +89,7 @@ export {
 
     controlledForm,
     ControlledFormDecorator,
-    ControlledFormProps
+    ControlledFormProps,
+
+    dispatchEvent
 };

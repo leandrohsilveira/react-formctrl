@@ -1,20 +1,25 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import {HashRouter, NavLink, Route, Switch} from 'react-router-dom'
+import { HashRouter, NavLink, Route, Switch } from 'react-router-dom'
 import GoogleAnalytics from 'react-ga';
 
-import {FormProvider} from 'react-formctrl'
-import {SubmitValuesPopup} from './components/submit-values'
-import {Routes} from './routes'
+import { FormProvider } from 'react-formctrl'
+import { SubmitValuesPopup } from './components/submit-values'
+import { Routes } from './routes'
 
-import {CustomValidator} from 'react-formctrl/lib/validator'
+import { CustomValidator } from 'react-formctrl/lib/validator'
 
-import {AppLayout} from './layout/layout'
+import { AppLayout } from './layout/layout'
 
 import './app.scss'
 
-if(gaId) {
+if (gaId) {
     GoogleAnalytics.initialize(gaId);
+}
+
+if (!window.Promise) {
+    const Promise = require('promise-polyfill');
+    window.Promise = Promise;
 }
 
 class NoAdminValidator extends CustomValidator {

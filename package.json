@@ -5,14 +5,12 @@
   "main": "index.js",
   "scripts": {
     "test": "cd packages/react-formctrl && npm run test",
-
     "link": "cd packages/react-formctrl && yarn link",
     "unlink": "cd packages/react-formctrl && yarn unlink",
-
     "cleandeps": "lerna clean",
     "build": "lerna bootstrap",
     "predev": "npm run build",
-    "libdev": "cd ./packages/react-formctrl && npm run dev",
+    "dev:lib": "cd ./packages/react-formctrl && npm run dev",
     "dev": "cd ./packages/react-formctrl-examples && npm run dev",
     "predocs": "npm run build",
     "docs": "cd ./packages/react-formctrl-examples && npm run docs"

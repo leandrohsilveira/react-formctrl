@@ -67,6 +67,7 @@
     "node-sass": "^4.5.3",
     "package-size": "^1.5.0",
     "prismjs": "^1.8.1",
+    "promise-polyfill": "^6.1.0",
     "rimraf": "^2.6.1",
     "sass-loader": "^6.0.6",
     "showdown": "^1.7.4",

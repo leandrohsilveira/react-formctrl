@@ -1,8 +1,10 @@
 import React from 'react'
+import { dispatchEvent } from 'react-formctrl'
 
 const EVENT_NAME = 'react-formctrl.example.SubmitValuesPopup';
 
 import './submit-values.scss'
+
 export class SubmitValuesPopup extends React.Component {
 
     constructor(props) {
@@ -19,13 +21,12 @@ export class SubmitValuesPopup extends React.Component {
     }
 
     static dispatchShowSubmitValuesPopupEvent(formName, values, files) {
-        const detail = {formName, values, files}
-        const event = new CustomEvent(EVENT_NAME, {detail})
-        document.dispatchEvent(event)
+        const payload = { formName, values, files }
+        dispatchEvent(EVENT_NAME, payload)
     }
 
     componentWillMount() {
-        document.addEventListener(EVENT_NAME, this.handleShowSubmitValuesPopupEvent)    
+        document.addEventListener(EVENT_NAME, this.handleShowSubmitValuesPopupEvent)
     }
 
     componentWillUnmount() {
@@ -33,18 +34,18 @@ export class SubmitValuesPopup extends React.Component {
     }
 
     handleShowSubmitValuesPopupEvent(event) {
-        const {formName, values, files} = event.detail
-        if(this.state.timeout) {
+        const { formName, values, files } = event.detail
+        if (this.state.timeout) {
             clearTimeout(this.state.timeout)
         }
 
         const timeout = setTimeout(this.close, 5000);
 
-        this.setState({show: true, formName, values, timeout, files})
+        this.setState({ show: true, formName, values, timeout, files })
     }
 
     close() {
-        if(this.state.timeout) {
+        if (this.state.timeout) {
             clearTimeout(this.state.timeout)
         }
         this.setState(state => ({
@@ -57,9 +58,9 @@ export class SubmitValuesPopup extends React.Component {
     }
 
     renderSelectedFiles(files) {
-        if(files) {
+        if (files) {
             const fieldsNames = Object.keys(files)
-            if(fieldsNames.length) {
+            if (fieldsNames.length) {
                 return fieldsNames.map((fieldName) => files[fieldName].map((file, index) => {
                     const fieldNameIndex = `${fieldName}[${index}]`
                     return (
@@ -71,20 +72,20 @@ export class SubmitValuesPopup extends React.Component {
             }
         }
         return <li className="list-group-item">No files sent in submission</li>
-            
-            
-            
+
+
+
     }
 
     render() {
-        const {show, formName, values, files} = this.state
+        const { show, formName, values, files } = this.state
         return (
             <div className={`submit-values${show ? ' show' : ''}`}>
                 <div className="card">
                     <div className="card-header">
                         <h3>Submited form: {formName}</h3>
                     </div>
-                    <ul className="list-group list-group-flush" style={{maxHeight: 500, overflowY: 'auto'}}>
+                    <ul className="list-group list-group-flush" style={{ maxHeight: 500, overflowY: 'auto' }}>
                         <li className="list-group-item">
                             <h4>Values</h4>
                         </li>

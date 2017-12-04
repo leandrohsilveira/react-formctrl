@@ -1,0 +1,1 @@
+export declare function dispatchEvent(type: string, payload: any): void;
