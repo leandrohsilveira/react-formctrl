@@ -1,3 +1,31 @@
+export function ensureStringValue(value, type) {
+    if(value && (type === 'date' || type === 'datetime-local')) {
+        if(value instanceof Date) {
+            if(type === 'date') {
+                return formatDate(value)
+            } else {
+                return formatDateTime(value)
+            }
+        } else if (typeof value === 'string') {
+            if(new Date(value) == 'Invalid Date') {
+                throw `The value "${value}" provided can't be parsed to date type.`
+            }
+        } else if(typeof value === 'number') {
+            const dateObj = new Date(value)
+            if(dateObj != 'Invalid Date') {
+                if(type === 'date') {
+                    return formatDate(dateObj)
+                } else {
+                    return formatDateTime(dateObj)
+                }
+            } else {
+                throw `The value "${value}" provided can't be parsed to date type.`
+            }
+        }
+    }
+    return value;
+}
+
 export function formatDate(date) {
     if(date) {
         const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`
