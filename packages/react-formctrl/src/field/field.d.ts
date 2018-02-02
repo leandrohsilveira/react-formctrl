@@ -89,6 +89,11 @@ declare interface FieldProps extends React.Props<any> {
      */
     maxSize?: number|string;
 
+    /**
+     * The field's initial value
+     */
+    initialValue?: string|number|Date;
+
 }
 
 declare interface FieldState extends FieldStateController {

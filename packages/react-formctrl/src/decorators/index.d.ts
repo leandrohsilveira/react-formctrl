@@ -36,7 +36,7 @@ declare interface ControlledFieldProps extends FieldStateProperties {
     /**
      * The field initial value
      */
-    initialValue?: string | number;
+    initialValue?: string | number | Date;
 
     /**
      * The field value (Automatically handled by react-formctrl)
