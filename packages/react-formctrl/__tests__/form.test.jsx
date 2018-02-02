@@ -3,7 +3,7 @@ import Adapter from 'enzyme-adapter-react-16'
 
 import { mount, configure } from 'enzyme';
 
-import { FormProvider, Form, FormControl, Field, controlledForm } from '../src'
+import { FormProvider, Form, FormControl, Field, controlledForm, formatDate } from '../src'
 
 import { inputInject, InputWrapper } from './field.test'
 
@@ -14,9 +14,9 @@ export const formControlInject = (formCtrl) => ({
 
 configure({ adapter: new Adapter() })
 
-function Input({ form, name }) {
+function Input({ form, name, type = 'text' }) {
     return (
-        <Field form={form} name={name} inject={inputInject}>
+        <Field form={form} name={name} type={type} inject={inputInject}>
             <input />
         </Field>
     )
@@ -324,6 +324,62 @@ describe('About <FormControl /> component', () => {
             expect(dom.state('forms')[formName].values).toEqual({ [fieldName1]: fieldValue1, [fieldName2]: fieldValue2 })
         })
 
+    })
+
+})
+
+describe('The <FormControl /> setFieldValue behaviour', () => {
+
+    let _formCtrl = null
+    const FormTest = ({ name, children, formCtrl }) => {
+        _formCtrl = formCtrl
+        return <Form name={name}>{children}</Form>
+    }
+    const formName = 'formName1'
+
+    const fieldName = "fieldName"
+    const fieldDateName = "fieldDateName"
+    const fieldValue = "fieldValue"
+    const fieldDateValue = new Date();
+
+    let dom, form, input1, inputDate
+    beforeEach(() => {
+        dom = mount((
+            <FormProvider>
+                <FormControl form={formName} inject={formControlInject}>
+                    <FormTest>
+                        <Input form={formName} name={fieldName} />
+                        <Input form={formName} name={fieldDateName} type="date" />
+                    </FormTest>
+                </FormControl>
+            </FormProvider>
+        ))
+        form = dom.find(FormTest)
+        input1 = dom.find(`input[name="${fieldName}"]`)
+    })
+
+    afterEach(() => {
+        _formCtrl = null
+        dom.unmount()
+    })
+
+    test('When set a string value', () => {
+        _formCtrl.setFieldValue(fieldName, fieldValue)
+        expect(_formCtrl).toBeDefined()
+        console.log(_formCtrl.values)
+        expect(_formCtrl.values).toEqual({ [fieldName]: fieldValue, [fieldDateName]: '' })
+    })
+
+    test('When set a Date value to a date type field', () => {
+        _formCtrl.setFieldValue(fieldDateName, fieldDateValue)
+        expect(_formCtrl).toBeDefined()
+        expect(_formCtrl.values).toEqual({ [fieldName]: '', [fieldDateName]: new Date(formatDate(fieldDateValue)) })
+    })
+
+    test('When set a Number value to a date type field', () => {
+        _formCtrl.setFieldValue(fieldDateName, fieldDateValue.getTime())
+        expect(_formCtrl).toBeDefined()
+        expect(_formCtrl.values).toEqual({ [fieldName]: '', [fieldDateName]: new Date(formatDate(fieldDateValue)) })
     })
 
 })
