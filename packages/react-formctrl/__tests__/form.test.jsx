@@ -157,6 +157,44 @@ describe('About <Form /> component', () => {
 
     })
 
+    describe('The <Form /> reset behaviour', () => {
+
+        const fieldName1 = "fieldName1"
+        const fieldName2 = "fieldName2"
+        const fieldValue1 = "fieldValue1"
+        const fieldValue2 = "fieldValue2"
+
+        let dom, form, input1, input2, formCtrl, reseted = false
+        beforeEach(() => {
+            dom = mount((
+                <FormProvider>
+                    <Form name={formName1} onReset={() => reseted = true}>
+                        <Input form={formName1} name={fieldName1} />
+                        <Input form={formName1} name={fieldName2} />
+                    </Form>
+                </FormProvider>
+            ))
+            form = dom.find(Form)
+            formCtrl = dom.state('forms')[formName1]
+            input1 = dom.find(`input[name="${fieldName1}"]`)
+            input2 = dom.find(`input[name="${fieldName2}"]`)
+        })
+
+        describe('With filled fields before reset', () => {
+
+            beforeEach(() => {
+                input1.simulate('change', { target: { value: fieldValue1 } })
+                input2.simulate('change', { target: { value: fieldValue2 } })
+                form.simulate('reset')
+            })
+
+            test('The reset handler is called', () => {
+                expect(formCtrl.values).toEqual({ [fieldName1]: '', [fieldName2]: '' })
+                expect(reseted).toBeTruthy()
+            })
+        })
+    })
+
 })
 
 describe('About <FormControl /> component', () => {
