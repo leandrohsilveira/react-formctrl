@@ -73,6 +73,12 @@ function onRegisterField(state, formName, fieldName, fieldCtrl) {
         updateFieldCtrl(state, formName, fieldCtrl, fieldCtrl.initialValue)
         form.fields[fieldName] = fieldCtrl
         form.values[fieldName] = fieldCtrl.value
+        if(fieldCtrl.props.type === 'date') {
+            form.values[fieldName] = new Date(fieldCtrl.value)
+        } else {
+            form.values[fieldName] = fieldCtrl.value
+        }
+
         updateFormCtrl(formName, form)
         return {forms}
     } else {
@@ -118,7 +124,11 @@ function onFieldChanged(state, formName, fieldName, value, files) {
             fieldCtrl.dirty = true
             fieldCtrl.pristine = false
             updateFieldCtrl(state, formName, fieldCtrl, value, files)
-            form.values[fieldName] = value
+            if(fieldCtrl.props.type === 'date') {
+                form.values[fieldName] = new Date(value)
+            } else {
+                form.values[fieldName] = value
+            }
             form.files[fieldName] = files
             updateFormCtrl(formName, form)
             return {forms}
@@ -161,7 +171,11 @@ function onFormReseted(state, formName) {
         field.untouched = true
         field.dirty = false
         field.pristine = true
-        form.values[fieldName] = field.initialValue
+        if(field.props.type === 'date') {
+            form.values[fieldName] = new Date(field.initialValue)
+        } else {
+            form.values[fieldName] = field.initialValue
+        }
     })
     updateFormCtrl(formName, form)
     return {forms}
