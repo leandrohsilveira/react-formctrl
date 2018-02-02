@@ -1319,13 +1319,11 @@ describe('About the <Field /> component', () => {
         const dateValue = new Date();
         const formName = "testForm"
         const fieldName = "testField"
-        const fieldValue1 = "testValue"
-        const fieldValue2 = "1.5"
-        const fieldValue3 = "1"
 
         let dom
         let input
         let formCtrl
+        let fieldCtrl
 
         describe('With a date type initialValue', () => {
 
@@ -1346,14 +1344,82 @@ describe('About the <Field /> component', () => {
                     </FormProvider>
                 ))
                 formCtrl = dom.state('forms')[formName]
+                fieldCtrl = formCtrl.fields[fieldName]
                 input = dom.find('input')
             })
 
-            test('The input value is displayed appropriately', () =>{
-                expect(input.props().value).toBe(formatDate(dateValue))
+            test('The field value in form controller is of date string type', () =>{
+                expect(formCtrl.fields[fieldName].value).toBe(formatDate(dateValue))
+                expect(fieldCtrl.value).toBe(formatDate(dateValue))
             })
 
-            test('The field value in controller is of Date type', () =>{
+            test('The field value in form controller is of Date type', () =>{
+                expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
+            })
+        })
+
+        describe('With a date string type initialValue', () => {
+
+            beforeEach(() => {
+                dom = mount((
+                    <FormProvider>
+                        <Form name={formName}>
+                            <Field 
+                                form={formName} 
+                                name={fieldName} 
+                                inject={inputInject} 
+                                type="date"
+                                initialValue={formatDate(dateValue)}
+                            >
+                                <input />
+                            </Field>
+                        </Form>
+                    </FormProvider>
+                ))
+                formCtrl = dom.state('forms')[formName]
+                fieldCtrl = formCtrl.fields[fieldName]
+                input = dom.find('input')
+            })
+
+            test('The field value in form controller is of date string type', () =>{
+                expect(formCtrl.fields[fieldName].value).toBe(formatDate(dateValue))
+                expect(fieldCtrl.value).toBe(formatDate(dateValue))
+            })
+
+            test('The field value in form controller is of Date type', () =>{
+                expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
+            })
+        })
+
+        describe('With a date numbet type initialValue', () => {
+
+            beforeEach(() => {
+                dom = mount((
+                    <FormProvider>
+                        <Form name={formName}>
+                            <Field 
+                                form={formName} 
+                                name={fieldName} 
+                                inject={inputInject} 
+                                type="date"
+                                initialValue={dateValue.getTime()}
+                            >
+                                <input />
+                            </Field>
+                        </Form>
+                    </FormProvider>
+                ))
+                formCtrl = dom.state('forms')[formName]
+                fieldCtrl = formCtrl.fields[fieldName]
+                input = dom.find('input')
+            })
+
+            test('The field value in form controller is of date string type', () =>{
+                expect(formCtrl.fields[fieldName].value).toBe(formatDate(dateValue))
+                expect(fieldCtrl.value).toBe(formatDate(dateValue))
+            })
+
+            test('The field value in form controller is of Date type', () =>{
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
@@ -1376,26 +1442,19 @@ describe('About the <Field /> component', () => {
                     </FormProvider>
                 ))
                 formCtrl = dom.state('forms')[formName]
+                fieldCtrl = formCtrl.fields[fieldName]
                 input = dom.find('input')
             })
 
-            test('The field value in controller is of Date type', () =>{
-                input.simulate('change', {target: {value: formatDate(dateValue), valueAsDate: dateValue}})
+            test('The field value in form controller is of date string type', () =>{
+                input.simulate('change', {target: {value: formatDate(dateValue)}})
+                expect(fieldCtrl.value).toBe(formatDate(dateValue))
+            })
+
+            test('The field value in form controller is of Date type', () =>{
+                input.simulate('change', {target: {value: formatDate(dateValue)}})
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
-        })
-
-        beforeEach(() => {
-            dom = mount((
-                <FormProvider>
-                    <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject} type="number" integer>
-                            <input />
-                        </Field>
-                    </Form>
-                </FormProvider>
-            ))
-            input = dom.find('input')
         })
 
         afterEach(() => {
