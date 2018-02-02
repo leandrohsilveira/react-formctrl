@@ -40,8 +40,8 @@ export class FormEventDispatcher {
         dispatchEvent(PROVIDER_EVENT, payload)
     }
 
-    static dispatchResetForm(form) {
-        const payload = onResetForm(form)
+    static dispatchResetForm(form, formRef) {
+        const payload = onResetForm(form, formRef)
         dispatchEvent(PROVIDER_EVENT, payload)
     }
 

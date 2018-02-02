@@ -40,10 +40,10 @@ export function onSubmitForm(form, formRef) {
     }
 }
 
-export function onResetForm(form) {
+export function onResetForm(form, formRef) {
     return { 
         type: REACT_FORMCTRL.EVENTS.FORM_RESETED, 
-        payload: {form}
+        payload: {form, formRef}
     }
 }
 
