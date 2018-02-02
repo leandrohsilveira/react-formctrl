@@ -72,7 +72,6 @@ function onRegisterField(state, formName, fieldName, fieldCtrl) {
         }
         updateFieldCtrl(state, formName, fieldCtrl, fieldCtrl.initialValue)
         form.fields[fieldName] = fieldCtrl
-        form.values[fieldName] = fieldCtrl.value
         if(fieldCtrl.props.type === 'date') {
             form.values[fieldName] = new Date(fieldCtrl.value)
         } else {
