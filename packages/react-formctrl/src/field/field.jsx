@@ -3,7 +3,7 @@ import PropTypes, { instanceOf } from 'prop-types'
 
 import { FormEventDispatcher } from '../provider/provider'
 import { REACT_FORMCTRL } from '../provider/provider.actions'
-import { compareFieldProps, formatDate } from '../provider/provider.utils'
+import { compareFieldProps, formatDate, formatDateTime } from '../provider/provider.utils'
 
 export class Field extends React.Component {
 
@@ -65,9 +65,13 @@ export class Field extends React.Component {
         this.getFieldProps = this.getFieldProps.bind(this)
 
         let initialValue = props.initialValue || ''
-        if(initialValue && props.type === 'date') {
+        if(initialValue && (props.type === 'date' || props.type === 'datetime-local')) {
             if(initialValue instanceof Date) {
-                initialValue = formatDate(initialValue)
+                if(props.type === 'date') {
+                    initialValue = formatDate(initialValue)
+                } else {
+                    initialValue = formatDateTime(initialValue)
+                }
             } else if (typeof initialValue === 'string') {
                 if(new Date(initialValue) == 'Invalid Date') {
                     throw `The initialValue "${initialValue}" provided can't be parsed to date type.`
@@ -75,7 +79,11 @@ export class Field extends React.Component {
             } else if(typeof initialValue === 'number') {
                 const dateObj = new Date(initialValue)
                 if(dateObj != 'Invalid Date') {
-                    initialValue = formatDate(dateObj)
+                    if(props.type === 'date') {
+                        initialValue = formatDate(dateObj)
+                    } else {
+                        initialValue = formatDateTime(dateObj)
+                    }
                 } else {
                     throw `The initialValue "${initialValue}" provided can't be parsed to date type.`
                 }
