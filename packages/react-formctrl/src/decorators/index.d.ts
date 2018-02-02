@@ -13,6 +13,11 @@ declare interface ControlledFormProps {
      */
     formCtrl?: FormStateController;
 
+    /**
+     * Change a field value of this form
+     */
+    setFieldValue?(fiendName: string, fieldValue: string | number | Date): void;
+
 }
 
 declare interface ControlledFormDecorator extends ClassDecorator {
