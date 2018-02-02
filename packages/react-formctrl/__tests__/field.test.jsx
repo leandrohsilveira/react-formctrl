@@ -3,7 +3,7 @@ import Adapter from 'enzyme-adapter-react-16'
 
 import { mount, configure, shallow } from 'enzyme';
 
-import { FormProvider, Form, CustomValidator, Field, controlledField, formatDate } from '../src'
+import { FormProvider, Form, CustomValidator, Field, controlledField, formatDate, formatDateTime } from '../src'
 
 configure({ adapter: new Adapter() })
 
@@ -1453,6 +1453,156 @@ describe('About the <Field /> component', () => {
 
             test('The field value in form controller is of Date type', () =>{
                 input.simulate('change', {target: {value: formatDate(dateValue)}})
+                expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
+            })
+        })
+
+        afterEach(() => {
+            dom.unmount()
+            input = null
+        })
+
+    })
+
+    describe('When the field is of datetime-local type', () => {
+
+        const dateValue = new Date();
+        const formName = "testForm"
+        const fieldName = "testField"
+
+        let dom
+        let input
+        let formCtrl
+        let fieldCtrl
+
+        describe('With a date type initialValue', () => {
+
+            beforeEach(() => {
+                dom = mount((
+                    <FormProvider>
+                        <Form name={formName}>
+                            <Field 
+                                form={formName} 
+                                name={fieldName} 
+                                inject={inputInject} 
+                                type="datetime-local"
+                                initialValue={dateValue}
+                            >
+                                <input />
+                            </Field>
+                        </Form>
+                    </FormProvider>
+                ))
+                formCtrl = dom.state('forms')[formName]
+                fieldCtrl = formCtrl.fields[fieldName]
+                input = dom.find('input')
+            })
+
+            test('The field value in form controller is of date string type', () =>{
+                expect(formCtrl.fields[fieldName].value).toBe(formatDateTime(dateValue))
+                expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
+            })
+
+            test('The field value in form controller is of Date type', () =>{
+                expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
+            })
+        })
+
+        describe('With a date string type initialValue', () => {
+
+            beforeEach(() => {
+                dom = mount((
+                    <FormProvider>
+                        <Form name={formName}>
+                            <Field 
+                                form={formName} 
+                                name={fieldName} 
+                                inject={inputInject} 
+                                type="datetime-local"
+                                initialValue={formatDateTime(dateValue)}
+                            >
+                                <input />
+                            </Field>
+                        </Form>
+                    </FormProvider>
+                ))
+                formCtrl = dom.state('forms')[formName]
+                fieldCtrl = formCtrl.fields[fieldName]
+                input = dom.find('input')
+            })
+
+            test('The field value in form controller is of date string type', () =>{
+                expect(formCtrl.fields[fieldName].value).toBe(formatDateTime(dateValue))
+                expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
+            })
+
+            test('The field value in form controller is of Date type', () =>{
+                expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
+            })
+        })
+
+        describe('With a date numbet type initialValue', () => {
+
+            beforeEach(() => {
+                dom = mount((
+                    <FormProvider>
+                        <Form name={formName}>
+                            <Field 
+                                form={formName} 
+                                name={fieldName} 
+                                inject={inputInject} 
+                                type="datetime-local"
+                                initialValue={dateValue.getTime()}
+                            >
+                                <input />
+                            </Field>
+                        </Form>
+                    </FormProvider>
+                ))
+                formCtrl = dom.state('forms')[formName]
+                fieldCtrl = formCtrl.fields[fieldName]
+                input = dom.find('input')
+            })
+
+            test('The field value in form controller is of date string type', () =>{
+                expect(formCtrl.fields[fieldName].value).toBe(formatDateTime(dateValue))
+                expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
+            })
+
+            test('The field value in form controller is of Date type', () =>{
+                expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
+            })
+        })
+
+        describe('When field value changes', () => {
+
+            beforeEach(() => {
+                dom = mount((
+                    <FormProvider>
+                        <Form name={formName}>
+                            <Field 
+                                form={formName} 
+                                name={fieldName} 
+                                inject={inputInject} 
+                                type="datetime-local"
+                            >
+                                <input />
+                            </Field>
+                        </Form>
+                    </FormProvider>
+                ))
+                formCtrl = dom.state('forms')[formName]
+                fieldCtrl = formCtrl.fields[fieldName]
+                input = dom.find('input')
+            })
+
+            test('The field value in form controller is of date string type', () =>{
+                input.simulate('change', {target: {value: formatDateTime(dateValue)}})
+                expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
+            })
+
+            test('The field value in form controller is of Date type', () =>{
+                input.simulate('change', {target: {value: formatDateTime(dateValue)}})
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
