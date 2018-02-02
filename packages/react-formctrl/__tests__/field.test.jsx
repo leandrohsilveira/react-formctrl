@@ -3,7 +3,7 @@ import Adapter from 'enzyme-adapter-react-16'
 
 import { mount, configure, shallow } from 'enzyme';
 
-import { FormProvider, Form, CustomValidator, Field, controlledField } from '../src'
+import { FormProvider, Form, CustomValidator, Field, controlledField, formatDate } from '../src'
 
 configure({ adapter: new Adapter() })
 
@@ -1314,6 +1314,65 @@ describe('About the <Field /> component', () => {
 
     })
 
+    describe('When the field is of date type', () => {
+
+        const initialValue = new Date();
+        const formName = "testForm"
+        const fieldName = "testField"
+        const fieldValue1 = "testValue"
+        const fieldValue2 = "1.5"
+        const fieldValue3 = "1"
+
+        let dom
+        let input
+
+        describe('With a date type initialValue', () => {
+
+            beforeEach(() => {
+                dom = mount((
+                    <FormProvider>
+                        <Form name={formName}>
+                            <Field 
+                                form={formName} 
+                                name={fieldName} 
+                                inject={inputInject} 
+                                type="date"
+                                initialValue={initialValue}
+                            >
+                                <input />
+                            </Field>
+                        </Form>
+                    </FormProvider>
+                ))
+                input = dom.find('input')
+            })
+
+            test('The input value is displayed appropriately', () =>{
+                console.log(input)
+                expect(input.props().value).toBe(formatDate(initialValue))
+            })
+        })
+
+        beforeEach(() => {
+            dom = mount((
+                <FormProvider>
+                    <Form name={formName}>
+                        <Field form={formName} name={fieldName} inject={inputInject} type="number" integer>
+                            <input />
+                        </Field>
+                    </Form>
+                </FormProvider>
+            ))
+            input = dom.find('input')
+        })
+
+        afterEach(() => {
+            dom.unmount()
+            input = null
+        })
+
+    })
+
     describe('When the field has match validation', () => {
 
         const formName = "testForm"
@@ -1538,4 +1597,3 @@ describe('About the <Field /> component', () => {
     })
 
 })
-
