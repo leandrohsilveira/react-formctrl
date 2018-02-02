@@ -1,9 +1,9 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import PropTypes, { instanceOf } from 'prop-types'
 
 import { FormEventDispatcher } from '../provider/provider'
 import { REACT_FORMCTRL } from '../provider/provider.actions'
-import { compareFieldProps } from '../provider/provider.utils'
+import { compareFieldProps, formatDate, formatDateTime } from '../provider/provider.utils'
 
 export class Field extends React.Component {
 
@@ -45,6 +45,11 @@ export class Field extends React.Component {
         validate: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.arrayOf(PropTypes.string)
+        ]),
+        initialValue: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+            PropTypes.instanceOf(Date)
         ])
     }
 
@@ -59,6 +64,32 @@ export class Field extends React.Component {
         this.inject = this.inject.bind(this)
         this.getFieldProps = this.getFieldProps.bind(this)
 
+        let initialValue = props.initialValue || ''
+        if(initialValue && (props.type === 'date' || props.type === 'datetime-local')) {
+            if(initialValue instanceof Date) {
+                if(props.type === 'date') {
+                    initialValue = formatDate(initialValue)
+                } else {
+                    initialValue = formatDateTime(initialValue)
+                }
+            } else if (typeof initialValue === 'string') {
+                if(new Date(initialValue) == 'Invalid Date') {
+                    throw `The initialValue "${initialValue}" provided can't be parsed to date type.`
+                }
+            } else if(typeof initialValue === 'number') {
+                const dateObj = new Date(initialValue)
+                if(dateObj != 'Invalid Date') {
+                    if(props.type === 'date') {
+                        initialValue = formatDate(dateObj)
+                    } else {
+                        initialValue = formatDateTime(dateObj)
+                    }
+                } else {
+                    throw `The initialValue "${initialValue}" provided can't be parsed to date type.`
+                }
+            }
+        }
+
         this.state = {
             valid: true,
             invalid: false,
@@ -71,7 +102,7 @@ export class Field extends React.Component {
             errors: [],
             value: '',
             files: [],
-            initialValue: props.initialValue || '',
+            initialValue,
             props: this.getFieldProps(props)
         }
 

@@ -22,21 +22,21 @@ function FormGroup({ name, label, children, ctrl: { invalid, dirty, errors } }) 
 }
 let Input = ({ name, label, type, onChange, onBlur, value, ctrl }) => (
     <FormGroup name={name} label={label} ctrl={ctrl}>
-        <input type={type} id={name} name={name} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} onChange={onChange} onBlur={onBlur} value={value}></input>
+        <input type={type} name={name} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} onChange={onChange} onBlur={onBlur} value={value}></input>
     </FormGroup>
 )
 Input = controlledField()(Input)
 
 let InputFile = ({ name, label, multiple = false, accept, onChange, ctrl }) => (
     <FormGroup name={name} label={label} ctrl={ctrl}>
-        <input type="file" id={name} name={name} accept={accept} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} multiple={multiple} onChange={onChange}></input>
+        <input type="file" name={name} accept={accept} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} multiple={multiple} onChange={onChange}></input>
     </FormGroup>
 )
 InputFile = controlledField()(InputFile)
 
 let Select = ({ name, label, onChange, onBlur, value, ctrl, children }) => (
     <FormGroup name={name} label={label} ctrl={ctrl}>
-        <select id={name} name={name} className={`form-control ${getInputClasses(ctrl)}`} onChange={onChange} onBlur={onBlur} value={value}>
+        <select name={name} className={`form-control ${getInputClasses(ctrl)}`} onChange={onChange} onBlur={onBlur} value={value}>
             <option disabled={true} hidden={true} value=''>{label}</option>
             {children}
         </select>
@@ -49,7 +49,7 @@ let Radio = ({ name, label, onChange, onBlur, value, groupValue }) => {
     return (
         <div className="form-check">
             <label className="form-check-label" htmlFor={name}>
-                <input type="radio" id={name} name={name} checked={checked} className='form-check-input' onChange={onChange} onBlur={onBlur} value={groupValue}></input>
+                <input type="radio" name={name} checked={checked} className='form-check-input' onChange={onChange} onBlur={onBlur} value={groupValue}></input>
                 {label}
             </label>
         </div>
@@ -89,6 +89,77 @@ let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
             type="email"
             required
         />
+        <Input 
+            label="Date field"
+            form={formName}
+            name="fieldDate"
+            type="date"
+            required
+        />
+        <Input 
+            label="Date field (with initial Date type value)"
+            form={formName}
+            name="fieldDateWithDateInitialValue"
+            type="date"
+            initialValue={new Date()}
+            required
+        />
+        <Input 
+            label="Date field (with initial Date string value)"
+            form={formName}
+            name="fieldDateWithStringInitialValue"
+            type="date"
+            initialValue={'2018-02-02'}
+            required
+        />
+        <Input 
+            label="Date field (with initial Date number value)"
+            form={formName}
+            name="fieldDateWithNumberInitialValue"
+            type="date"
+            initialValue={new Date().getTime()}
+            required
+        />
+
+
+
+
+
+        <Input 
+            label="Datetime field"
+            form={formName}
+            name="fieldDateTime"
+            type="datetime-local"
+            required
+        />
+        <Input 
+            label="Datetime field (with initial Date type value)"
+            form={formName}
+            name="fieldDateTimeWithDateInitialValue"
+            type="datetime-local"
+            initialValue={new Date()}
+            required
+        />
+        <Input 
+            label="Datetime field (with initial Date string value)"
+            form={formName}
+            name="fieldDateTimeWithStringInitialValue"
+            type="datetime-local"
+            initialValue={'2018-02-02T15:00'}
+            required
+        />
+        <Input 
+            label="Datetime field (with initial Date number value)"
+            form={formName}
+            name="fieldDateTimeWithNumberInitialValue"
+            type="datetime-local"
+            initialValue={new Date().getTime()}
+            required
+        />
+
+
+
+
         <InputFile
             label="Field file (max size 50 kb)"
             form={formName}

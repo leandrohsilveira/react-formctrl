@@ -1,3 +1,23 @@
+export function formatDate(date) {
+    if(date) {
+        const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`
+        const day = date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`
+        return `${date.getFullYear()}-${month}-${day}`
+    }
+    return date;
+}
+
+export function formatDateTime(date) {
+    if(date) {
+        const months = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`
+        const days = date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`
+        const hours = date.getHours() < 10 ? `0${date.getHours()}` : `${date.getHours()}`
+        const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : `${date.getMinutes()}`
+        return `${date.getFullYear()}-${months}-${days}T${hours}:${minutes}`
+    }
+    return date;
+}
+
 export function dispatchEvent(type, payload) {
     const event = document.createEvent('CustomEvent')
     event.initCustomEvent(type, false, false, payload)
