@@ -1325,6 +1325,7 @@ describe('About the <Field /> component', () => {
 
         let dom
         let input
+        let formCtrl
 
         describe('With a date type initialValue', () => {
 
@@ -1344,12 +1345,16 @@ describe('About the <Field /> component', () => {
                         </Form>
                     </FormProvider>
                 ))
+                formCtrl = dom.state('forms')[formName]
                 input = dom.find('input')
             })
 
             test('The input value is displayed appropriately', () =>{
-                console.log(input)
                 expect(input.props().value).toBe(formatDate(initialValue))
+            })
+
+            test('The field value in controller is of Date type', () =>{
+                expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
 
