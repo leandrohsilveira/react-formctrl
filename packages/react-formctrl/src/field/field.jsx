@@ -65,7 +65,7 @@ export class Field extends React.Component {
         this.getFieldProps = this.getFieldProps.bind(this)
 
         let initialValue = props.initialValue || ''
-        if(props.type === 'date') {
+        if(initialValue && props.type === 'date') {
             if(initialValue instanceof Date) {
                 initialValue = formatDate(initialValue)
             } else if (typeof initialValue === 'string') {
