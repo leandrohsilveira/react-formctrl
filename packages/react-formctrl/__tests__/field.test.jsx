@@ -1316,7 +1316,7 @@ describe('About the <Field /> component', () => {
 
     describe('When the field is of date type', () => {
 
-        const initialValue = new Date();
+        const dateValue = new Date();
         const formName = "testForm"
         const fieldName = "testField"
         const fieldValue1 = "testValue"
@@ -1338,7 +1338,7 @@ describe('About the <Field /> component', () => {
                                 name={fieldName} 
                                 inject={inputInject} 
                                 type="date"
-                                initialValue={initialValue}
+                                initialValue={dateValue}
                             >
                                 <input />
                             </Field>
@@ -1350,10 +1350,37 @@ describe('About the <Field /> component', () => {
             })
 
             test('The input value is displayed appropriately', () =>{
-                expect(input.props().value).toBe(formatDate(initialValue))
+                expect(input.props().value).toBe(formatDate(dateValue))
             })
 
             test('The field value in controller is of Date type', () =>{
+                expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
+            })
+        })
+
+        describe('When field value changes', () => {
+
+            beforeEach(() => {
+                dom = mount((
+                    <FormProvider>
+                        <Form name={formName}>
+                            <Field 
+                                form={formName} 
+                                name={fieldName} 
+                                inject={inputInject} 
+                                type="date"
+                            >
+                                <input />
+                            </Field>
+                        </Form>
+                    </FormProvider>
+                ))
+                formCtrl = dom.state('forms')[formName]
+                input = dom.find('input')
+            })
+
+            test('The field value in controller is of Date type', () =>{
+                input.simulate('change', {target: {value: formatDate(dateValue), valueAsDate: dateValue}})
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
