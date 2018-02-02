@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import {FormEventDispatcher} from '../provider/provider'
 import {REACT_FORMCTRL} from '../provider/provider.actions'
+import {ensureStringValue} from '../provider/provider.utils'
 
 export class Form extends React.Component {
 
@@ -143,7 +144,12 @@ export class FormControl extends React.Component {
 
     setFieldValue(fieldName, value) {
         const {form} = this.props
-        FormEventDispatcher.dispatchFieldChanged(form, fieldName, value)
+        const fieldCtrl = this.state.fields[fieldName]
+        if(fieldCtrl) {
+            FormEventDispatcher.dispatchFieldChanged(form, fieldName, ensureStringValue(value, fieldCtrl.props.type))
+        } else {
+            console.warn(`Field "${fieldName}" not found on form ${form}`)
+        }
     }
 
     inject() {
