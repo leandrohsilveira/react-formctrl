@@ -19,12 +19,24 @@ import {
     copyFormFiles,
     copyFormValues,
     compareFieldProps,
-    compareArrays
+    compareArrays,
+    ensureStringValue,
+    formatDate,
+    formatDateTime
 } from '../src/provider/provider.utils'
 
 configure({adapter: new Adapter()})
 
 describe('The provider.utils module', () => {
+
+    function MockFileList(files) {
+        const thiz = this
+        thiz.files = files
+        return {
+            length: thiz.files.length,
+            item: (i) => thiz.files[i],
+        }
+    }
 
     const formName = "testForm"
     const fieldName = "testField"
@@ -52,9 +64,301 @@ describe('The provider.utils module', () => {
         formCtrl = null
     })
     
-    // describe('The copyFiles() function', () => {
-    // TODO: find a way to test it
-    // })
+    describe('The copyFiles() function', () => {
+
+        describe('When a FileList is provided', () => {
+
+            test('Then the return type is an array', () => {
+                const result = copyFiles(new MockFileList(['a', 'b']));
+                expect(result).toBeInstanceOf(Array)
+                expect(result).toEqual(['a', 'b'])
+
+            })
+
+        })
+
+        describe('When a Array is provided', () => {
+
+            test('Then the return type is an array', () => {
+                const result = copyFiles(['a', 'b']);
+                expect(result).toBeInstanceOf(Array)
+                expect(result).toEqual(['a', 'b'])
+            })
+
+        })
+
+
+    })
+
+    describe('The formatDate() function', () => {
+
+        const dateValue1 = new Date(2018, 0, 1)
+        const stringValue1 = '2018-01-01'
+        const dateValue2 = new Date(2018, 10, 10)
+        const stringValue2 = '2018-11-10'
+        
+        describe('When the provided value is a date', () => {
+
+            test('Then a string value of the date is returned', () => {
+
+                const response1 = formatDate(dateValue1)
+                expect(response1).toEqual(stringValue1)
+
+                const response2 = formatDate(dateValue2)
+                expect(response2).toEqual(stringValue2)
+
+            })
+
+        })
+
+        describe('When the provided value is a string date format', () => {
+
+            test('Then a string value of the date is returned', () => {
+
+                const response1 = formatDate(stringValue1)
+                expect(response1).toEqual(stringValue1)
+
+                const response2 = formatDate(stringValue2)
+                expect(response2).toEqual(stringValue2)
+
+            })
+
+        })
+
+        describe('When the provided value is a string non-date format', () => {
+
+            test('Then a string value of the date is returned', () => {
+
+                const response1 = formatDate(1)
+                expect(response1).toEqual(1)
+
+            })
+
+        })
+
+        describe('When the provided value is null', () => {
+
+            test('Then the own null value is returned', () => {
+
+                const response1 = formatDate(null)
+                expect(response1).toBeNull()
+
+            })
+
+        })
+
+    })
+
+    describe('The formatDateTime() function', () => {
+
+        const dateValue1 = new Date(2018, 0, 1, 1, 1)
+        const stringValue1 = '2018-01-01T01:01'
+        const dateValue2 = new Date(2018, 10, 10, 10, 10)
+        const stringValue2 = '2018-11-10T10:10'
+        
+        describe('When the provided value is a date', () => {
+
+            test('Then a string value of the date is returned', () => {
+
+                const response1 = formatDateTime(dateValue1)
+                expect(response1).toEqual(stringValue1)
+
+                const response2 = formatDateTime(dateValue2)
+                expect(response2).toEqual(stringValue2)
+
+            })
+
+        })
+
+        describe('When the provided value is a string date format', () => {
+
+            test('Then a string value of the date is returned', () => {
+
+                const response1 = formatDateTime(stringValue1)
+                expect(response1).toEqual(stringValue1)
+
+                const response2 = formatDateTime(stringValue2)
+                expect(response2).toEqual(stringValue2)
+
+            })
+
+        })
+
+        describe('When the provided value is a string non-date format', () => {
+
+            test('Then a string value of the date is returned', () => {
+
+                const response1 = formatDateTime(1)
+                expect(response1).toEqual(1)
+
+            })
+
+        })
+
+        describe('When the provided value is null', () => {
+
+            test('Then the own null value is returned', () => {
+
+                const response1 = formatDateTime(null)
+                expect(response1).toBeNull()
+
+            })
+
+        })
+
+    })
+
+    describe('The ensureStringValue() function', () => {
+
+        describe('When the type is date', () => {
+
+            const type = 'date'
+            const dateValue = new Date()
+            const stringValue = formatDate(dateValue)
+            const numberValue = dateValue.getTime()
+            const invalidStringValue = 'test'
+            const invalidNumberValue = -9999999999999999.588
+
+            describe('And a date value is provided', () => {
+
+                test('Then a string value of the date is returned', () => {
+                    const response = ensureStringValue(dateValue, type)
+                    expect(response).toEqual(stringValue)
+                })
+
+            })
+
+            describe('And a valid string date value is provided', () => {
+
+                test('Then a string value of the date is returned', () => {
+                    const response = ensureStringValue(stringValue, type)
+                    expect(response).toEqual(stringValue)
+                })
+
+            })
+
+            describe('And a valid number date value is provided', () => {
+
+                test('Then a string value of the date is returned', () => {
+                    const response = ensureStringValue(numberValue, type)
+                    expect(response).toEqual(stringValue)
+                })
+
+            })
+
+            describe('And a invalid string date value is provided', () => {
+
+                test('An error is thrown', () => {
+                    expect(() => {
+                        ensureStringValue(invalidStringValue, type)
+                    })
+                    .toThrow(`The value "${invalidStringValue}" provided can't be parsed to date type.`)
+                })
+
+            })
+
+            describe('And a invalid number date value is provided', () => {
+
+                test('An error is thrown', () => {
+                    expect(() => {
+                        const response = ensureStringValue(invalidNumberValue, type)
+                        console.log(response)
+                    })
+                    .toThrow(`The value "${invalidNumberValue}" provided can't be parsed to date type.`)
+                })
+
+            })
+
+        })
+
+        describe('When the type is datetime-local', () => {
+
+            const type = 'datetime-local'
+            const dateValue = new Date()
+            const stringValue = formatDateTime(dateValue)
+            const numberValue = dateValue.getTime()
+            const invalidStringValue = 'test'
+            const invalidNumberValue = -9999999999999999.588
+
+            describe('And a date value is provided', () => {
+
+                test('Then a string value of the date is returned', () => {
+                    const response = ensureStringValue(dateValue, type)
+                    expect(response).toEqual(stringValue)
+                })
+
+            })
+
+            describe('And a valid string date value is provided', () => {
+
+                test('Then a string value of the date is returned', () => {
+                    const response = ensureStringValue(stringValue, type)
+                    expect(response).toEqual(stringValue)
+                })
+
+            })
+
+            describe('And a valid number date value is provided', () => {
+
+                test('Then a string value of the date is returned', () => {
+                    const response = ensureStringValue(numberValue, type)
+                    expect(response).toEqual(stringValue)
+                })
+
+            })
+
+            describe('And a invalid string date value is provided', () => {
+
+                test('An error is thrown', () => {
+                    expect(() => {
+                        ensureStringValue(invalidStringValue, type)
+                    })
+                    .toThrow(`The value "${invalidStringValue}" provided can't be parsed to date type.`)
+                })
+
+            })
+
+            describe('And a invalid number date value is provided', () => {
+
+                test('An error is thrown', () => {
+                    expect(() => {
+                        const response = ensureStringValue(invalidNumberValue, type)
+                        console.log(response)
+                    })
+                    .toThrow(`The value "${invalidNumberValue}" provided can't be parsed to date type.`)
+                })
+
+            })
+
+        })
+
+        describe('When the type is text', () => {
+
+            const type = 'text'
+            const dateValue = new Date()
+            const stringValue = formatDateTime(dateValue)
+
+            describe('And a date value is provided', () => {
+
+                test('Then the own date value is returned', () => {
+                    const response = ensureStringValue(dateValue, type)
+                    expect(response).toEqual(dateValue)
+                })
+
+            })
+
+            describe('And a valid string date value is provided', () => {
+
+                test('Then the own string value is returned', () => {
+                    const response = ensureStringValue(stringValue, type)
+                    expect(response).toEqual(stringValue)
+                })
+
+            })
+
+        })
+
+    })
     
     describe('The copyArray() function', () => {
 
@@ -83,13 +387,49 @@ describe('The provider.utils module', () => {
         expect(newProps).toEqual(props)
     })
     
-    test('The copyError() function', () => {
-        const error = fieldCtrl.errors[0]
+    describe('The copyError() function', () => {
 
-        const newError = copyError(error)
+        describe('When has only a key prop', () => {
 
-        expect(newError).not.toBe(error)
-        expect(newError).toEqual(error)
+            test('The provided reference is not the same returned (copied)', () => {
+                const error = {key: 'test'}
+                const newError = copyError(error)
+                expect(newError).not.toBe(error)
+                expect(newError).toEqual(error)
+            })
+
+        })
+
+        describe('When has a string param', () => {
+
+            test('The provided reference is not the same returned (copied)', () => {
+                const error = {key: 'test', params: {testParamName: 'testParamValue'}}
+                const newError = copyError(error)
+                expect(newError).not.toBe(error)
+                expect(newError).toEqual(error)
+            })
+        })
+
+        describe('When has an array param', () => {
+
+            test('The provided reference is not the same returned (copied)', () => {
+                const error = {key: 'test', params: {testParamName: ['testParamValue']}}
+                const newError = copyError(error)
+                expect(newError).not.toBe(error)
+                expect(newError).toEqual(error)
+            })
+
+        })
+
+        describe('When has a FileList param', () => {
+            test('The provided reference is not the same returned (copied)', () => {
+                const error = {key: 'test', params: {testParamName: new MockFileList(['testParamValue'])}}
+                const expected = {key: 'test', params: {testParamName: ['testParamValue']}}
+                const newError = copyError(error)
+                expect(newError).not.toBe(error)
+                expect(newError).toEqual(expected)
+            })
+        })
 
     })
     
