@@ -568,6 +568,216 @@ describe('About the <Field /> component', () => {
 
     })
 
+    describe('The field onBlur interceptor', () => {
+
+        const formName = "testForm"
+        const fieldName = "testField"
+        const fieldValue = "testValue"
+
+        let dom
+        let input
+        let fieldCtrl
+
+        function onEvent(_fieldCtrl) {
+            fieldCtrl = _fieldCtrl
+        }
+        beforeEach(() => {
+            dom = mount((
+                <FormProvider>
+                    <Form name={formName}>
+                        <Field form={formName} name={fieldName} inject={inputInject} onChange={onEvent} onBlur={onEvent}>
+                            <input />
+                        </Field>
+                    </Form>
+                </FormProvider>
+            ))
+            input = dom.find('input')
+        })
+
+        describe('When the field is brand new', () => {
+
+            test('The fieldCtrl is defined', () => {
+                expect(fieldCtrl).toBeDefined()
+            })
+
+            test('The field is empty', () => {
+                expect(fieldCtrl.value).toBe('')
+            })
+
+            test('The field is pristine', () => {
+                expect(fieldCtrl.pristine).toBeTruthy()
+                expect(fieldCtrl.dirty).toBeFalsy()
+            })
+
+            test('The field is unchanged', () => {
+                expect(fieldCtrl.unchanged).toBeTruthy()
+                expect(fieldCtrl.changed).toBeFalsy()
+            })
+
+            test('The field is untouched', () => {
+                expect(fieldCtrl.untouched).toBeTruthy()
+                expect(fieldCtrl.touched).toBeFalsy()
+            })
+
+        })
+
+        describe('When the field is changed', () => {
+
+            beforeEach(() => {
+                input.simulate('change', { target: { value: fieldValue } })
+            })
+
+            test('The fieldCtrl is defined', () => {
+                expect(fieldCtrl).toBeDefined()
+            })
+
+            test('The field is not empty', () => {
+                expect(fieldCtrl.value).toBe(fieldValue)
+            })
+
+            test('The field is dirty', () => {
+                expect(fieldCtrl.pristine).toBeFalsy()
+                expect(fieldCtrl.dirty).toBeTruthy()
+            })
+
+            test('The field is changed', () => {
+                expect(fieldCtrl.unchanged).toBeFalsy()
+                expect(fieldCtrl.changed).toBeTruthy()
+            })
+
+            test('The field still untouched', () => {
+                expect(fieldCtrl.untouched).toBeTruthy()
+                expect(fieldCtrl.touched).toBeFalsy()
+            })
+
+        })
+
+        describe('When the field is blurred', () => {
+
+            beforeEach(() => {
+                input.simulate('blur', {})
+            })
+
+            test('The fieldCtrl is defined', () => {
+                expect(fieldCtrl).toBeDefined()
+            })
+
+            test('The field is empty', () => {
+                expect(fieldCtrl.value).toBe('')
+            })
+
+            test('The field is pristine', () => {
+                expect(fieldCtrl.pristine).toBeTruthy()
+                expect(fieldCtrl.dirty).toBeFalsy()
+            })
+
+            test('The field is unchanged', () => {
+                expect(fieldCtrl.unchanged).toBeTruthy()
+                expect(fieldCtrl.changed).toBeFalsy()
+            })
+
+            test('The field is touched', () => {
+                expect(fieldCtrl.untouched).toBeFalsy()
+                expect(fieldCtrl.touched).toBeTruthy()
+            })
+
+        })
+
+    })
+
+    describe('The field onReset interceptor', () => {
+
+        const formName = "testForm"
+        const fieldName = "testField"
+        const fieldValue = "testValue"
+
+        let dom
+        let input, form
+        let fieldCtrl
+
+        function onEvent(_fieldCtrl) {
+            fieldCtrl = _fieldCtrl
+        }
+        
+        beforeEach(() => {
+            dom = mount((
+                <FormProvider>
+                    <Form name={formName}>
+                        <Field form={formName} name={fieldName} inject={inputInject} onChange={onEvent} onReset={onEvent}>
+                            <input />
+                        </Field>
+                    </Form>
+                </FormProvider>
+            ))
+            input = dom.find('input')
+            form = dom.find('form')
+        })
+
+        describe('When the field is brand new', () => {
+
+            beforeEach(() => {
+                form.simulate('reset')
+            })
+
+            test('The fieldCtrl is defined', () => {
+                expect(fieldCtrl).toBeDefined()
+            })
+
+            test('The field is empty', () => {
+                expect(fieldCtrl.value).toBe('')
+            })
+
+            test('The field is pristine', () => {
+                expect(fieldCtrl.pristine).toBeTruthy()
+                expect(fieldCtrl.dirty).toBeFalsy()
+            })
+
+            test('The field is unchanged', () => {
+                expect(fieldCtrl.unchanged).toBeTruthy()
+                expect(fieldCtrl.changed).toBeFalsy()
+            })
+
+            test('The field is untouched', () => {
+                expect(fieldCtrl.untouched).toBeTruthy()
+                expect(fieldCtrl.touched).toBeFalsy()
+            })
+
+        })
+
+        describe('When the field is changed', () => {
+
+            beforeEach(() => {
+                input.simulate('change', { target: { value: fieldValue } })
+                form.simulate('reset')
+            })
+
+            test('The fieldCtrl is defined', () => {
+                expect(fieldCtrl).toBeDefined()
+            })
+
+            test('The field is empty', () => {
+                expect(fieldCtrl.value).toBe('')
+            })
+
+            test('The field is pristine', () => {
+                expect(fieldCtrl.pristine).toBeTruthy()
+                expect(fieldCtrl.dirty).toBeFalsy()
+            })
+
+            test('The field is unchanged', () => {
+                expect(fieldCtrl.unchanged).toBeTruthy()
+                expect(fieldCtrl.changed).toBeFalsy()
+            })
+
+            test('The field is untouched', () => {
+                expect(fieldCtrl.untouched).toBeTruthy()
+                expect(fieldCtrl.touched).toBeFalsy()
+            })
+
+        })
+
+    })
+
     describe('The field interaction behaviour', () => {
 
         const formName = "testForm"
