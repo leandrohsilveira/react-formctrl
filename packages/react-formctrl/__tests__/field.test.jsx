@@ -2046,6 +2046,45 @@ describe('About the <Field /> component', () => {
 
         })
 
+        describe('When the confirmation field is changed before the matched field', () => {
+
+            let formCtrl, fieldCtrl1, fieldCtrl2
+            beforeEach(() => {
+                input2.simulate('change', { target: { value: fieldValue1 } })
+                input1.simulate('change', { target: { value: fieldValue1 } })
+                formCtrl = dom.state('forms')[formName]
+                expect(formCtrl).toBeDefined()
+                fieldCtrl1 = formCtrl.fields[fieldName1]
+                expect(fieldCtrl1).toBeDefined()
+                fieldCtrl2 = formCtrl.fields[fieldName2]
+                expect(fieldCtrl2).toBeDefined()
+            })
+
+            test('The form is valid', () => {
+                expect(formCtrl.valid).toBeTruthy()
+                expect(formCtrl.invalid).toBeFalsy()
+            })
+
+            test(`The field "${fieldName1}" is valid`, () => {
+                expect(fieldCtrl1.valid).toBeTruthy()
+                expect(fieldCtrl1.invalid).toBeFalsy()
+            })
+
+            test(`The field "${fieldName2}" is valid`, () => {
+                expect(fieldCtrl2.valid).toBeTruthy()
+                expect(fieldCtrl2.invalid).toBeFalsy()
+            })
+
+            test(`The field "${fieldName1}" has no errors messages.`, () => {
+                expect(fieldCtrl1.errors).toHaveLength(0)
+            })
+
+            test(`The field "${fieldName2}" has no errors messages.`, () => {
+                expect(fieldCtrl2.errors).toHaveLength(0)
+            })
+
+        })
+
     })
 
 })
