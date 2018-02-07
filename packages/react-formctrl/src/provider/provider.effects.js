@@ -11,8 +11,8 @@ function forwardResetFormEvent(form, formRef) {
     dispatchEvent(`${REACT_FORMCTRL.EVENTS.FORM_RESETED}#${form}`, payload)
 }
 
-function forwardFieldChangedEvent(form, field, fieldCtrl) {
-    const payload = { form, field, fieldCtrl: copyFieldCtrl(fieldCtrl) }
+function forwardFieldChangedEvent(form, field, fieldCtrl, eventType) {
+    const payload = { form, field, fieldCtrl: copyFieldCtrl(fieldCtrl), eventType }
     dispatchEvent(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${field}`, payload)
 }
 
@@ -27,24 +27,30 @@ export function formProviderEffects(state, action) {
     const EVENTS = REACT_FORMCTRL.EVENTS
     const formName = payload.form
     const fieldName = payload.field
+    const eventType = payload.eventType
     const formCtrl = state.forms[formName]
     const fieldCtrl = fieldName && formCtrl ? formCtrl.fields[fieldName] : null
     switch (type) {
         case EVENTS.FIELD_BLURRED:
-        case EVENTS.REGISTER_FIELD:
         case EVENTS.FIELD_CHANGED:
-        case EVENTS.FIELD_PROPS_CHANGED:
-            forwardFieldChangedEvent(formName, fieldName, fieldCtrl)
+            forwardFieldChangedEvent(formName, fieldName, fieldCtrl, eventType)
             forwardFormChangedEvent(formName, formCtrl)
             break
-
+        case EVENTS.REGISTER_FIELD:
+            forwardFieldChangedEvent(formName, fieldName, fieldCtrl, 'registerField')
+            forwardFormChangedEvent(formName, formCtrl)
+            break
+        case EVENTS.FIELD_PROPS_CHANGED:
+            forwardFieldChangedEvent(formName, fieldName, fieldCtrl, 'propsChanged')
+            forwardFormChangedEvent(formName, formCtrl)
+            break
         case EVENTS.FORM_SUBMITED:
             forwardSubmitFormEvent(formName, formCtrl.values, formCtrl, payload.formRef)
             break
         case EVENTS.FORM_RESETED:
             Object.keys(formCtrl.fields).forEach(_fieldName => {
                 const _field = formCtrl.fields[_fieldName]
-                forwardFieldChangedEvent(formName, _fieldName, _field)
+                forwardFieldChangedEvent(formName, _fieldName, _field, eventType)
             })
             forwardResetFormEvent(formName, payload.formRef)
             forwardFormChangedEvent(formName, formCtrl)

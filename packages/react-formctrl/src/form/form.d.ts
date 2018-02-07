@@ -16,6 +16,11 @@ declare interface FormProps extends React.Props<any> {
      * The form submit handler.
      */
     onSubmit?(values: {[fieldName: string]: string}, formCtrl?: FormStateController): void;
+
+    /**
+     * The form reset handler.
+     */
+    onReset?(): void;
 }
 
 declare interface FormState {

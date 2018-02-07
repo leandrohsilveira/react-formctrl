@@ -49,14 +49,21 @@ declare interface ControlledFieldProps extends FieldStateProperties {
     value?: string | number;
 
     /**
-     * event handler to change event (Automatically handled by react-formctrl)
+     * An extra change event handler called after "react-formctrl" state change cycle.
+     * Internally in the controlledField() component, this event handler is injected and automatically handled by react-formctrl.
      */
-    onChange?: React.ChangeEventHandler<HTMLInputElement>;
+    onChange?(fieldCtrl?: FieldStateController): void;
 
     /**
-     * event handler to blur event (Automatically handled by react-formctrl)
+     * An extra blur event handler called after "react-formctrl" state change cycle.
+     * Internally in the controlledField() component, this event handler is injected and automatically handled by react-formctrl.
      */
-    onBlur?: React.FocusEventHandler<HTMLInputElement>;
+    onBlur?(fieldCtrl?: FieldStateController): void;
+
+    /**
+     * Handler called when the form that this field is attached is reseted.
+     */
+    onReset?(fieldCtrl?: FieldStateController): void;
 
     /**
      * The field state controller (Automatically handled by react-formctrl)

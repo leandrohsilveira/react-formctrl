@@ -164,11 +164,12 @@ describe('About <Form /> component', () => {
         const fieldValue1 = "fieldValue1"
         const fieldValue2 = "fieldValue2"
 
-        let dom, form, input1, input2, formCtrl, reseted = false
+        let dom, form, input1, input2, formCtrl, reseted = false, onReset
         beforeEach(() => {
+            onReset = () => reseted = true
             dom = mount((
                 <FormProvider>
-                    <Form name={formName1} onReset={() => reseted = true}>
+                    <Form name={formName1} onReset={onReset}>
                         <Input form={formName1} name={fieldName1} />
                         <Input form={formName1} name={fieldName2} />
                     </Form>
@@ -187,8 +188,23 @@ describe('About <Form /> component', () => {
                 input2.simulate('change', { target: { value: fieldValue2 } })
                 form.simulate('reset')
             })
-
+            
             test('The reset handler is called', () => {
+                expect(formCtrl.values).toEqual({ [fieldName1]: '', [fieldName2]: '' })
+                expect(reseted).toBeTruthy()
+            })
+        })
+
+        describe('Without provide a reset handler', () => {
+
+            beforeEach(() => {
+                onReset = undefined;
+                input1.simulate('change', { target: { value: fieldValue1 } })
+                input2.simulate('change', { target: { value: fieldValue2 } })
+                form.simulate('reset')
+            })
+            
+            test('Nothing happens', () => {
                 expect(formCtrl.values).toEqual({ [fieldName1]: '', [fieldName2]: '' })
                 expect(reseted).toBeTruthy()
             })
@@ -335,7 +351,7 @@ describe('The <FormControl /> setFieldValue behaviour', () => {
         _formCtrl = formCtrl
         return <Form name={name}>{children}</Form>
     }
-    const formName = 'formName1'
+    const formName = 'formControlSetFieldValueFormName'
 
     const fieldName = "fieldName"
     const fieldDateName = "fieldDateName"
@@ -363,23 +379,41 @@ describe('The <FormControl /> setFieldValue behaviour', () => {
         dom.unmount()
     })
 
-    test('When set a string value', () => {
-        _formCtrl.setFieldValue(fieldName, fieldValue)
-        expect(_formCtrl).toBeDefined()
-        console.log(_formCtrl.values)
-        expect(_formCtrl.values).toEqual({ [fieldName]: fieldValue, [fieldDateName]: '' })
+    describe('When set a string value', () => {
+
+        test('The field value changes in form controller', () => {
+            _formCtrl.setFieldValue(fieldName, fieldValue)
+            expect(_formCtrl).toBeDefined()
+            expect(_formCtrl.values).toEqual({ [fieldName]: fieldValue, [fieldDateName]: '' })
+        })
     })
 
-    test('When set a Date value to a date type field', () => {
-        _formCtrl.setFieldValue(fieldDateName, fieldDateValue)
-        expect(_formCtrl).toBeDefined()
-        expect(_formCtrl.values).toEqual({ [fieldName]: '', [fieldDateName]: new Date(formatDate(fieldDateValue)) })
+    describe('When set a Date value to a date type field', () => {
+
+        test('The field value changes in form controller', () => {
+            _formCtrl.setFieldValue(fieldDateName, fieldDateValue)
+            expect(_formCtrl).toBeDefined()
+            expect(_formCtrl.values).toEqual({ [fieldName]: '', [fieldDateName]: new Date(formatDate(fieldDateValue)) })
+        })
     })
 
-    test('When set a Number value to a date type field', () => {
-        _formCtrl.setFieldValue(fieldDateName, fieldDateValue.getTime())
-        expect(_formCtrl).toBeDefined()
-        expect(_formCtrl.values).toEqual({ [fieldName]: '', [fieldDateName]: new Date(formatDate(fieldDateValue)) })
+    describe('When set a Number value to a date type field', () => {
+
+        test('The field value changes in form controller', () => {
+            _formCtrl.setFieldValue(fieldDateName, fieldDateValue.getTime())
+            expect(_formCtrl).toBeDefined()
+            expect(_formCtrl.values).toEqual({ [fieldName]: '', [fieldDateName]: new Date(formatDate(fieldDateValue)) })
+        })
+    })
+
+    describe('When attempt to set a value to a unregistred field', () => {
+
+        test('Then nothing happens', () => {
+            _formCtrl.setFieldValue('unregistredField', 'aValue')
+            expect(_formCtrl).toBeDefined()
+            expect(_formCtrl.values).toEqual({ [fieldName]: '', [fieldDateName]: '' })
+        })
+        
     })
 
 })
