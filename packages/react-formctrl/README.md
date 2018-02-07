@@ -306,6 +306,7 @@ Name | Type | Default value | Description
 name | string | | The form id and name
 className | string | | The CSS classes for the native form component rendered by this component
 onSubmit | Function | | A submit handler function which receives the form values object by parameter: `(formValues) => doSomething(formValues)`
+onReset | Function | | A reset event handler function: `() => doSomething()`
 
 ## FormControl
 
@@ -363,7 +364,11 @@ min | number\|string | | The min number value of a field with type "number".
 max | number\|string | | The max number value of a field with type "number".
 minLength | number\|string | | The min string value length of a field.
 maxLength | number\|string | | The max string value length of a field.
+initialValue | Date\|number\|string | The field's initial value.
 inject | Function | | A function responsible for transforming the Field component injection properties into an object containing as key the name of the property to be injected and the value of the property: `(field) => ({injectedOnChange: field.onChange})`
+onChange | Function | Field change event handler called after "react-formctrl" state change cycle. `(fieldCtrl) => foo(fieldCtrl)`
+onBlur | Function | Field blur event handler called after "react-formctrl" state change cycle. `(fieldCtrl) => foo(fieldCtrl)`
+onReset | Function | Handler called when the form that this field is attached is reseted. `(fieldCtrl) => foo(fieldCtrl)`
 
 ### Injects
 
@@ -411,6 +416,7 @@ min | number\|string | The min number value of a field with type "number".
 max | number\|string | The max number value of a field with type "number".
 minLength | number\|string | The min string value length of a field.
 maxLength | number\|string | The max string value length of a field.
+initialValue | Date\|number\|string | The field's initial value.
 
 #### ValidationError
 
