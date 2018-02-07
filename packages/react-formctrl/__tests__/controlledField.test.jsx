@@ -5,36 +5,9 @@ import { mount, configure, shallow } from 'enzyme';
 
 import { FormProvider, Form, CustomValidator, Field, controlledField, formatDate, formatDateTime } from '../src'
 
+import {InputWrapper} from './field.test'
+
 configure({ adapter: new Adapter() })
-
-const inputInject = (fieldCtrl) => ({
-    name: fieldCtrl.name,
-    type: fieldCtrl.type,
-    className: fieldCtrl.className,
-    value: fieldCtrl.value,
-    onChange: fieldCtrl.onChange,
-    onBlur: fieldCtrl.onBlur
-})
-
-let InputWrapper = ({ className, type, onChange, onBlur, value }) => {
-    return (
-        <input
-            className={className}
-            type={type}
-            onChange={onChange}
-            onBlur={onBlur}
-            value={value}
-        />
-    )
-}
-
-InputWrapper = controlledField()(InputWrapper)
-
-export {
-    inputInject,
-    InputWrapper
-}
-
 
 class NoFieldValueValidator extends CustomValidator {
 
@@ -60,78 +33,8 @@ class NoFieldValue2Validator extends CustomValidator {
 
 }
 
-describe('About the <Field /> component', () => {
-
-    describe('The field children', () => {
-        const formName = "testForm"
-        const fieldName = "testField"
-
-        test('With two or more childrens', () => {
-
-            expect(() => {
-                mount((
-                    <FormProvider validators={[new NoFieldValueValidator()]}>
-                        <Form name={formName}>
-                            <Field form={formName} name={fieldName} inject={inputInject}>
-                                <input />
-                                <input />
-                            </Field>
-                        </Form>
-                    </FormProvider>
-                ))
-            }).toThrowError(`The Field component for "${formName}#${fieldName}" should have only one child, but has 2.`)
-
-        })
-    })
-
-    describe('The property injection behaviour', () => {
-
-        const formName = "testForm"
-        const fieldName = "testField"
-        const fieldValue = "testValue"
-
-        test('With inject property', () => {
-            const dom = mount((
-                <FormProvider validators={[new NoFieldValueValidator()]}>
-                    <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject}>
-                            <input />
-                        </Field>
-                    </Form>
-                </FormProvider>
-            ))
-            const input = dom.find('input')
-            input.simulate('change', { target: { value: fieldValue } })
-
-            const formCtrl = dom.state('forms')[formName]
-            expect(formCtrl).toBeDefined()
-            const fieldCtrl = formCtrl.fields[fieldName]
-            expect(fieldCtrl).toBeDefined()
-            expect(fieldCtrl.value).toEqual(fieldValue)
-        })
-
-        test('Without inject property', () => {
-            const dom = mount((
-                <FormProvider validators={[new NoFieldValueValidator()]}>
-                    <Form name={formName}>
-                    <Field form={formName} name={fieldName}>
-                        <input />
-                    </Field>
-                    </Form>
-                </FormProvider>
-            ))
-            const input = dom.find('input')
-            input.simulate('change', { target: { value: fieldValue } })
-
-            const formCtrl = dom.state('forms')[formName]
-            expect(formCtrl).toBeDefined()
-            const fieldCtrl = formCtrl.fields[fieldName]
-            expect(fieldCtrl).toBeDefined()
-            expect(fieldCtrl.value).toEqual(fieldValue)
-        })
-
-    })
-
+describe('The controlledField() decorator', () => {
+    
     describe('Without a previously registered form to attach the field', () => {
 
         const formName = "testForm"
@@ -142,9 +45,7 @@ describe('About the <Field /> component', () => {
         beforeEach(() => {
             dom = mount((
                 <FormProvider validators={[new NoFieldValueValidator()]}>
-                    <Field form={formName} name={fieldName} inject={inputInject}>
-                        <input />
-                    </Field>
+                    <InputWrapper form={formName} name={fieldName} />
                 </FormProvider>
             ))
         })
@@ -182,9 +83,7 @@ describe('About the <Field /> component', () => {
             dom = mount((
                 <FormProvider validators={[new NoFieldValueValidator()]}>
                     <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject}>
-                            <input />
-                        </Field>
+                        <InputWrapper form={formName} name={fieldName} />
                     </Form>
                 </FormProvider>
             ))
@@ -499,9 +398,7 @@ describe('About the <Field /> component', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject} onChange={_fieldCtrl => fieldCtrl = _fieldCtrl}>
-                            <input />
-                        </Field>
+                        <InputWrapper form={formName} name={fieldName} onChange={_fieldCtrl => fieldCtrl = _fieldCtrl} />
                     </Form>
                 </FormProvider>
             ))
@@ -586,9 +483,7 @@ describe('About the <Field /> component', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject} onChange={onEvent} onBlur={onEvent}>
-                            <input />
-                        </Field>
+                        <InputWrapper form={formName} name={fieldName} onChange={onEvent} onBlur={onEvent} />
                     </Form>
                 </FormProvider>
             ))
@@ -704,9 +599,7 @@ describe('About the <Field /> component', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject} onChange={onEvent} onReset={onEvent}>
-                            <input />
-                        </Field>
+                        <InputWrapper form={formName} name={fieldName} onChange={onEvent} onReset={onEvent} />
                     </Form>
                 </FormProvider>
             ))
@@ -791,9 +684,7 @@ describe('About the <Field /> component', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject}>
-                            <input />
-                        </Field>
+                        <InputWrapper form={formName} name={fieldName} />
                     </Form>
                 </FormProvider>
             ))
@@ -1046,9 +937,7 @@ describe('About the <Field /> component', () => {
                 dom = mount((
                     <FormProvider>
                         <Form name={formName}>
-                            <Field form={formName} name={fieldName} inject={inputInject} required>
-                                <input />
-                            </Field>
+                            <InputWrapper form={formName} name={fieldName} required />
                         </Form>
                     </FormProvider>
                 ))
@@ -1128,9 +1017,7 @@ describe('About the <Field /> component', () => {
                 dom = mount((
                     <FormProvider>
                         <Form name={formName}>
-                            <Field form={formName} name={fieldName} inject={inputInject} type="email">
-                                <input />
-                            </Field>
+                            <InputWrapper form={formName} name={fieldName} type="email" />
                         </Form>
                     </FormProvider>
                 ))
@@ -1263,9 +1150,7 @@ describe('About the <Field /> component', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject} type="number">
-                            <input />
-                        </Field>
+                        <InputWrapper form={formName} name={fieldName} type="number" />
                     </Form>
                 </FormProvider>
             ))
@@ -1401,9 +1286,7 @@ describe('About the <Field /> component', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject} type="number" integer>
-                            <input />
-                        </Field>
+                        <InputWrapper form={formName} name={fieldName} type="number" integer />
                     </Form>
                 </FormProvider>
             ))
@@ -1542,15 +1425,12 @@ describe('About the <Field /> component', () => {
                 dom = mount((
                     <FormProvider>
                         <Form name={formName}>
-                            <Field 
+                            <InputWrapper 
                                 form={formName} 
                                 name={fieldName} 
-                                inject={inputInject} 
                                 type="date"
                                 initialValue={dateValue}
-                            >
-                                <input />
-                            </Field>
+                            />
                         </Form>
                     </FormProvider>
                 ))
@@ -1575,15 +1455,12 @@ describe('About the <Field /> component', () => {
                 dom = mount((
                     <FormProvider>
                         <Form name={formName}>
-                            <Field 
+                            <InputWrapper 
                                 form={formName} 
                                 name={fieldName} 
-                                inject={inputInject} 
                                 type="date"
                                 initialValue={formatDate(dateValue)}
-                            >
-                                <input />
-                            </Field>
+                            />
                         </Form>
                     </FormProvider>
                 ))
@@ -1608,15 +1485,12 @@ describe('About the <Field /> component', () => {
                 dom = mount((
                     <FormProvider>
                         <Form name={formName}>
-                            <Field 
+                            <InputWrapper 
                                 form={formName} 
                                 name={fieldName} 
-                                inject={inputInject} 
                                 type="date"
                                 initialValue={dateValue.getTime()}
-                            >
-                                <input />
-                            </Field>
+                            />
                         </Form>
                     </FormProvider>
                 ))
@@ -1641,14 +1515,11 @@ describe('About the <Field /> component', () => {
                 dom = mount((
                     <FormProvider>
                         <Form name={formName}>
-                            <Field 
+                            <InputWrapper 
                                 form={formName} 
                                 name={fieldName} 
-                                inject={inputInject} 
                                 type="date"
-                            >
-                                <input />
-                            </Field>
+                            />
                         </Form>
                     </FormProvider>
                 ))
@@ -1692,15 +1563,12 @@ describe('About the <Field /> component', () => {
                 dom = mount((
                     <FormProvider>
                         <Form name={formName}>
-                            <Field 
+                            <InputWrapper 
                                 form={formName} 
                                 name={fieldName} 
-                                inject={inputInject} 
                                 type="datetime-local"
                                 initialValue={dateValue}
-                            >
-                                <input />
-                            </Field>
+                            />
                         </Form>
                     </FormProvider>
                 ))
@@ -1725,15 +1593,12 @@ describe('About the <Field /> component', () => {
                 dom = mount((
                     <FormProvider>
                         <Form name={formName}>
-                            <Field 
+                            <InputWrapper 
                                 form={formName} 
                                 name={fieldName} 
-                                inject={inputInject} 
                                 type="datetime-local"
                                 initialValue={formatDateTime(dateValue)}
-                            >
-                                <input />
-                            </Field>
+                            />
                         </Form>
                     </FormProvider>
                 ))
@@ -1758,15 +1623,12 @@ describe('About the <Field /> component', () => {
                 dom = mount((
                     <FormProvider>
                         <Form name={formName}>
-                            <Field 
+                            <InputWrapper 
                                 form={formName} 
                                 name={fieldName} 
-                                inject={inputInject} 
                                 type="datetime-local"
                                 initialValue={dateValue.getTime()}
-                            >
-                                <input />
-                            </Field>
+                            />
                         </Form>
                     </FormProvider>
                 ))
@@ -1791,14 +1653,11 @@ describe('About the <Field /> component', () => {
                 dom = mount((
                     <FormProvider>
                         <Form name={formName}>
-                            <Field 
+                            <InputWrapper 
                                 form={formName} 
                                 name={fieldName} 
-                                inject={inputInject} 
                                 type="datetime-local"
-                            >
-                                <input />
-                            </Field>
+                            />
                         </Form>
                     </FormProvider>
                 ))
@@ -1844,12 +1703,8 @@ describe('About the <Field /> component', () => {
                 <FormProvider>
                     <Form name={formName}>
                         <div>
-                            <Field form={formName} className={fieldName1} name={fieldName1} inject={inputInject} required>
-                                <input />
-                            </Field>
-                            <Field form={formName} className={fieldName2} name={fieldName2} inject={inputInject} match={fieldName1} required>
-                                <input />
-                            </Field>
+                            <InputWrapper form={formName} className={fieldName1} name={fieldName1} required />
+                            <InputWrapper form={formName} className={fieldName2} name={fieldName2} match={fieldName1} required />
                         </div>
                     </Form>
                 </FormProvider>
