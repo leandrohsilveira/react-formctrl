@@ -50,13 +50,18 @@ export class Field extends React.Component {
             PropTypes.string,
             PropTypes.number,
             PropTypes.instanceOf(Date)
-        ])
+        ]),
+        onChange: PropTypes.func,
+        onBlur: PropTypes.func,
+        onReset: PropTypes.func,
     }
 
     constructor(props) {
         super(props)
 
         this.onChange = this.onChange.bind(this)
+        this.onBlur = this.onBlur.bind(this)
+        this.onReset = this.onReset.bind(this)
         this.handleFieldChangeForward = this.handleFieldChangeForward.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleBlur = this.handleBlur.bind(this)
@@ -126,6 +131,20 @@ export class Field extends React.Component {
         }
     }
 
+    onBlur(fieldCtrl) {
+        const { onBlur } = this.props
+        if (typeof onBlur === 'function') {
+            onBlur(fieldCtrl)
+        }
+    }
+
+    onReset(fieldCtrl) {
+        const { onReset } = this.props
+        if (typeof onReset === 'function') {
+            onReset(fieldCtrl)
+        }
+    }
+
     onChange(fieldCtrl) {
         const { onChange } = this.props
         if (typeof onChange === 'function') {
@@ -136,8 +155,19 @@ export class Field extends React.Component {
     handleFieldChangeForward(event) {
         const payload = event.detail
         const fieldCtrl = payload.fieldCtrl
+        const eventType = payload.eventType
         this.setState(fieldCtrl)
-        this.onChange(fieldCtrl)
+        switch(eventType) {
+            case 'blur':
+                this.onBlur(fieldCtrl)
+                break;
+            case 'reset':
+                this.onReset(fieldCtrl)
+                break;
+            default:
+                this.onChange(fieldCtrl)
+                break;
+        }
     }
 
     handleChange(event) {
@@ -145,14 +175,14 @@ export class Field extends React.Component {
         const { form, name } = this.props
         const target = event.target
         const value = target.value
-        const files = target.files
-        FormEventDispatcher.dispatchFieldChanged(form, name, value, files)
+        const files = target.files 
+        FormEventDispatcher.dispatchFieldChanged(form, name, value, files, event.type)
     }
 
     handleBlur(event) {
         if (this.state.untouched) {
             const { form, name } = this.props
-            FormEventDispatcher.dispatchFieldBlur(form, name, { ...this.state, touched: true, untouched: false })
+            FormEventDispatcher.dispatchFieldBlur(form, name, event.type)
         }
     }
 

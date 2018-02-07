@@ -36,7 +36,7 @@ export class Form extends React.Component {
         const {name} = this.props
         const {ref} = this.state
         event.preventDefault()
-        FormEventDispatcher.dispatchResetForm(name, ref)
+        FormEventDispatcher.dispatchResetForm(name, ref, event.type)
     }
     
     componentWillMount() {
