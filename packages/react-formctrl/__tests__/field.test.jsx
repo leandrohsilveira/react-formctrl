@@ -108,6 +108,8 @@ describe('About the <Field /> component', () => {
             const fieldCtrl = formCtrl.fields[fieldName]
             expect(fieldCtrl).toBeDefined()
             expect(fieldCtrl.value).toEqual(fieldValue)
+
+            dom.unmount()
         })
 
         test('Without inject property', () => {
@@ -128,6 +130,8 @@ describe('About the <Field /> component', () => {
             const fieldCtrl = formCtrl.fields[fieldName]
             expect(fieldCtrl).toBeDefined()
             expect(fieldCtrl.value).toEqual(fieldValue)
+
+            dom.unmount()
         })
 
     })
@@ -177,6 +181,7 @@ describe('About the <Field /> component', () => {
         let dom
         let input
         let field
+
         beforeEach(() => {
 
             dom = mount((
@@ -192,6 +197,10 @@ describe('About the <Field /> component', () => {
 
 
             input = dom.find('input')
+        })
+
+        afterEach(() => {
+            dom.unmount()
         })
 
         describe('When Field properties do not changes', () => {
@@ -508,6 +517,10 @@ describe('About the <Field /> component', () => {
             input = dom.find('input')
         })
 
+        afterEach(() => {
+            dom.unmount()
+        })
+
         describe('When the field is brand new', () => {
 
             test('The fieldCtrl is defined', () => {
@@ -593,6 +606,10 @@ describe('About the <Field /> component', () => {
                 </FormProvider>
             ))
             input = dom.find('input')
+        })
+
+        afterEach(() => {
+            dom.unmount()
         })
 
         describe('When the field is brand new', () => {
@@ -712,6 +729,10 @@ describe('About the <Field /> component', () => {
             ))
             input = dom.find('input')
             form = dom.find('form')
+        })
+
+        afterEach(() => {
+            dom.unmount()
         })
 
         describe('When the field is brand new', () => {
@@ -1559,6 +1580,10 @@ describe('About the <Field /> component', () => {
                 input = dom.find('input')
             })
 
+            afterEach(() => {
+                dom.unmount()
+            })
+
             test('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDate(dateValue))
                 expect(fieldCtrl.value).toBe(formatDate(dateValue))
@@ -1590,6 +1615,10 @@ describe('About the <Field /> component', () => {
                 formCtrl = dom.state('forms')[formName]
                 fieldCtrl = formCtrl.fields[fieldName]
                 input = dom.find('input')
+            })
+
+            afterEach(() => {
+                dom.unmount()
             })
 
             test('The field value in form controller is of date string type', () =>{
@@ -1625,6 +1654,10 @@ describe('About the <Field /> component', () => {
                 input = dom.find('input')
             })
 
+            afterEach(() => {
+                dom.unmount()
+            })
+
             test('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDate(dateValue))
                 expect(fieldCtrl.value).toBe(formatDate(dateValue))
@@ -1655,6 +1688,10 @@ describe('About the <Field /> component', () => {
                 formCtrl = dom.state('forms')[formName]
                 fieldCtrl = formCtrl.fields[fieldName]
                 input = dom.find('input')
+            })
+
+            afterEach(() => {
+                dom.unmount()
             })
 
             test('The field value in form controller is of date string type', () =>{
@@ -1709,6 +1746,10 @@ describe('About the <Field /> component', () => {
                 input = dom.find('input')
             })
 
+            afterEach(() => {
+                dom.unmount()
+            })
+
             test('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDateTime(dateValue))
                 expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
@@ -1740,6 +1781,10 @@ describe('About the <Field /> component', () => {
                 formCtrl = dom.state('forms')[formName]
                 fieldCtrl = formCtrl.fields[fieldName]
                 input = dom.find('input')
+            })
+
+            afterEach(() => {
+                dom.unmount()
             })
 
             test('The field value in form controller is of date string type', () =>{
@@ -1775,6 +1820,10 @@ describe('About the <Field /> component', () => {
                 input = dom.find('input')
             })
 
+            afterEach(() => {
+                dom.unmount()
+            })
+
             test('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDateTime(dateValue))
                 expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
@@ -1805,6 +1854,10 @@ describe('About the <Field /> component', () => {
                 formCtrl = dom.state('forms')[formName]
                 fieldCtrl = formCtrl.fields[fieldName]
                 input = dom.find('input')
+            })
+
+            afterEach(() => {
+                dom.unmount()
             })
 
             test('The field value in form controller is of date string type', () =>{
@@ -1856,6 +1909,10 @@ describe('About the <Field /> component', () => {
             ))
             input1 = dom.find(`input.${fieldName1}`)
             input2 = dom.find(`input.${fieldName2}`)
+        })
+
+        afterEach(() => {
+            dom.unmount()
         })
 
         describe('When both fields are empty', () => {

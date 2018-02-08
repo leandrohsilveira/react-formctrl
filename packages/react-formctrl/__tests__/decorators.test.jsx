@@ -93,6 +93,10 @@ describe('The controlledField() decorator', () => {
             input = dom.find('input')
         })
 
+        afterEach(() => {
+            dom.unmount()
+        })
+
         describe('When Field properties do not changes', () => {
             let formCtrl, fieldCtrl
             beforeEach(() => {
@@ -405,6 +409,11 @@ describe('The controlledField() decorator', () => {
             input = dom.find('input')
         })
 
+        afterEach(() => {
+            fieldCtrl = null
+            dom.unmount()
+        })
+
         describe('When the field is brand new', () => {
 
             it('The fieldCtrl is defined', () => {
@@ -488,6 +497,11 @@ describe('The controlledField() decorator', () => {
                 </FormProvider>
             ))
             input = dom.find('input')
+        })
+
+        afterEach(() => {
+            fieldCtrl = null
+            dom.unmount()
         })
 
         describe('When the field is brand new', () => {
@@ -607,6 +621,11 @@ describe('The controlledField() decorator', () => {
             form = dom.find('form')
         })
 
+        afterEach(() => {
+            fieldCtrl = null
+            dom.unmount()
+        })
+
         describe('When the field is brand new', () => {
 
             beforeEach(() => {
@@ -692,8 +711,8 @@ describe('The controlledField() decorator', () => {
         })
 
         afterEach(() => {
-            dom.unmount()
             input = null
+            dom.unmount()
         })
 
         describe('When the field is brand new', () => {
@@ -1439,6 +1458,12 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
+            afterEach(() => {
+                formCtrl = null
+                fieldCtrl = null
+                dom.unmount()
+            })
+
             it('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDate(dateValue))
                 expect(fieldCtrl.value).toBe(formatDate(dateValue))
@@ -1467,6 +1492,12 @@ describe('The controlledField() decorator', () => {
                 formCtrl = dom.state('forms')[formName]
                 fieldCtrl = formCtrl.fields[fieldName]
                 input = dom.find('input')
+            })
+
+            afterEach(() => {
+                formCtrl = null
+                fieldCtrl = null
+                dom.unmount()
             })
 
             it('The field value in form controller is of date string type', () =>{
@@ -1499,6 +1530,13 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
+            afterEach(() => {
+                formCtrl = null
+                fieldCtrl = null
+                dom.unmount()
+            })
+
+
             it('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDate(dateValue))
                 expect(fieldCtrl.value).toBe(formatDate(dateValue))
@@ -1528,6 +1566,12 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
+            afterEach(() => {
+                formCtrl = null
+                fieldCtrl = null
+                dom.unmount()
+            })
+
             it('The field value in form controller is of date string type', () =>{
                 input.simulate('change', {target: {value: formatDate(dateValue)}})
                 expect(fieldCtrl.value).toBe(formatDate(dateValue))
@@ -1538,12 +1582,6 @@ describe('The controlledField() decorator', () => {
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
-
-        afterEach(() => {
-            dom.unmount()
-            input = null
-        })
-
     })
 
     describe('When the field is of datetime-local type', () => {
@@ -1607,6 +1645,10 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
+            afterEach(() => {
+                dom.unmount()
+            })
+
             it('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDateTime(dateValue))
                 expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
@@ -1635,6 +1677,10 @@ describe('The controlledField() decorator', () => {
                 formCtrl = dom.state('forms')[formName]
                 fieldCtrl = formCtrl.fields[fieldName]
                 input = dom.find('input')
+            })
+
+            afterEach(() => {
+                dom.unmount()
             })
 
             it('The field value in form controller is of date string type', () =>{
@@ -1666,6 +1712,10 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
+            afterEach(() => {
+                dom.unmount()
+            })
+
             it('The field value in form controller is of date string type', () =>{
                 input.simulate('change', {target: {value: formatDateTime(dateValue)}})
                 expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
@@ -1675,11 +1725,6 @@ describe('The controlledField() decorator', () => {
                 input.simulate('change', {target: {value: formatDateTime(dateValue)}})
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
-        })
-
-        afterEach(() => {
-            dom.unmount()
-            input = null
         })
 
     })
@@ -1711,6 +1756,10 @@ describe('The controlledField() decorator', () => {
             ))
             input1 = dom.find(`input.${fieldName1}`)
             input2 = dom.find(`input.${fieldName2}`)
+        })
+
+        afterEach(() => {
+            dom.unmount()
         })
 
         describe('When both fields are empty', () => {

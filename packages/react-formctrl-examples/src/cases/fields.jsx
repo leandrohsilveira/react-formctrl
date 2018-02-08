@@ -59,10 +59,17 @@ Radio = controlledField()(Radio)
 
 let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
     <Form name={formName} onSubmit={onSubmit}>
+
         <Input
             label="Field text"
             form={formName}
             name="fieldText"
+            required
+        />
+        <ChangeablePassword
+            label="Field text"
+            form={formName}
+            name="obpassword"
             required
         />
         <Input
@@ -236,4 +243,45 @@ export function FieldsExample() {
             <FieldsForm form="fieldsUsageForm" onSubmit={handleSubmit} />
         </div>
     )
+}
+
+class ChangeablePassword extends React.Component {
+
+    state = {
+        fieldType: 'password'
+    }
+
+    switchField() {
+        this.setState(state => {
+            if(state.fieldType === 'password') {
+                return {fieldType: 'text'}   
+            } else {
+                return {fieldType: 'password'}
+            }
+        })
+    }
+
+    render() {
+        const {form, name, required} = this.props
+        return (
+            <div>
+                <Input 
+                    label="Pass sample"
+                    form={form}
+                    name={name}
+                    type={this.state.fieldType}
+                    required={required}
+                />
+                <button 
+                    type="button"
+                    onClick={this.switchField.bind(this)}
+                >
+                    View password
+                </button>
+            </div>
+        )
+
+    }
+
+
 }
