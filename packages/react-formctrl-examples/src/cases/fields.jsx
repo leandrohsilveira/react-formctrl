@@ -9,6 +9,25 @@ const getInputClasses = ({ valid, dirty, invalid }) => {
     if (dirty && invalid) return 'is-invalid'
 }
 
+function InputGroup({ name, label, children, after, ctrl: { invalid, dirty, errors } }) {
+    return (
+        <React.Fragment>
+            <label htmlFor={name}>{label}</label>
+            <div className="input-group">
+                {children}
+                {!!after && (
+                    <div className="input-group-append">
+                        {after}
+                    </div>
+                )}
+                {dirty && invalid && errors.map(error => (
+                    <div className="invalid-feedback" key={error.key}>{error.key}</div>
+                ))}
+            </div>
+        </React.Fragment>
+    )
+}
+
 function FormGroup({ name, label, children, ctrl: { invalid, dirty, errors } }) {
     return (
         <div className="form-group">
@@ -20,19 +39,41 @@ function FormGroup({ name, label, children, ctrl: { invalid, dirty, errors } }) 
         </div>
     )
 }
-let Input = ({ name, label, type, onChange, onBlur, value, ctrl }) => (
-    <FormGroup name={name} label={label} ctrl={ctrl}>
-        <input type={type} name={name} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} onChange={onChange} onBlur={onBlur} value={value}></input>
-    </FormGroup>
-)
-Input = controlledField()(Input)
+let Input = ({ name, label, type, after, onChange, onBlur, value, ctrl }) => {
+
+    const inp = (
+        <input 
+            type={type} 
+            name={name} 
+            placeholder={label} 
+            className={`form-control ${getInputClasses(ctrl)}`} 
+            onChange={onChange} 
+            onBlur={onBlur} 
+            value={value} 
+        />
+    )
+
+    if(!!after) {
+        return (
+            <InputGroup name={name} label={label} ctrl={ctrl} after={after}>
+                {inp}
+            </InputGroup>
+        )
+    } else {
+        return (
+            <FormGroup name={name} label={label} ctrl={ctrl}>
+                {inp}
+            </FormGroup>
+        )
+    }
+
+}
 
 let InputFile = ({ name, label, multiple = false, accept, onChange, ctrl }) => (
     <FormGroup name={name} label={label} ctrl={ctrl}>
         <input type="file" name={name} accept={accept} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} multiple={multiple} onChange={onChange}></input>
     </FormGroup>
 )
-InputFile = controlledField()(InputFile)
 
 let Select = ({ name, label, onChange, onBlur, value, ctrl, children }) => (
     <FormGroup name={name} label={label} ctrl={ctrl}>
@@ -42,7 +83,6 @@ let Select = ({ name, label, onChange, onBlur, value, ctrl, children }) => (
         </select>
     </FormGroup>
 )
-Select = controlledField()(Select)
 
 let Radio = ({ name, label, onChange, onBlur, value, groupValue }) => {
     const checked = value === groupValue
@@ -55,7 +95,59 @@ let Radio = ({ name, label, onChange, onBlur, value, groupValue }) => {
         </div>
     )
 }
+
+Input = controlledField()(Input)
+InputFile = controlledField()(InputFile)
+Select = controlledField()(Select)
 Radio = controlledField()(Radio)
+
+class InputPassword extends React.Component {
+
+    state = {
+        fieldType: 'password'
+    }
+
+    switchField() {
+        this.setState(state => {
+            if(state.fieldType === 'password') {
+                return {fieldType: 'text'}   
+            } else {
+                return {fieldType: 'password'}
+            }
+        })
+    }
+
+    render() {
+        const {form, name, required, minLength, match, label} = this.props
+        const {fieldType} = this.state
+        const iconClass = fieldType === 'password' ? 'eye' : 'eye-slash'
+        const showHidePasswordButton = (
+            <button 
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={this.switchField.bind(this)}
+            >
+                <i className={`fa fa-${iconClass}`} />
+            </button>
+        )
+
+        return (
+            <div>
+                <Input 
+                    label={label}
+                    form={form}
+                    name={name}
+                    type={fieldType}
+                    minLength={minLength}
+                    match={match}
+                    required={required}
+                    after={showHidePasswordButton}
+                />
+            </div>
+        )
+
+    }
+}
 
 let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
     <Form name={formName} onSubmit={onSubmit}>
@@ -64,12 +156,6 @@ let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
             label="Field text"
             form={formName}
             name="fieldText"
-            required
-        />
-        <ChangeablePassword
-            label="Field text"
-            form={formName}
-            name="obpassword"
             required
         />
         <Input
@@ -137,10 +223,6 @@ let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
             required
         />
 
-
-
-
-
         <Input 
             label="Datetime field"
             form={formName}
@@ -172,10 +254,6 @@ let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
             initialValue={new Date().getTime()}
             required
         />
-
-
-
-
         <InputFile
             label="Field file (max size 50 kb)"
             form={formName}
@@ -195,19 +273,17 @@ let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
             extensions={['png', 'jpg', 'jpeg']}
             required
         />
-        <Input
+        <InputPassword
             label="Field password"
             form={formName}
             name="fieldPassword"
-            type="password"
             minLength="8"
             required
         />
-        <Input
+        <InputPassword
             label="Field password (match)"
             form={formName}
             name="fieldPasswordMatch"
-            type="password"
             minLength="8"
             match="fieldPassword"
             required
@@ -243,45 +319,4 @@ export function FieldsExample() {
             <FieldsForm form="fieldsUsageForm" onSubmit={handleSubmit} />
         </div>
     )
-}
-
-class ChangeablePassword extends React.Component {
-
-    state = {
-        fieldType: 'password'
-    }
-
-    switchField() {
-        this.setState(state => {
-            if(state.fieldType === 'password') {
-                return {fieldType: 'text'}   
-            } else {
-                return {fieldType: 'password'}
-            }
-        })
-    }
-
-    render() {
-        const {form, name, required} = this.props
-        return (
-            <div>
-                <Input 
-                    label="Pass sample"
-                    form={form}
-                    name={name}
-                    type={this.state.fieldType}
-                    required={required}
-                />
-                <button 
-                    type="button"
-                    onClick={this.switchField.bind(this)}
-                >
-                    View password
-                </button>
-            </div>
-        )
-
-    }
-
-
 }
