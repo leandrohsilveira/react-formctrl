@@ -66,6 +66,15 @@ let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
             required
         />
         <Input
+            label="Field text (extra event handlers)"
+            form={formName}
+            name="fieldTextExtraHandlers"
+            onChange={ctrl => console.log(`Field.${ctrl.props.name}.onChange`)}
+            onBlur={ctrl => console.log(`Field.${ctrl.props.name}.onBlur`)}
+            onReset={ctrl => console.log(`Field.${ctrl.props.name}.onReset`)}
+            required
+        />
+        <Input
             label="Field number (float, min 0, max 100)"
             form={formName}
             name="fieldNumberFloat"
