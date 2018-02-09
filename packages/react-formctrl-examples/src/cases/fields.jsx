@@ -159,9 +159,9 @@ let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
             label="Field text (extra event handlers)"
             form={formName}
             name="fieldTextExtraHandlers"
-            onChange={ctrl => console.log(`Field.${ctrl.props.name}.onChange`)}
-            onBlur={ctrl => console.log(`Field.${ctrl.props.name}.onBlur`)}
-            onReset={ctrl => console.log(`Field.${ctrl.props.name}.onReset`)}
+            afterChange={ctrl => console.log(`Field.${ctrl.props.name}.afterChange`)}
+            afterBlur={ctrl => console.log(`Field.${ctrl.props.name}.afterBlur`)}
+            afterReset={ctrl => console.log(`Field.${ctrl.props.name}.afterReset`)}
             required
         />
         <Input

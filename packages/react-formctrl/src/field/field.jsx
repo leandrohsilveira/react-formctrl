@@ -51,9 +51,9 @@ export class Field extends React.Component {
             PropTypes.number,
             PropTypes.instanceOf(Date)
         ]),
-        onChange: PropTypes.func,
-        onBlur: PropTypes.func,
-        onReset: PropTypes.func,
+        afterChange: PropTypes.func,
+        afterBlur: PropTypes.func,
+        afterReset: PropTypes.func,
     }
 
     constructor(props) {
@@ -139,23 +139,23 @@ export class Field extends React.Component {
     }
 
     onBlur(fieldCtrl) {
-        const { onBlur } = this.props
-        if (typeof onBlur === 'function') {
-            onBlur(fieldCtrl)
+        const { afterBlur } = this.props
+        if (typeof afterBlur === 'function') {
+            afterBlur(fieldCtrl)
         }
     }
 
     onReset(fieldCtrl) {
-        const { onReset } = this.props
-        if (typeof onReset === 'function') {
-            onReset(fieldCtrl)
+        const { afterReset } = this.props
+        if (typeof afterReset === 'function') {
+            afterReset(fieldCtrl)
         }
     }
 
     onChange(fieldCtrl) {
-        const { onChange } = this.props
-        if (typeof onChange === 'function') {
-            onChange(fieldCtrl)
+        const { afterChange } = this.props
+        if (typeof afterChange === 'function') {
+            afterChange(fieldCtrl)
         }
     }
 
@@ -204,6 +204,8 @@ export class Field extends React.Component {
         if (this.state.untouched) {
             const { form, name } = this.props
             FormEventDispatcher.dispatchFieldBlur(form, name, event.type)
+        } else {
+            this.onBlur(this.state)
         }
     }
 
