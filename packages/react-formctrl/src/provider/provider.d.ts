@@ -183,6 +183,11 @@ declare interface FormStateController {
      */
     setFieldValue(fiendName: string, fieldValue: string | number | Date): void;
 
+    /** 
+     * Method to programmatically reset all form instances with this form name.
+     */
+    reset(): void;
+
 }
 
 /**
