@@ -16,9 +16,10 @@ const inputInject = (fieldCtrl) => ({
     onBlur: fieldCtrl.onBlur
 })
 
-let InputWrapper = ({ className, type, onChange, onBlur, value }) => {
+let InputWrapper = ({ name, className, type, onChange, onBlur, value }) => {
     return (
         <input
+            name={name}
             className={className}
             type={type}
             onChange={onChange}
