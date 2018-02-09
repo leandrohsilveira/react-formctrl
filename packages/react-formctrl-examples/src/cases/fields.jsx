@@ -7,24 +7,21 @@ import { SubmitValuesPopup } from '../components/submit-values'
 const getInputClasses = ({ valid, dirty, invalid }) => {
     if (valid) return 'is-valid'
     if (dirty && invalid) return 'is-invalid'
+    return '';
 }
 
-function InputGroup({ name, label, children, after, ctrl: { invalid, dirty, errors } }) {
+function InputGroup({ name, label, children, after, ctrl }) {
     return (
-        <React.Fragment>
-            <label htmlFor={name}>{label}</label>
-            <div className="input-group">
+        <FormGroup name={name} label={label} ctrl={ctrl}>
+            <div className={`input-group ${getInputClasses(ctrl)}`}>
                 {children}
                 {!!after && (
                     <div className="input-group-append">
                         {after}
                     </div>
                 )}
-                {dirty && invalid && errors.map(error => (
-                    <div className="invalid-feedback" key={error.key}>{error.key}</div>
-                ))}
             </div>
-        </React.Fragment>
+        </FormGroup>
     )
 }
 
