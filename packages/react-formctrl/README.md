@@ -343,6 +343,7 @@ values | object{string: string} | The fields values of the form: `{[fieldName]: 
 files | object{string: File[]} | The selected files of each file field of the form.
 fields | object{string: FieldStateController} | The fields controllers of the form: `{[fieldName]: [fieldCtrl]}`
 setFieldValue | Function | Method to programmatically change a field value: `props.formCtrl.setFieldValue('fieldName', 'newValue')`.
+reset | Function | Method to programmatically reset all form instances with this form name: `props.formCtrl.reset()`.
 
 ## Field
 
