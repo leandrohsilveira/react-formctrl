@@ -3,7 +3,7 @@ import Adapter from 'enzyme-adapter-react-16'
 
 import { mount, configure } from 'enzyme';
 
-import { FormProvider, Form, FormControl, Field, controlledForm } from '../src'
+import { FormProvider, Form, FormControl, Field, controlledForm, formatDate } from '../src'
 
 import { inputInject, InputWrapper } from './field.test'
 
@@ -14,9 +14,9 @@ export const formControlInject = (formCtrl) => ({
 
 configure({ adapter: new Adapter() })
 
-function Input({ form, name }) {
+function Input({ form, name, type = 'text' }) {
     return (
-        <Field form={form} name={name} inject={inputInject}>
+        <Field form={form} name={name} type={type} inject={inputInject}>
             <input />
         </Field>
     )
@@ -157,6 +157,60 @@ describe('About <Form /> component', () => {
 
     })
 
+    describe('The <Form /> reset behaviour', () => {
+
+        const fieldName1 = "fieldName1"
+        const fieldName2 = "fieldName2"
+        const fieldValue1 = "fieldValue1"
+        const fieldValue2 = "fieldValue2"
+
+        let dom, form, input1, input2, formCtrl, reseted = false, onReset
+        beforeEach(() => {
+            onReset = () => reseted = true
+            dom = mount((
+                <FormProvider>
+                    <Form name={formName1} onReset={onReset}>
+                        <Input form={formName1} name={fieldName1} />
+                        <Input form={formName1} name={fieldName2} />
+                    </Form>
+                </FormProvider>
+            ))
+            form = dom.find(Form)
+            formCtrl = dom.state('forms')[formName1]
+            input1 = dom.find(`input[name="${fieldName1}"]`)
+            input2 = dom.find(`input[name="${fieldName2}"]`)
+        })
+
+        describe('With filled fields before reset', () => {
+
+            beforeEach(() => {
+                input1.simulate('change', { target: { value: fieldValue1 } })
+                input2.simulate('change', { target: { value: fieldValue2 } })
+                form.simulate('reset')
+            })
+            
+            test('The reset handler is called', () => {
+                expect(formCtrl.values).toEqual({ [fieldName1]: '', [fieldName2]: '' })
+                expect(reseted).toBeTruthy()
+            })
+        })
+
+        describe('Without provide a reset handler', () => {
+
+            beforeEach(() => {
+                onReset = undefined;
+                input1.simulate('change', { target: { value: fieldValue1 } })
+                input2.simulate('change', { target: { value: fieldValue2 } })
+                form.simulate('reset')
+            })
+            
+            test('Nothing happens', () => {
+                expect(formCtrl.values).toEqual({ [fieldName1]: '', [fieldName2]: '' })
+                expect(reseted).toBeTruthy()
+            })
+        })
+    })
+
 })
 
 describe('About <FormControl /> component', () => {
@@ -199,6 +253,10 @@ describe('About <FormControl /> component', () => {
                 form = dom.find(FormTest)
             })
 
+            afterEach(() => {
+                dom.unmount()
+            })
+
             test('Injects formCtrl property', () => {
                 expect(form.prop('formCtrl')).toBeDefined()
             })
@@ -223,6 +281,10 @@ describe('About <FormControl /> component', () => {
                     </FormProvider>
                 ))
                 form = dom.find(FormTest2)
+            })
+
+            afterEach(() => {
+                dom.unmount()
             })
 
             test('Does not injects formCtrl property', () => {
@@ -290,6 +352,80 @@ describe('About <FormControl /> component', () => {
 
 })
 
+describe('The <FormControl /> setFieldValue behaviour', () => {
+
+    let _formCtrl = null
+    const FormTest = ({ name, children, formCtrl }) => {
+        _formCtrl = formCtrl
+        return <Form name={name}>{children}</Form>
+    }
+    const formName = 'formControlSetFieldValueFormName'
+
+    const fieldName = "fieldName"
+    const fieldDateName = "fieldDateName"
+    const fieldValue = "fieldValue"
+    const fieldDateValue = new Date();
+
+    let dom, form, input1, inputDate
+    beforeEach(() => {
+        dom = mount((
+            <FormProvider>
+                <FormControl form={formName} inject={formControlInject}>
+                    <FormTest>
+                        <Input form={formName} name={fieldName} />
+                        <Input form={formName} name={fieldDateName} type="date" />
+                    </FormTest>
+                </FormControl>
+            </FormProvider>
+        ))
+        form = dom.find(FormTest)
+        input1 = dom.find(`input[name="${fieldName}"]`)
+    })
+
+    afterEach(() => {
+        _formCtrl = null
+        dom.unmount()
+    })
+
+    describe('When set a string value', () => {
+
+        test('The field value changes in form controller', () => {
+            _formCtrl.setFieldValue(fieldName, fieldValue)
+            expect(_formCtrl).toBeDefined()
+            expect(_formCtrl.values).toEqual({ [fieldName]: fieldValue, [fieldDateName]: '' })
+        })
+    })
+
+    describe('When set a Date value to a date type field', () => {
+
+        test('The field value changes in form controller', () => {
+            _formCtrl.setFieldValue(fieldDateName, fieldDateValue)
+            expect(_formCtrl).toBeDefined()
+            expect(_formCtrl.values).toEqual({ [fieldName]: '', [fieldDateName]: new Date(formatDate(fieldDateValue)) })
+        })
+    })
+
+    describe('When set a Number value to a date type field', () => {
+
+        test('The field value changes in form controller', () => {
+            _formCtrl.setFieldValue(fieldDateName, fieldDateValue.getTime())
+            expect(_formCtrl).toBeDefined()
+            expect(_formCtrl.values).toEqual({ [fieldName]: '', [fieldDateName]: new Date(formatDate(fieldDateValue)) })
+        })
+    })
+
+    describe('When attempt to set a value to a unregistred field', () => {
+
+        test('Then nothing happens', () => {
+            _formCtrl.setFieldValue('unregistredField', 'aValue')
+            expect(_formCtrl).toBeDefined()
+            expect(_formCtrl.values).toEqual({ [fieldName]: '', [fieldDateName]: '' })
+        })
+        
+    })
+
+})
+
 describe('The controlledForm() decorator behaviour', () => {
     const TestForm = ({ form }) => (
         <Form name={form}>
@@ -309,6 +445,10 @@ describe('The controlledForm() decorator behaviour', () => {
             </FormProvider>
         ))
         form = dom.find(TestForm)
+    })
+
+    afterEach(() => {
+        dom.unmount()
     })
 
     test('Injects formCtrl property', () => {

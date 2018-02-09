@@ -40,10 +40,10 @@ export function onSubmitForm(form, formRef) {
     }
 }
 
-export function onResetForm(form) {
+export function onResetForm(form, formRef, eventType) {
     return { 
         type: REACT_FORMCTRL.EVENTS.FORM_RESETED, 
-        payload: {form}
+        payload: {form, formRef, eventType}
     }
 }
 
@@ -68,17 +68,17 @@ export function onFieldPropsChanged(form, field, props) {
     }
 }
 
-export function onFieldChanged(form, field, value, files) {
+export function onFieldChanged(form, field, value, files, eventType) {
     return { 
         type: REACT_FORMCTRL.EVENTS.FIELD_CHANGED, 
-        payload: {form, field, value, files: copyFiles(files)}
+        payload: {form, field, value, files: copyFiles(files), eventType}
     }
 }
 
-export function onFieldBlur(form, field) {
+export function onFieldBlur(form, field, eventType) {
     return { 
         type: REACT_FORMCTRL.EVENTS.FIELD_BLURRED, 
-        payload: {form, field}
+        payload: {form, field, eventType}
     }
 }
 

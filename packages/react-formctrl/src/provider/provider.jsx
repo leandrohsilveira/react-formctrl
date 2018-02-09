@@ -40,8 +40,8 @@ export class FormEventDispatcher {
         dispatchEvent(PROVIDER_EVENT, payload)
     }
 
-    static dispatchResetForm(form) {
-        const payload = onResetForm(form)
+    static dispatchResetForm(form, formRef, eventType) {
+        const payload = onResetForm(form, formRef, eventType)
         dispatchEvent(PROVIDER_EVENT, payload)
     }
 
@@ -60,13 +60,13 @@ export class FormEventDispatcher {
         dispatchEvent(PROVIDER_EVENT, payload)
     }
 
-    static dispatchFieldChanged(form, field, value, files) {
-        const payload = onFieldChanged(form, field, value, files)
+    static dispatchFieldChanged(form, field, value, files, eventType) {
+        const payload = onFieldChanged(form, field, value, files, eventType)
         dispatchEvent(PROVIDER_EVENT, payload)
     }
 
-    static dispatchFieldBlur(form, field) {
-        const payload = onFieldBlur(form, field)
+    static dispatchFieldBlur(form, field, eventType) {
+        const payload = onFieldBlur(form, field, eventType)
         dispatchEvent(PROVIDER_EVENT, payload)
     }
 
@@ -107,11 +107,10 @@ export class FormProvider extends React.Component {
 
     onEvent(event) {
         const action = event.detail
-        this.setState(state => {
-            const newState = formProviderReducer(state, action)
-            formProviderEffects(newState, action)
-            return newState
-        })
+        this.setState(
+            state => formProviderReducer(state, action),
+            () => formProviderEffects(this.state, action)
+        )
     }
 
     render() {

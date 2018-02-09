@@ -24,6 +24,10 @@ describe('About the <FormProvider /> component', () => {
             ))
         })
 
+        afterEach(() => {
+            dom.unmount()
+        })
+
         describe('When <Form /> is registered', () => {
             
             test(`A <Form /> instance named "${formName}" exists`, () => {
@@ -60,6 +64,10 @@ describe('About the <FormProvider /> component', () => {
                 dom.update()
             })
 
+            afterEach(() => {
+                dom.unmount()
+            })
+
             test(`A <Form /> instance named "${formName}" does not exists`, () => {
                 const formCtrl = dom.state('forms')[formName]
                 expect(formCtrl).toBeUndefined()
@@ -85,6 +93,10 @@ describe('About the <FormProvider /> component', () => {
                 </FormProvider>
             ))
         })
+        
+        afterEach(() => {
+            dom.unmount()
+        })
 
         describe('When <Field /> is registered', () => {
 
@@ -106,6 +118,11 @@ describe('About the <FormProvider /> component', () => {
         //         field.setProps({children: null})
         //         field.update()
         //     })
+
+            // afterEach(() => {
+            //     formCtrl = null
+            //     dom.unmount()
+            // })
 
         //     test(`The <Form /> instance has not a field named "${fieldName}"`, () => {
         //         const formCtrl = dom.state('forms')[formName]

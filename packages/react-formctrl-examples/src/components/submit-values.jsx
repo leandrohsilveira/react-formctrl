@@ -94,7 +94,7 @@ export class SubmitValuesPopup extends React.Component {
                         )}
                         {values && Object.keys(values).map(field => (
                             <li className="list-group-item" key={field}>
-                                <strong>{field}</strong>: {values[field]}
+                                <strong>{field}</strong>: {values[field]+''}
                             </li>
                         ))}
                         <li className="list-group-item">

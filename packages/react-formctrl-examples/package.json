@@ -1,6 +1,6 @@
 {
   "name": "react-formctrl-examples",
-  "version": "1.2.0",
+  "version": "1.4.0",
   "description": "A lightweight ReactJS forms controller",
   "license": "MIT",
   "homepage": "https://github.com/leandrohsilveira/react-formctrl",
@@ -39,11 +39,11 @@
   },
   "dependencies": {
     "axios": "^0.16.2",
-    "bootstrap": "^4.0.0-beta",
+    "bootstrap": "^4.0.0",
     "prop-types": "^15.5.7",
-    "react": "^15.5.0",
-    "react-dom": "^15.6.1",
-    "react-formctrl": "^1.2.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-formctrl": "^1.4.0",
     "react-ga": "^2.3.5",
     "react-router-dom": "^4.1.2",
     "react-syntax-highlighter": "^5.6.3"

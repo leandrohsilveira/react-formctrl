@@ -1,3 +1,51 @@
+export function ensureStringValue(value, type) {
+    if(value && (type === 'date' || type === 'datetime-local')) {
+        if(value instanceof Date) {
+            if(type === 'date') {
+                return formatDate(value)
+            } else {
+                return formatDateTime(value)
+            }
+        } else if (typeof value === 'string') {
+            if(new Date(value) == 'Invalid Date') {
+                throw `The value "${value}" provided can't be parsed to date type.`
+            }
+        } else if(typeof value === 'number') {
+            const dateObj = new Date(value)
+            if(dateObj != 'Invalid Date') {
+                if(type === 'date') {
+                    return formatDate(dateObj)
+                } else {
+                    return formatDateTime(dateObj)
+                }
+            } else {
+                throw `The value "${value}" provided can't be parsed to date type.`
+            }
+        }
+    }
+    return value;
+}
+
+export function formatDate(date) {
+    if(date && date instanceof Date) {
+        const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`
+        const day = date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`
+        return `${date.getFullYear()}-${month}-${day}`
+    }
+    return date;
+}
+
+export function formatDateTime(date) {
+    if(date && date instanceof Date) {
+        const months = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : `${date.getMonth() + 1}`
+        const days = date.getDate() < 10 ? `0${date.getDate()}` : `${date.getDate()}`
+        const hours = date.getHours() < 10 ? `0${date.getHours()}` : `${date.getHours()}`
+        const minutes = date.getMinutes() < 10 ? `0${date.getMinutes()}` : `${date.getMinutes()}`
+        return `${date.getFullYear()}-${months}-${days}T${hours}:${minutes}`
+    }
+    return date;
+}
+
 export function dispatchEvent(type, payload) {
     const event = document.createEvent('CustomEvent')
     event.initCustomEvent(type, false, false, payload)
@@ -56,7 +104,7 @@ export function copyError(error) {
         Object.keys(error.params).forEach(paramName => {
             const param = error.params[paramName]
             if (Array.isArray(param)) params[paramName] = copyArray(param)
-            else if (param instanceof FileList) params[paramName] = copyFiles(param)
+            else if (typeof param.item === 'function') params[paramName] = copyFiles(param)
             else params[paramName] = param
         })
         output.params = params

@@ -89,6 +89,26 @@ declare interface FieldProps extends React.Props<any> {
      */
     maxSize?: number|string;
 
+    /**
+     * The field's initial value
+     */
+    initialValue?: string|number|Date;
+
+    /**
+     * a change event interceptor
+     */
+    onChange?(fieldCtrl?: FieldStateController): void;
+
+    /**
+     * a form reset event interceptor
+     */
+    onReset?(fieldCtrl?: FieldStateController): void;
+
+    /**
+     * a blur event interceptor
+     */
+    onBlur?(fieldCtrl?: FieldStateController): void;
+
 }
 
 declare interface FieldState extends FieldStateController {
@@ -98,6 +118,10 @@ declare interface FieldState extends FieldStateController {
 declare class Field extends React.Component<FieldProps, FieldState> {
 
     onChange(fieldCtrl: FieldStateController): void;
+
+    onReset(fieldCtrl: FieldStateController): void;
+
+    onBlur?(fieldCtrl: FieldStateController): void;
 
     handleFieldChangeForward(event: CustomEvent): void;
 

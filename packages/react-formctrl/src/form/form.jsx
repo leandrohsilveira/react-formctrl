@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import {FormEventDispatcher} from '../provider/provider'
 import {REACT_FORMCTRL} from '../provider/provider.actions'
+import {ensureStringValue} from '../provider/provider.utils'
 
 export class Form extends React.Component {
 
@@ -10,6 +11,7 @@ export class Form extends React.Component {
         name: PropTypes.string.isRequired,
         className: PropTypes.string,
         onSubmit: PropTypes.func,
+        onReset: PropTypes.func
     }
 
     constructor(props) {
@@ -20,6 +22,7 @@ export class Form extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this)
         this.handleReset = this.handleReset.bind(this)
         this.handleFormSubmitForward = this.handleFormSubmitForward.bind(this)
+        this.handleFormResetForward = this.handleFormResetForward.bind(this)
     }
 
     handleSubmit(event) {
@@ -31,13 +34,15 @@ export class Form extends React.Component {
 
     handleReset(event) {
         const {name} = this.props
+        const {ref} = this.state
         event.preventDefault()
-        FormEventDispatcher.dispatchResetForm(name)
+        FormEventDispatcher.dispatchResetForm(name, ref, event.type)
     }
-
+    
     componentWillMount() {
         const {name} = this.props
         document.addEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${name}`, this.handleFormSubmitForward)
+        document.addEventListener(`${REACT_FORMCTRL.EVENTS.FORM_RESETED}#${name}`, this.handleFormResetForward)
         FormEventDispatcher.dispatchRegisterForm(name)
     }
     
@@ -51,9 +56,20 @@ export class Form extends React.Component {
         }
     }
     
+    handleFormResetForward(event) {
+        const {onReset} = this.props
+        if(typeof onReset === 'function') {
+            const {formRef} = event.detail
+            if(formRef == this.state.ref) {
+                onReset()
+            }
+        }
+    }
+    
     componentWillUnmount() {
         const {name} = this.props
         document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FORM_SUBMITED}#${name}`, this.handleFormSubmitForward)
+        document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FORM_RESETED}#${name}`, this.handleFormResetForward)
         FormEventDispatcher.dispatchUnregisterForm(name)
     }
     
@@ -128,7 +144,12 @@ export class FormControl extends React.Component {
 
     setFieldValue(fieldName, value) {
         const {form} = this.props
-        FormEventDispatcher.dispatchFieldChanged(form, fieldName, value)
+        const fieldCtrl = this.state.fields[fieldName]
+        if(fieldCtrl) {
+            FormEventDispatcher.dispatchFieldChanged(form, fieldName, ensureStringValue(value, fieldCtrl.props.type))
+        } else {
+            console.warn(`Field "${fieldName}" not found on form ${form}`)
+        }
     }
 
     inject() {

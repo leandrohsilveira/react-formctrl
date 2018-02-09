@@ -1,9 +1,9 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import PropTypes, { instanceOf } from 'prop-types'
 
 import { FormEventDispatcher } from '../provider/provider'
 import { REACT_FORMCTRL } from '../provider/provider.actions'
-import { compareFieldProps } from '../provider/provider.utils'
+import { compareFieldProps, formatDate, formatDateTime, ensureStringValue } from '../provider/provider.utils'
 
 export class Field extends React.Component {
 
@@ -45,14 +45,25 @@ export class Field extends React.Component {
         validate: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.arrayOf(PropTypes.string)
-        ])
+        ]),
+        initialValue: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.number,
+            PropTypes.instanceOf(Date)
+        ]),
+        onChange: PropTypes.func,
+        onBlur: PropTypes.func,
+        onReset: PropTypes.func,
     }
 
     constructor(props) {
         super(props)
 
         this.onChange = this.onChange.bind(this)
+        this.onBlur = this.onBlur.bind(this)
+        this.onReset = this.onReset.bind(this)
         this.handleFieldChangeForward = this.handleFieldChangeForward.bind(this)
+        this.handleMatchFieldChangeForward = this.handleMatchFieldChangeForward.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleBlur = this.handleBlur.bind(this)
         this.getChildProps = this.getChildProps.bind(this)
@@ -71,18 +82,21 @@ export class Field extends React.Component {
             errors: [],
             value: '',
             files: [],
-            initialValue: props.initialValue || '',
+            initialValue: ensureStringValue(props.initialValue || '', props.type),
             props: this.getFieldProps(props)
         }
 
     }
 
     componentWillMount() {
-        const { form, name, children } = this.props
+        const { form, name, children, match } = this.props
         if (Array.isArray(children) && children.length > 1) {
             throw `The Field component for "${form}#${name}" should have only one child, but has ${children.length}.`
         }
         document.addEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${name}`, this.handleFieldChangeForward)
+        if(match) {
+            document.addEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${match}`, this.handleMatchFieldChangeForward)
+        }
 
         FormEventDispatcher.dispatchRegisterField(form, name, this.state)
     }
@@ -96,8 +110,11 @@ export class Field extends React.Component {
     }
 
     componentWillUnmount() {
-        const { form, name } = this.props
+        const { form, name, match } = this.props
         document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${name}`, this.handleFieldChangeForward)
+        if(match) {
+            document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${match}`, this.handleMatchFieldChangeForward)
+        }
         FormEventDispatcher.dispatchUnregisterField(form, name)
     }
 
@@ -121,6 +138,20 @@ export class Field extends React.Component {
         }
     }
 
+    onBlur(fieldCtrl) {
+        const { onBlur } = this.props
+        if (typeof onBlur === 'function') {
+            onBlur(fieldCtrl)
+        }
+    }
+
+    onReset(fieldCtrl) {
+        const { onReset } = this.props
+        if (typeof onReset === 'function') {
+            onReset(fieldCtrl)
+        }
+    }
+
     onChange(fieldCtrl) {
         const { onChange } = this.props
         if (typeof onChange === 'function') {
@@ -131,8 +162,33 @@ export class Field extends React.Component {
     handleFieldChangeForward(event) {
         const payload = event.detail
         const fieldCtrl = payload.fieldCtrl
-        this.setState(fieldCtrl)
-        this.onChange(fieldCtrl)
+        const eventType = payload.eventType
+        this.setState(
+            fieldCtrl, 
+            () => {
+                switch(eventType) {
+                    case 'blur':
+                        this.onBlur(fieldCtrl)
+                        break;
+                    case 'reset':
+                        this.onReset(fieldCtrl)
+                        break;
+                    default:
+                        this.onChange(fieldCtrl)
+                        break;
+                }
+            }
+        )
+    }
+
+    handleMatchFieldChangeForward(event) {
+        const {value, files, valid} = this.state
+        const {form, name} = this.props
+        const payload = event.detail
+        const fieldCtrl = payload.fieldCtrl
+        if(payload.eventType === 'change') {
+            FormEventDispatcher.dispatchFieldChanged(form, name, value, files, 'change')
+        }
     }
 
     handleChange(event) {
@@ -140,14 +196,14 @@ export class Field extends React.Component {
         const { form, name } = this.props
         const target = event.target
         const value = target.value
-        const files = target.files
-        FormEventDispatcher.dispatchFieldChanged(form, name, value, files)
+        const files = target.files 
+        FormEventDispatcher.dispatchFieldChanged(form, name, value, files, event.type)
     }
 
     handleBlur(event) {
         if (this.state.untouched) {
             const { form, name } = this.props
-            FormEventDispatcher.dispatchFieldBlur(form, name, { ...this.state, touched: true, untouched: false })
+            FormEventDispatcher.dispatchFieldBlur(form, name, event.type)
         }
     }
 

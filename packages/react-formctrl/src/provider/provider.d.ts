@@ -166,7 +166,7 @@ declare interface FormStateController {
     /**
      * {string: string}	The fields values of the form: {[fieldName]: [fieldValue]}.
      */
-    values: {[fieldName: string]: string};
+    values: {[fieldName: string]: string|number|Date};
 
     /**
      * All selected files of each field of the form.
