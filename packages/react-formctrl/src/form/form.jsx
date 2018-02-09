@@ -50,7 +50,7 @@ export class Form extends React.Component {
         const {onSubmit} = this.props
         if(typeof onSubmit === 'function') {
             const {values, formCtrl, formRef} = event.detail
-            if(formRef == this.state.ref) {
+            if(formRef === null || formRef == this.state.ref) {
                 onSubmit(values, formCtrl)
             }
         }
@@ -60,7 +60,7 @@ export class Form extends React.Component {
         const {onReset} = this.props
         if(typeof onReset === 'function') {
             const {formRef} = event.detail
-            if(formRef == this.state.ref) {
+            if(formRef === null || formRef == this.state.ref) {
                 onReset()
             }
         }
@@ -108,10 +108,10 @@ export class FormControl extends React.Component {
             values: {},
             files: {}
         }
-        this.onChange = this.onChange.bind(this)
         this.handleFormChanged = this.handleFormChanged.bind(this)
         this.inject = this.inject.bind(this)
         this.setFieldValue = this.setFieldValue.bind(this)
+        this.reset = this.reset.bind(this)
     }
 
     componentWillMount() {
@@ -127,10 +127,10 @@ export class FormControl extends React.Component {
         document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FORM_CHANGED}#${form}`, this.handleFormChanged)
     }
 
-    onChange(formCtrl) {
-        const {onChange} = this.props
+    componentDidUpdate() {
+        const {form, onChange} = this.props
         if(typeof onChange === 'function') {
-            onChange(formCtrl)
+            onChange({...this.state, formName: form, setFieldValue: this.setFieldValue, reset: this.reset})
         }
     }
 
@@ -139,7 +139,6 @@ export class FormControl extends React.Component {
         const {form} = this.props
         const {formCtrl} = payload
         this.setState(formCtrl)
-        this.onChange(formCtrl)
     }
 
     setFieldValue(fieldName, value) {
@@ -152,9 +151,14 @@ export class FormControl extends React.Component {
         }
     }
 
+    reset() {
+        const {form} = this.props
+        FormEventDispatcher.dispatchResetForm(form, null, 'reset');
+    }
+
     inject() {
         const {inject, form} = this.props
-        const formCtrl = {...this.state, formName: form, setFieldValue: this.setFieldValue}
+        const formCtrl = {...this.state, formName: form, setFieldValue: this.setFieldValue, reset: this.reset}
         if(typeof inject === 'function') {
             return inject(formCtrl)
         }
