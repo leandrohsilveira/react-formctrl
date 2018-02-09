@@ -97,17 +97,17 @@ declare interface FieldProps extends React.Props<any> {
     /**
      * a change event interceptor
      */
-    onChange?(fieldCtrl?: FieldStateController): void;
+    afterChange?(fieldCtrl?: FieldStateController): void;
 
     /**
      * a form reset event interceptor
      */
-    onReset?(fieldCtrl?: FieldStateController): void;
+    afterReset?(fieldCtrl?: FieldStateController): void;
 
     /**
      * a blur event interceptor
      */
-    onBlur?(fieldCtrl?: FieldStateController): void;
+    afterBlur?(fieldCtrl?: FieldStateController): void;
 
 }
 

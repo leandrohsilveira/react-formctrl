@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "cd packages/react-formctrl && npm run test",
+    "test:dev": "cd packages/react-formctrl && npm run test:dev",
     "link": "cd packages/react-formctrl && yarn link",
     "unlink": "cd packages/react-formctrl && yarn unlink",
     "cleandeps": "lerna clean",

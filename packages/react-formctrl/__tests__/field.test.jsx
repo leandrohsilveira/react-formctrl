@@ -16,9 +16,10 @@ const inputInject = (fieldCtrl) => ({
     onBlur: fieldCtrl.onBlur
 })
 
-let InputWrapper = ({ className, type, onChange, onBlur, value }) => {
+let InputWrapper = ({ name, className, type, onChange, onBlur, value }) => {
     return (
         <input
+            name={name}
             className={className}
             type={type}
             onChange={onChange}
@@ -495,7 +496,7 @@ describe('About the <Field /> component', () => {
 
     })
 
-    describe('The field onChange interceptor', () => {
+    describe('The field afterChange interceptor', () => {
 
         const formName = "testForm"
         const fieldName = "testField"
@@ -508,7 +509,7 @@ describe('About the <Field /> component', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject} onChange={_fieldCtrl => fieldCtrl = _fieldCtrl}>
+                        <Field form={formName} name={fieldName} inject={inputInject} afterChange={_fieldCtrl => fieldCtrl = _fieldCtrl}>
                             <input />
                         </Field>
                     </Form>
@@ -582,7 +583,7 @@ describe('About the <Field /> component', () => {
 
     })
 
-    describe('The field onBlur interceptor', () => {
+    describe('The field afterBlur interceptor', () => {
 
         const formName = "testForm"
         const fieldName = "testField"
@@ -599,7 +600,7 @@ describe('About the <Field /> component', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject} onChange={onEvent} onBlur={onEvent}>
+                        <Field form={formName} name={fieldName} inject={inputInject} afterChange={onEvent} afterBlur={onEvent}>
                             <input />
                         </Field>
                     </Form>
@@ -703,7 +704,7 @@ describe('About the <Field /> component', () => {
 
     })
 
-    describe('The field onReset interceptor', () => {
+    describe('The field afterReset interceptor', () => {
 
         const formName = "testForm"
         const fieldName = "testField"
@@ -721,7 +722,7 @@ describe('About the <Field /> component', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <Field form={formName} name={fieldName} inject={inputInject} onChange={onEvent} onReset={onEvent}>
+                        <Field form={formName} name={fieldName} inject={inputInject} afterChange={onEvent} afterReset={onEvent}>
                             <input />
                         </Field>
                     </Form>
