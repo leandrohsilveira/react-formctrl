@@ -178,6 +178,11 @@ declare interface FormStateController {
      */
     fields: {[fieldName: string]: FieldStateController};
 
+    /**
+     * Change a field value of this form
+     */
+    setFieldValue(fiendName: string, fieldValue: string | number | Date): void;
+
 }
 
 /**
