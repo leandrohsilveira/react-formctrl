@@ -50,12 +50,12 @@ describe('The controlledField() decorator', () => {
             ))
         })
 
-        test('No form available in state', () => {
+        it('No form available in state', () => {
             const formCtrl = dom.state('forms')[formName]
             expect(formCtrl).not.toBeDefined()
         })
 
-        test('The input changes do nothing', () => {
+        it('The input changes do nothing', () => {
             dom.find('input').simulate('change', { target: { value: 'test' } })
             const formCtrl = dom.state('forms')[formName]
             expect(formCtrl).not.toBeDefined()
@@ -93,6 +93,10 @@ describe('The controlledField() decorator', () => {
             input = dom.find('input')
         })
 
+        afterEach(() => {
+            dom.unmount()
+        })
+
         describe('When Field properties do not changes', () => {
             let formCtrl, fieldCtrl
             beforeEach(() => {
@@ -105,17 +109,17 @@ describe('The controlledField() decorator', () => {
 
             describe('When the field is empty', () => {
 
-                test('The form is valid', () => {
+                it('The form is valid', () => {
                     expect(formCtrl.valid).toBeTruthy()
                     expect(formCtrl.invalid).toBeFalsy()
                 })
 
-                test('The field is valid', () => {
+                it('The field is valid', () => {
                     expect(fieldCtrl.valid).toBeTruthy()
                     expect(fieldCtrl.invalid).toBeFalsy()
                 })
 
-                test('The field does not contains errors messages', () => {
+                it('The field does not contains errors messages', () => {
                     expect(fieldCtrl.errors).toHaveLength(0)
                 })
 
@@ -135,17 +139,17 @@ describe('The controlledField() decorator', () => {
             })
 
             describe('When the field is empty', () => {
-                test('The form is invalid', () => {
+                it('The form is invalid', () => {
                     expect(formCtrl.valid).toBeFalsy()
                     expect(formCtrl.invalid).toBeTruthy()
                 })
 
-                test('The field is invalid', () => {
+                it('The field is invalid', () => {
                     expect(fieldCtrl.valid).toBeFalsy()
                     expect(fieldCtrl.invalid).toBeTruthy()
                 })
 
-                test('The field contains a "required" error message', () => {
+                it('The field contains a "required" error message', () => {
                     expect(fieldCtrl.errors).toContainEqual({ key: 'required' })
                 })
 
@@ -167,17 +171,17 @@ describe('The controlledField() decorator', () => {
 
             describe(`When the field has "${fieldValue}" value`, () => {
 
-                test('The form is invalid', () => {
+                it('The form is invalid', () => {
                     expect(formCtrl.valid).toBeFalsy()
                     expect(formCtrl.invalid).toBeTruthy()
                 })
 
-                test('The field is invalid', () => {
+                it('The field is invalid', () => {
                     expect(fieldCtrl.valid).toBeFalsy()
                     expect(fieldCtrl.invalid).toBeTruthy()
                 })
 
-                test('The field contains a "required" error message', () => {
+                it('The field contains a "required" error message', () => {
                     expect(fieldCtrl.errors).toContainEqual({ key: 'pattern', params: { value: fieldValue, pattern: /d+/ } })
                 })
 
@@ -197,17 +201,17 @@ describe('The controlledField() decorator', () => {
 
                 describe(`When the field has "${fieldValue}" value`, () => {
 
-                    test('The form is invalid', () => {
+                    it('The form is invalid', () => {
                         expect(formCtrl.valid).toBeFalsy()
                         expect(formCtrl.invalid).toBeTruthy()
                     })
 
-                    test('The field is invalid', () => {
+                    it('The field is invalid', () => {
                         expect(fieldCtrl.valid).toBeFalsy()
                         expect(fieldCtrl.invalid).toBeTruthy()
                     })
 
-                    test('The field contains a "email" error message', () => {
+                    it('The field contains a "email" error message', () => {
                         expect(fieldCtrl.errors).toContainEqual({ key: 'email', params: { value: fieldValue } })
                     })
 
@@ -230,17 +234,17 @@ describe('The controlledField() decorator', () => {
 
                 describe(`When the field has "${fieldValue}" value`, () => {
 
-                    test('The form is invalid', () => {
+                    it('The form is invalid', () => {
                         expect(formCtrl.valid).toBeFalsy()
                         expect(formCtrl.invalid).toBeTruthy()
                     })
 
-                    test('The field is invalid', () => {
+                    it('The field is invalid', () => {
                         expect(fieldCtrl.valid).toBeFalsy()
                         expect(fieldCtrl.invalid).toBeTruthy()
                     })
 
-                    test('The field contains a "integer" error message', () => {
+                    it('The field contains a "integer" error message', () => {
                         expect(fieldCtrl.errors).toContainEqual({ key: 'integer', params: { value: fieldValue } })
                     })
 
@@ -264,17 +268,17 @@ describe('The controlledField() decorator', () => {
 
                     describe(`When the field has "${fieldValue}" value`, () => {
 
-                        test('The form is invalid', () => {
+                        it('The form is invalid', () => {
                             expect(formCtrl.valid).toBeFalsy()
                             expect(formCtrl.invalid).toBeTruthy()
                         })
 
-                        test('The field is invalid', () => {
+                        it('The field is invalid', () => {
                             expect(fieldCtrl.valid).toBeFalsy()
                             expect(fieldCtrl.invalid).toBeTruthy()
                         })
 
-                        test('The field contains a "noTestValue" error message', () => {
+                        it('The field contains a "noTestValue" error message', () => {
                             expect(fieldCtrl.errors).toContainEqual({ key: 'noTestValue', params: { value: fieldValue } })
                         })
 
@@ -296,17 +300,17 @@ describe('The controlledField() decorator', () => {
 
                     describe(`When the field has "${fieldValue}" value`, () => {
 
-                        test('The form is invalid', () => {
+                        it('The form is invalid', () => {
                             expect(formCtrl.valid).toBeFalsy()
                             expect(formCtrl.invalid).toBeTruthy()
                         })
 
-                        test('The field is invalid', () => {
+                        it('The field is invalid', () => {
                             expect(fieldCtrl.valid).toBeFalsy()
                             expect(fieldCtrl.invalid).toBeTruthy()
                         })
 
-                        test('The field contains a "noTestValue" error message', () => {
+                        it('The field contains a "noTestValue" error message', () => {
                             expect(fieldCtrl.errors).toContainEqual({ key: 'noTestValue', params: { value: fieldValue } })
                         })
 
@@ -328,17 +332,17 @@ describe('The controlledField() decorator', () => {
 
                     describe(`When the field has "${fieldValue}" value`, () => {
 
-                        test('The form is invalid', () => {
+                        it('The form is invalid', () => {
                             expect(formCtrl.valid).toBeFalsy()
                             expect(formCtrl.invalid).toBeTruthy()
                         })
 
-                        test('The field is invalid', () => {
+                        it('The field is invalid', () => {
                             expect(fieldCtrl.valid).toBeFalsy()
                             expect(fieldCtrl.invalid).toBeTruthy()
                         })
 
-                        test('The field contains a "noTestValue" error message', () => {
+                        it('The field contains a "noTestValue" error message', () => {
                             expect(fieldCtrl.errors).toContainEqual({ key: 'noTestValue', params: { value: fieldValue } })
                         })
 
@@ -361,17 +365,17 @@ describe('The controlledField() decorator', () => {
 
                     describe(`When the field has "${fieldValue}" value`, () => {
 
-                        test('The form is invalid', () => {
+                        it('The form is invalid', () => {
                             expect(formCtrl.valid).toBeFalsy()
                             expect(formCtrl.invalid).toBeTruthy()
                         })
 
-                        test('The field is invalid', () => {
+                        it('The field is invalid', () => {
                             expect(fieldCtrl.valid).toBeFalsy()
                             expect(fieldCtrl.invalid).toBeTruthy()
                         })
 
-                        test('The field contains a "noTestValue" error message', () => {
+                        it('The field contains a "noTestValue" error message', () => {
                             expect(fieldCtrl.errors).toContainEqual({ key: 'noTestValue', params: { value: fieldValue } })
                         })
 
@@ -405,27 +409,32 @@ describe('The controlledField() decorator', () => {
             input = dom.find('input')
         })
 
+        afterEach(() => {
+            fieldCtrl = null
+            dom.unmount()
+        })
+
         describe('When the field is brand new', () => {
 
-            test('The fieldCtrl is defined', () => {
+            it('The fieldCtrl is defined', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The field is empty', () => {
+            it('The field is empty', () => {
                 expect(fieldCtrl.value).toBe('')
             })
 
-            test('The field is pristine', () => {
+            it('The field is pristine', () => {
                 expect(fieldCtrl.pristine).toBeTruthy()
                 expect(fieldCtrl.dirty).toBeFalsy()
             })
 
-            test('The field is unchanged', () => {
+            it('The field is unchanged', () => {
                 expect(fieldCtrl.unchanged).toBeTruthy()
                 expect(fieldCtrl.changed).toBeFalsy()
             })
 
-            test('The field is untouched', () => {
+            it('The field is untouched', () => {
                 expect(fieldCtrl.untouched).toBeTruthy()
                 expect(fieldCtrl.touched).toBeFalsy()
             })
@@ -439,25 +448,25 @@ describe('The controlledField() decorator', () => {
                 input.simulate('change', { target: { value: fieldValue } })
             })
 
-            test('The fieldCtrl is defined', () => {
+            it('The fieldCtrl is defined', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The field is not empty', () => {
+            it('The field is not empty', () => {
                 expect(fieldCtrl.value).toBe(fieldValue)
             })
 
-            test('The field is dirty', () => {
+            it('The field is dirty', () => {
                 expect(fieldCtrl.pristine).toBeFalsy()
                 expect(fieldCtrl.dirty).toBeTruthy()
             })
 
-            test('The field is changed', () => {
+            it('The field is changed', () => {
                 expect(fieldCtrl.unchanged).toBeFalsy()
                 expect(fieldCtrl.changed).toBeTruthy()
             })
 
-            test('The field still untouched', () => {
+            it('The field still untouched', () => {
                 expect(fieldCtrl.untouched).toBeTruthy()
                 expect(fieldCtrl.touched).toBeFalsy()
             })
@@ -490,27 +499,32 @@ describe('The controlledField() decorator', () => {
             input = dom.find('input')
         })
 
+        afterEach(() => {
+            fieldCtrl = null
+            dom.unmount()
+        })
+
         describe('When the field is brand new', () => {
 
-            test('The fieldCtrl is defined', () => {
+            it('The fieldCtrl is defined', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The field is empty', () => {
+            it('The field is empty', () => {
                 expect(fieldCtrl.value).toBe('')
             })
 
-            test('The field is pristine', () => {
+            it('The field is pristine', () => {
                 expect(fieldCtrl.pristine).toBeTruthy()
                 expect(fieldCtrl.dirty).toBeFalsy()
             })
 
-            test('The field is unchanged', () => {
+            it('The field is unchanged', () => {
                 expect(fieldCtrl.unchanged).toBeTruthy()
                 expect(fieldCtrl.changed).toBeFalsy()
             })
 
-            test('The field is untouched', () => {
+            it('The field is untouched', () => {
                 expect(fieldCtrl.untouched).toBeTruthy()
                 expect(fieldCtrl.touched).toBeFalsy()
             })
@@ -523,25 +537,25 @@ describe('The controlledField() decorator', () => {
                 input.simulate('change', { target: { value: fieldValue } })
             })
 
-            test('The fieldCtrl is defined', () => {
+            it('The fieldCtrl is defined', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The field is not empty', () => {
+            it('The field is not empty', () => {
                 expect(fieldCtrl.value).toBe(fieldValue)
             })
 
-            test('The field is dirty', () => {
+            it('The field is dirty', () => {
                 expect(fieldCtrl.pristine).toBeFalsy()
                 expect(fieldCtrl.dirty).toBeTruthy()
             })
 
-            test('The field is changed', () => {
+            it('The field is changed', () => {
                 expect(fieldCtrl.unchanged).toBeFalsy()
                 expect(fieldCtrl.changed).toBeTruthy()
             })
 
-            test('The field still untouched', () => {
+            it('The field still untouched', () => {
                 expect(fieldCtrl.untouched).toBeTruthy()
                 expect(fieldCtrl.touched).toBeFalsy()
             })
@@ -554,25 +568,25 @@ describe('The controlledField() decorator', () => {
                 input.simulate('blur', {})
             })
 
-            test('The fieldCtrl is defined', () => {
+            it('The fieldCtrl is defined', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The field is empty', () => {
+            it('The field is empty', () => {
                 expect(fieldCtrl.value).toBe('')
             })
 
-            test('The field is pristine', () => {
+            it('The field is pristine', () => {
                 expect(fieldCtrl.pristine).toBeTruthy()
                 expect(fieldCtrl.dirty).toBeFalsy()
             })
 
-            test('The field is unchanged', () => {
+            it('The field is unchanged', () => {
                 expect(fieldCtrl.unchanged).toBeTruthy()
                 expect(fieldCtrl.changed).toBeFalsy()
             })
 
-            test('The field is touched', () => {
+            it('The field is touched', () => {
                 expect(fieldCtrl.untouched).toBeFalsy()
                 expect(fieldCtrl.touched).toBeTruthy()
             })
@@ -607,31 +621,36 @@ describe('The controlledField() decorator', () => {
             form = dom.find('form')
         })
 
+        afterEach(() => {
+            fieldCtrl = null
+            dom.unmount()
+        })
+
         describe('When the field is brand new', () => {
 
             beforeEach(() => {
                 form.simulate('reset')
             })
 
-            test('The fieldCtrl is defined', () => {
+            it('The fieldCtrl is defined', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The field is empty', () => {
+            it('The field is empty', () => {
                 expect(fieldCtrl.value).toBe('')
             })
 
-            test('The field is pristine', () => {
+            it('The field is pristine', () => {
                 expect(fieldCtrl.pristine).toBeTruthy()
                 expect(fieldCtrl.dirty).toBeFalsy()
             })
 
-            test('The field is unchanged', () => {
+            it('The field is unchanged', () => {
                 expect(fieldCtrl.unchanged).toBeTruthy()
                 expect(fieldCtrl.changed).toBeFalsy()
             })
 
-            test('The field is untouched', () => {
+            it('The field is untouched', () => {
                 expect(fieldCtrl.untouched).toBeTruthy()
                 expect(fieldCtrl.touched).toBeFalsy()
             })
@@ -645,25 +664,25 @@ describe('The controlledField() decorator', () => {
                 form.simulate('reset')
             })
 
-            test('The fieldCtrl is defined', () => {
+            it('The fieldCtrl is defined', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The field is empty', () => {
+            it('The field is empty', () => {
                 expect(fieldCtrl.value).toBe('')
             })
 
-            test('The field is pristine', () => {
+            it('The field is pristine', () => {
                 expect(fieldCtrl.pristine).toBeTruthy()
                 expect(fieldCtrl.dirty).toBeFalsy()
             })
 
-            test('The field is unchanged', () => {
+            it('The field is unchanged', () => {
                 expect(fieldCtrl.unchanged).toBeTruthy()
                 expect(fieldCtrl.changed).toBeFalsy()
             })
 
-            test('The field is untouched', () => {
+            it('The field is untouched', () => {
                 expect(fieldCtrl.untouched).toBeTruthy()
                 expect(fieldCtrl.touched).toBeFalsy()
             })
@@ -692,8 +711,8 @@ describe('The controlledField() decorator', () => {
         })
 
         afterEach(() => {
-            dom.unmount()
             input = null
+            dom.unmount()
         })
 
         describe('When the field is brand new', () => {
@@ -706,44 +725,44 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test(`The form is named "${formName}"`, () => {
+            it(`The form is named "${formName}"`, () => {
                 expect(formCtrl.formName).toBe(formName)
             })
 
-            test('The form is empty', () => {
+            it('The form is empty', () => {
                 expect(formCtrl.values[fieldName]).toBe('')
             })
 
-            test('The form is pristine', () => {
+            it('The form is pristine', () => {
                 expect(formCtrl.pristine).toBeTruthy()
                 expect(formCtrl.dirty).toBeFalsy()
             })
 
-            test('The form is unchanged', () => {
+            it('The form is unchanged', () => {
                 expect(formCtrl.unchanged).toBeTruthy()
                 expect(formCtrl.changed).toBeFalsy()
             })
 
-            test('The form is untouched', () => {
+            it('The form is untouched', () => {
                 expect(formCtrl.untouched).toBeTruthy()
                 expect(formCtrl.touched).toBeFalsy()
             })
 
-            test('The field is empty', () => {
+            it('The field is empty', () => {
                 expect(fieldCtrl.value).toBe('')
             })
 
-            test('The field is pristine', () => {
+            it('The field is pristine', () => {
                 expect(fieldCtrl.pristine).toBeTruthy()
                 expect(fieldCtrl.dirty).toBeFalsy()
             })
 
-            test('The field is unchanged', () => {
+            it('The field is unchanged', () => {
                 expect(fieldCtrl.unchanged).toBeTruthy()
                 expect(fieldCtrl.changed).toBeFalsy()
             })
 
-            test('The field is untouched', () => {
+            it('The field is untouched', () => {
                 expect(fieldCtrl.untouched).toBeTruthy()
                 expect(fieldCtrl.touched).toBeFalsy()
             })
@@ -762,44 +781,44 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test(`The form is named "${formName}"`, () => {
+            it(`The form is named "${formName}"`, () => {
                 expect(formCtrl.formName).toBe(formName)
             })
 
-            test('The form is not empty', () => {
+            it('The form is not empty', () => {
                 expect(formCtrl.values[fieldName]).toBe(fieldValue)
             })
 
-            test('The form is dirty', () => {
+            it('The form is dirty', () => {
                 expect(formCtrl.pristine).toBeFalsy()
                 expect(formCtrl.dirty).toBeTruthy()
             })
 
-            test('The form is changed', () => {
+            it('The form is changed', () => {
                 expect(formCtrl.unchanged).toBeFalsy()
                 expect(formCtrl.changed).toBeTruthy()
             })
 
-            test('The form still untouched', () => {
+            it('The form still untouched', () => {
                 expect(formCtrl.untouched).toBeTruthy()
                 expect(formCtrl.touched).toBeFalsy()
             })
 
-            test('The field is not empty', () => {
+            it('The field is not empty', () => {
                 expect(fieldCtrl.value).toBe(fieldValue)
             })
 
-            test('The field is dirty', () => {
+            it('The field is dirty', () => {
                 expect(fieldCtrl.pristine).toBeFalsy()
                 expect(fieldCtrl.dirty).toBeTruthy()
             })
 
-            test('The field is changed', () => {
+            it('The field is changed', () => {
                 expect(fieldCtrl.unchanged).toBeFalsy()
                 expect(fieldCtrl.changed).toBeTruthy()
             })
 
-            test('The field still untouched', () => {
+            it('The field still untouched', () => {
                 expect(fieldCtrl.untouched).toBeTruthy()
                 expect(fieldCtrl.touched).toBeFalsy()
             })
@@ -819,44 +838,44 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test(`The form is named "${formName}"`, () => {
+            it(`The form is named "${formName}"`, () => {
                 expect(formCtrl.formName).toBe(formName)
             })
 
-            test('The form is not empty', () => {
+            it('The form is not empty', () => {
                 expect(formCtrl.values[fieldName]).toBe(fieldValue)
             })
 
-            test('The form is dirty', () => {
+            it('The form is dirty', () => {
                 expect(formCtrl.pristine).toBeFalsy()
                 expect(formCtrl.dirty).toBeTruthy()
             })
 
-            test('The form is changed', () => {
+            it('The form is changed', () => {
                 expect(formCtrl.unchanged).toBeFalsy()
                 expect(formCtrl.changed).toBeTruthy()
             })
 
-            test('The form is touched', () => {
+            it('The form is touched', () => {
                 expect(formCtrl.untouched).toBeFalsy()
                 expect(formCtrl.touched).toBeTruthy()
             })
 
-            test('The field is not empty', () => {
+            it('The field is not empty', () => {
                 expect(fieldCtrl.value).toBe(fieldValue)
             })
 
-            test('The field is dirty', () => {
+            it('The field is dirty', () => {
                 expect(fieldCtrl.pristine).toBeFalsy()
                 expect(fieldCtrl.dirty).toBeTruthy()
             })
 
-            test('The field is changed', () => {
+            it('The field is changed', () => {
                 expect(fieldCtrl.unchanged).toBeFalsy()
                 expect(fieldCtrl.changed).toBeTruthy()
             })
 
-            test('The field is touched', () => {
+            it('The field is touched', () => {
                 expect(fieldCtrl.untouched).toBeFalsy()
                 expect(fieldCtrl.touched).toBeTruthy()
             })
@@ -880,44 +899,44 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test(`The form is named "${formName}"`, () => {
+            it(`The form is named "${formName}"`, () => {
                 expect(formCtrl.formName).toBe(formName)
             })
 
-            test('The form is empty', () => {
+            it('The form is empty', () => {
                 expect(formCtrl.values[fieldName]).toBe('')
             })
 
-            test('The form is dirty', () => {
+            it('The form is dirty', () => {
                 expect(formCtrl.pristine).toBeFalsy()
                 expect(formCtrl.dirty).toBeTruthy()
             })
 
-            test('The form is unchanged', () => {
+            it('The form is unchanged', () => {
                 expect(formCtrl.unchanged).toBeTruthy()
                 expect(formCtrl.changed).toBeFalsy()
             })
 
-            test('The form is touched', () => {
+            it('The form is touched', () => {
                 expect(formCtrl.untouched).toBeFalsy()
                 expect(formCtrl.touched).toBeTruthy()
             })
 
-            test('The field is empty', () => {
+            it('The field is empty', () => {
                 expect(fieldCtrl.value).toBe('')
             })
 
-            test('The field is dirty', () => {
+            it('The field is dirty', () => {
                 expect(fieldCtrl.pristine).toBeFalsy()
                 expect(fieldCtrl.dirty).toBeTruthy()
             })
 
-            test('The field is unchanged', () => {
+            it('The field is unchanged', () => {
                 expect(fieldCtrl.unchanged).toBeTruthy()
                 expect(fieldCtrl.changed).toBeFalsy()
             })
 
-            test('The field is touched', () => {
+            it('The field is touched', () => {
                 expect(fieldCtrl.untouched).toBeFalsy()
                 expect(fieldCtrl.touched).toBeTruthy()
             })
@@ -959,17 +978,17 @@ describe('The controlledField() decorator', () => {
                     expect(fieldCtrl).toBeDefined()
                 })
 
-                test('The form is invalid', () => {
+                it('The form is invalid', () => {
                     expect(formCtrl.valid).toBeFalsy()
                     expect(formCtrl.invalid).toBeTruthy()
                 })
 
-                test('The field is invalid', () => {
+                it('The field is invalid', () => {
                     expect(fieldCtrl.valid).toBeFalsy()
                     expect(fieldCtrl.invalid).toBeTruthy()
                 })
 
-                test('The field contains a "required" error message', () => {
+                it('The field contains a "required" error message', () => {
                     expect(fieldCtrl.errors).toContainEqual({ key: 'required' })
                 })
             })
@@ -985,17 +1004,17 @@ describe('The controlledField() decorator', () => {
                     expect(fieldCtrl).toBeDefined()
                 })
 
-                test('The form is valid', () => {
+                it('The form is valid', () => {
                     expect(formCtrl.valid).toBeTruthy()
                     expect(formCtrl.invalid).toBeFalsy()
                 })
 
-                test('The field is valid', () => {
+                it('The field is valid', () => {
                     expect(fieldCtrl.valid).toBeTruthy()
                     expect(fieldCtrl.invalid).toBeFalsy()
                 })
 
-                test('The field does not contains errors messages', () => {
+                it('The field does not contains errors messages', () => {
                     expect(fieldCtrl.errors).toHaveLength(0)
                 })
 
@@ -1039,17 +1058,17 @@ describe('The controlledField() decorator', () => {
                     expect(fieldCtrl).toBeDefined()
                 })
 
-                test('The form is valid', () => {
+                it('The form is valid', () => {
                     expect(formCtrl.valid).toBeTruthy()
                     expect(formCtrl.invalid).toBeFalsy()
                 })
 
-                test('The field is valid', () => {
+                it('The field is valid', () => {
                     expect(fieldCtrl.valid).toBeTruthy()
                     expect(fieldCtrl.invalid).toBeFalsy()
                 })
 
-                test('The field does not contains errors messages', () => {
+                it('The field does not contains errors messages', () => {
                     expect(fieldCtrl.errors).toHaveLength(0)
                 })
 
@@ -1066,17 +1085,17 @@ describe('The controlledField() decorator', () => {
                     expect(fieldCtrl).toBeDefined()
                 })
 
-                test('The form is invalid', () => {
+                it('The form is invalid', () => {
                     expect(formCtrl.valid).toBeFalsy()
                     expect(formCtrl.invalid).toBeTruthy()
                 })
 
-                test('The field is invalid', () => {
+                it('The field is invalid', () => {
                     expect(fieldCtrl.valid).toBeFalsy()
                     expect(fieldCtrl.invalid).toBeTruthy()
                 })
 
-                test('The field contains a "email" error message', () => {
+                it('The field contains a "email" error message', () => {
                     expect(fieldCtrl.errors).toContainEqual({ key: 'email', params: { value: fieldValue1 } })
                 })
 
@@ -1093,17 +1112,17 @@ describe('The controlledField() decorator', () => {
                     expect(fieldCtrl).toBeDefined()
                 })
 
-                test('The form is invalid', () => {
+                it('The form is invalid', () => {
                     expect(formCtrl.valid).toBeFalsy()
                     expect(formCtrl.invalid).toBeTruthy()
                 })
 
-                test('The field is invalid', () => {
+                it('The field is invalid', () => {
                     expect(fieldCtrl.valid).toBeFalsy()
                     expect(fieldCtrl.invalid).toBeTruthy()
                 })
 
-                test('The field contains a "email" error message', () => {
+                it('The field contains a "email" error message', () => {
                     expect(fieldCtrl.errors).toContainEqual({ key: 'email', params: { value: fieldValue2 } })
                 })
 
@@ -1118,12 +1137,12 @@ describe('The controlledField() decorator', () => {
                     expect(formCtrl).toBeDefined()
                 })
 
-                test('The form is valid', () => {
+                it('The form is valid', () => {
                     expect(formCtrl.valid).toBeTruthy()
                     expect(formCtrl.invalid).toBeFalsy()
                 })
 
-                test('The field is valid with no errors messages', () => {
+                it('The field is valid with no errors messages', () => {
                     const fieldCtrl = formCtrl.fields[fieldName]
                     expect(fieldCtrl.valid).toBeTruthy()
                     expect(fieldCtrl.invalid).toBeFalsy()
@@ -1172,17 +1191,17 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The form is valid', () => {
+            it('The form is valid', () => {
                 expect(formCtrl.valid).toBeTruthy()
                 expect(formCtrl.invalid).toBeFalsy()
             })
 
-            test('The field is valid', () => {
+            it('The field is valid', () => {
                 expect(fieldCtrl.valid).toBeTruthy()
                 expect(fieldCtrl.invalid).toBeFalsy()
             })
 
-            test('The field does not contains errors messages', () => {
+            it('The field does not contains errors messages', () => {
                 expect(fieldCtrl.errors).toHaveLength(0)
             })
 
@@ -1200,17 +1219,17 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The form is invalid', () => {
+            it('The form is invalid', () => {
                 expect(formCtrl.valid).toBeFalsy()
                 expect(formCtrl.invalid).toBeTruthy()
             })
 
-            test('The field is invalid', () => {
+            it('The field is invalid', () => {
                 expect(fieldCtrl.valid).toBeFalsy()
                 expect(fieldCtrl.invalid).toBeTruthy()
             })
 
-            test('The field contains a "float" error message', () => {
+            it('The field contains a "float" error message', () => {
                 expect(fieldCtrl.errors).toContainEqual({ key: 'float', params: { value: fieldValue1 } })
             })
 
@@ -1227,17 +1246,17 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The form is valid', () => {
+            it('The form is valid', () => {
                 expect(formCtrl.valid).toBeTruthy()
                 expect(formCtrl.invalid).toBeFalsy()
             })
 
-            test('The field is valid', () => {
+            it('The field is valid', () => {
                 expect(fieldCtrl.valid).toBeTruthy()
                 expect(fieldCtrl.invalid).toBeFalsy()
             })
 
-            test('The field does not contains errors messages', () => {
+            it('The field does not contains errors messages', () => {
                 expect(fieldCtrl.errors).toHaveLength(0)
             })
 
@@ -1254,17 +1273,17 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The form is valid', () => {
+            it('The form is valid', () => {
                 expect(formCtrl.valid).toBeTruthy()
                 expect(formCtrl.invalid).toBeFalsy()
             })
 
-            test('The field is valid', () => {
+            it('The field is valid', () => {
                 expect(fieldCtrl.valid).toBeTruthy()
                 expect(fieldCtrl.invalid).toBeFalsy()
             })
 
-            test('The field does not contains errors messages', () => {
+            it('The field does not contains errors messages', () => {
                 expect(fieldCtrl.errors).toHaveLength(0)
             })
 
@@ -1308,17 +1327,17 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The form is valid', () => {
+            it('The form is valid', () => {
                 expect(formCtrl.valid).toBeTruthy()
                 expect(formCtrl.invalid).toBeFalsy()
             })
 
-            test('The field is valid', () => {
+            it('The field is valid', () => {
                 expect(fieldCtrl.valid).toBeTruthy()
                 expect(fieldCtrl.invalid).toBeFalsy()
             })
 
-            test('The field does not contains errors messages', () => {
+            it('The field does not contains errors messages', () => {
                 expect(fieldCtrl.errors).toHaveLength(0)
             })
 
@@ -1336,17 +1355,17 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The form is invalid', () => {
+            it('The form is invalid', () => {
                 expect(formCtrl.valid).toBeFalsy()
                 expect(formCtrl.invalid).toBeTruthy()
             })
 
-            test('The field is invalid', () => {
+            it('The field is invalid', () => {
                 expect(fieldCtrl.valid).toBeFalsy()
                 expect(fieldCtrl.invalid).toBeTruthy()
             })
 
-            test('The field contains a "integer" error message', () => {
+            it('The field contains a "integer" error message', () => {
                 expect(fieldCtrl.errors).toContainEqual({ key: 'integer', params: { value: fieldValue1 } })
             })
 
@@ -1363,17 +1382,17 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The form is invalid', () => {
+            it('The form is invalid', () => {
                 expect(formCtrl.valid).toBeFalsy()
                 expect(formCtrl.invalid).toBeTruthy()
             })
 
-            test('The field is invalid', () => {
+            it('The field is invalid', () => {
                 expect(fieldCtrl.valid).toBeFalsy()
                 expect(fieldCtrl.invalid).toBeTruthy()
             })
 
-            test('The field contains a "integer" error message', () => {
+            it('The field contains a "integer" error message', () => {
                 expect(fieldCtrl.errors).toContainEqual({ key: 'integer', params: { value: fieldValue2 } })
             })
 
@@ -1390,17 +1409,17 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl).toBeDefined()
             })
 
-            test('The form is valid', () => {
+            it('The form is valid', () => {
                 expect(formCtrl.valid).toBeTruthy()
                 expect(formCtrl.invalid).toBeFalsy()
             })
 
-            test('The field is valid', () => {
+            it('The field is valid', () => {
                 expect(fieldCtrl.valid).toBeTruthy()
                 expect(fieldCtrl.invalid).toBeFalsy()
             })
 
-            test('The field has no errors messages', () => {
+            it('The field has no errors messages', () => {
                 expect(fieldCtrl.errors).toHaveLength(0)
             })
 
@@ -1439,12 +1458,18 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
-            test('The field value in form controller is of date string type', () =>{
+            afterEach(() => {
+                formCtrl = null
+                fieldCtrl = null
+                dom.unmount()
+            })
+
+            it('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDate(dateValue))
                 expect(fieldCtrl.value).toBe(formatDate(dateValue))
             })
 
-            test('The field value in form controller is of Date type', () =>{
+            it('The field value in form controller is of Date type', () =>{
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
@@ -1469,12 +1494,18 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
-            test('The field value in form controller is of date string type', () =>{
+            afterEach(() => {
+                formCtrl = null
+                fieldCtrl = null
+                dom.unmount()
+            })
+
+            it('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDate(dateValue))
                 expect(fieldCtrl.value).toBe(formatDate(dateValue))
             })
 
-            test('The field value in form controller is of Date type', () =>{
+            it('The field value in form controller is of Date type', () =>{
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
@@ -1499,12 +1530,19 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
-            test('The field value in form controller is of date string type', () =>{
+            afterEach(() => {
+                formCtrl = null
+                fieldCtrl = null
+                dom.unmount()
+            })
+
+
+            it('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDate(dateValue))
                 expect(fieldCtrl.value).toBe(formatDate(dateValue))
             })
 
-            test('The field value in form controller is of Date type', () =>{
+            it('The field value in form controller is of Date type', () =>{
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
@@ -1528,22 +1566,22 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
-            test('The field value in form controller is of date string type', () =>{
+            afterEach(() => {
+                formCtrl = null
+                fieldCtrl = null
+                dom.unmount()
+            })
+
+            it('The field value in form controller is of date string type', () =>{
                 input.simulate('change', {target: {value: formatDate(dateValue)}})
                 expect(fieldCtrl.value).toBe(formatDate(dateValue))
             })
 
-            test('The field value in form controller is of Date type', () =>{
+            it('The field value in form controller is of Date type', () =>{
                 input.simulate('change', {target: {value: formatDate(dateValue)}})
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
-
-        afterEach(() => {
-            dom.unmount()
-            input = null
-        })
-
     })
 
     describe('When the field is of datetime-local type', () => {
@@ -1577,12 +1615,12 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
-            test('The field value in form controller is of date string type', () =>{
+            it('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDateTime(dateValue))
                 expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
             })
 
-            test('The field value in form controller is of Date type', () =>{
+            it('The field value in form controller is of Date type', () =>{
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
@@ -1607,12 +1645,16 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
-            test('The field value in form controller is of date string type', () =>{
+            afterEach(() => {
+                dom.unmount()
+            })
+
+            it('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDateTime(dateValue))
                 expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
             })
 
-            test('The field value in form controller is of Date type', () =>{
+            it('The field value in form controller is of Date type', () =>{
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
@@ -1637,12 +1679,16 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
-            test('The field value in form controller is of date string type', () =>{
+            afterEach(() => {
+                dom.unmount()
+            })
+
+            it('The field value in form controller is of date string type', () =>{
                 expect(formCtrl.fields[fieldName].value).toBe(formatDateTime(dateValue))
                 expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
             })
 
-            test('The field value in form controller is of Date type', () =>{
+            it('The field value in form controller is of Date type', () =>{
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
         })
@@ -1666,20 +1712,19 @@ describe('The controlledField() decorator', () => {
                 input = dom.find('input')
             })
 
-            test('The field value in form controller is of date string type', () =>{
+            afterEach(() => {
+                dom.unmount()
+            })
+
+            it('The field value in form controller is of date string type', () =>{
                 input.simulate('change', {target: {value: formatDateTime(dateValue)}})
                 expect(fieldCtrl.value).toBe(formatDateTime(dateValue))
             })
 
-            test('The field value in form controller is of Date type', () =>{
+            it('The field value in form controller is of Date type', () =>{
                 input.simulate('change', {target: {value: formatDateTime(dateValue)}})
                 expect(formCtrl.values[fieldName]).toBeInstanceOf(Date)
             })
-        })
-
-        afterEach(() => {
-            dom.unmount()
-            input = null
         })
 
     })
@@ -1713,6 +1758,10 @@ describe('The controlledField() decorator', () => {
             input2 = dom.find(`input.${fieldName2}`)
         })
 
+        afterEach(() => {
+            dom.unmount()
+        })
+
         describe('When both fields are empty', () => {
 
             let formCtrl, fieldCtrl1, fieldCtrl2
@@ -1725,26 +1774,26 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl2).toBeDefined()
             })
 
-            test('The form is invalid', () => {
+            it('The form is invalid', () => {
                 expect(formCtrl.valid).toBeFalsy()
                 expect(formCtrl.invalid).toBeTruthy()
             })
 
-            test(`The field "${fieldName1}" is invalid`, () => {
+            it(`The field "${fieldName1}" is invalid`, () => {
                 expect(fieldCtrl1.valid).toBeFalsy()
                 expect(fieldCtrl1.invalid).toBeTruthy()
             })
 
-            test(`The field "${fieldName2}" is invalid`, () => {
+            it(`The field "${fieldName2}" is invalid`, () => {
                 expect(fieldCtrl2.valid).toBeFalsy()
                 expect(fieldCtrl2.invalid).toBeTruthy()
             })
 
-            test(`The field "${fieldName1}" contains "required" error message.`, () => {
+            it(`The field "${fieldName1}" contains "required" error message.`, () => {
                 expect(fieldCtrl1.errors).toContainEqual({ key: 'required' })
             })
 
-            test(`The field "${fieldName2}" contains "required" error message.`, () => {
+            it(`The field "${fieldName2}" contains "required" error message.`, () => {
                 expect(fieldCtrl2.errors).toContainEqual({ key: 'required' })
             })
 
@@ -1762,26 +1811,26 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl2).toBeDefined()
             })
 
-            test('The form is invalid', () => {
+            it('The form is invalid', () => {
                 expect(formCtrl.valid).toBeFalsy()
                 expect(formCtrl.invalid).toBeTruthy()
             })
 
-            test(`The field "${fieldName1}" is valid`, () => {
+            it(`The field "${fieldName1}" is valid`, () => {
                 expect(fieldCtrl1.valid).toBeTruthy()
                 expect(fieldCtrl1.invalid).toBeFalsy()
             })
 
-            test(`The field "${fieldName2}" is invalid`, () => {
+            it(`The field "${fieldName2}" is invalid`, () => {
                 expect(fieldCtrl2.valid).toBeFalsy()
                 expect(fieldCtrl2.invalid).toBeTruthy()
             })
 
-            test(`The field "${fieldName1}" has no errors messages.`, () => {
+            it(`The field "${fieldName1}" has no errors messages.`, () => {
                 expect(fieldCtrl1.errors).toHaveLength(0)
             })
 
-            test(`The field "${fieldName2}" contains "required" error message.`, () => {
+            it(`The field "${fieldName2}" contains "required" error message.`, () => {
                 expect(fieldCtrl2.errors).toContainEqual({ key: 'required' })
             })
         })
@@ -1799,26 +1848,26 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl2).toBeDefined()
             })
 
-            test('The form is invalid', () => {
+            it('The form is invalid', () => {
                 expect(formCtrl.valid).toBeFalsy()
                 expect(formCtrl.invalid).toBeTruthy()
             })
 
-            test(`The field "${fieldName1}" is invalid`, () => {
+            it(`The field "${fieldName1}" is invalid`, () => {
                 expect(fieldCtrl1.valid).toBeFalsy()
                 expect(fieldCtrl1.invalid).toBeTruthy()
             })
 
-            test(`The field "${fieldName2}" is invalid`, () => {
+            it(`The field "${fieldName2}" is invalid`, () => {
                 expect(fieldCtrl2.valid).toBeFalsy()
                 expect(fieldCtrl2.invalid).toBeTruthy()
             })
 
-            test(`The field "${fieldName1}" contains "required" error message.`, () => {
+            it(`The field "${fieldName1}" contains "required" error message.`, () => {
                 expect(fieldCtrl1.errors).toContainEqual({ key: 'required' })
             })
 
-            test(`The field "${fieldName2}" contains "match" error message.`, () => {
+            it(`The field "${fieldName2}" contains "match" error message.`, () => {
                 expect(fieldCtrl2.errors).toContainEqual({ key: 'match', params: { value: fieldValue1, match: fieldName1 } })
             })
         })
@@ -1837,26 +1886,26 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl2).toBeDefined()
             })
 
-            test('The form is invalid', () => {
+            it('The form is invalid', () => {
                 expect(formCtrl.valid).toBeFalsy()
                 expect(formCtrl.invalid).toBeTruthy()
             })
 
-            test(`The field "${fieldName1}" is valid`, () => {
+            it(`The field "${fieldName1}" is valid`, () => {
                 expect(fieldCtrl1.valid).toBeTruthy()
                 expect(fieldCtrl1.invalid).toBeFalsy()
             })
 
-            test(`The field "${fieldName2}" is invalid`, () => {
+            it(`The field "${fieldName2}" is invalid`, () => {
                 expect(fieldCtrl2.valid).toBeFalsy()
                 expect(fieldCtrl2.invalid).toBeTruthy()
             })
 
-            test(`The field "${fieldName1}" has no errors messages.`, () => {
+            it(`The field "${fieldName1}" has no errors messages.`, () => {
                 expect(fieldCtrl1.errors).toHaveLength(0)
             })
 
-            test(`The field "${fieldName2}" contains "match" error message.`, () => {
+            it(`The field "${fieldName2}" contains "match" error message.`, () => {
                 expect(fieldCtrl2.errors).toContainEqual({ key: 'match', params: { value: fieldValue2, match: fieldName1 } })
             })
 
@@ -1876,26 +1925,65 @@ describe('The controlledField() decorator', () => {
                 expect(fieldCtrl2).toBeDefined()
             })
 
-            test('The form is valid', () => {
+            it('The form is valid', () => {
                 expect(formCtrl.valid).toBeTruthy()
                 expect(formCtrl.invalid).toBeFalsy()
             })
 
-            test(`The field "${fieldName1}" is valid`, () => {
+            it(`The field "${fieldName1}" is valid`, () => {
                 expect(fieldCtrl1.valid).toBeTruthy()
                 expect(fieldCtrl1.invalid).toBeFalsy()
             })
 
-            test(`The field "${fieldName2}" is valid`, () => {
+            it(`The field "${fieldName2}" is valid`, () => {
                 expect(fieldCtrl2.valid).toBeTruthy()
                 expect(fieldCtrl2.invalid).toBeFalsy()
             })
 
-            test(`The field "${fieldName1}" has no errors messages.`, () => {
+            it(`The field "${fieldName1}" has no errors messages.`, () => {
                 expect(fieldCtrl1.errors).toHaveLength(0)
             })
 
-            test(`The field "${fieldName2}" has no errors messages.`, () => {
+            it(`The field "${fieldName2}" has no errors messages.`, () => {
+                expect(fieldCtrl2.errors).toHaveLength(0)
+            })
+
+        })
+
+        describe('When the confirmation field is changed before the matched field', () => {
+
+            let formCtrl, fieldCtrl1, fieldCtrl2
+            beforeEach(() => {
+                input2.simulate('change', { target: { value: fieldValue1 } })
+                input1.simulate('change', { target: { value: fieldValue1 } })
+                formCtrl = dom.state('forms')[formName]
+                expect(formCtrl).toBeDefined()
+                fieldCtrl1 = formCtrl.fields[fieldName1]
+                expect(fieldCtrl1).toBeDefined()
+                fieldCtrl2 = formCtrl.fields[fieldName2]
+                expect(fieldCtrl2).toBeDefined()
+            })
+
+            it('The form is valid', () => {
+                expect(formCtrl.valid).toBeTruthy()
+                expect(formCtrl.invalid).toBeFalsy()
+            })
+
+            it(`The field "${fieldName1}" is valid`, () => {
+                expect(fieldCtrl1.valid).toBeTruthy()
+                expect(fieldCtrl1.invalid).toBeFalsy()
+            })
+
+            it(`The field "${fieldName2}" is valid`, () => {
+                expect(fieldCtrl2.valid).toBeTruthy()
+                expect(fieldCtrl2.invalid).toBeFalsy()
+            })
+
+            it(`The field "${fieldName1}" has no errors messages.`, () => {
+                expect(fieldCtrl1.errors).toHaveLength(0)
+            })
+
+            it(`The field "${fieldName2}" has no errors messages.`, () => {
                 expect(fieldCtrl2.errors).toHaveLength(0)
             })
 

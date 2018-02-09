@@ -253,6 +253,10 @@ describe('About <FormControl /> component', () => {
                 form = dom.find(FormTest)
             })
 
+            afterEach(() => {
+                dom.unmount()
+            })
+
             test('Injects formCtrl property', () => {
                 expect(form.prop('formCtrl')).toBeDefined()
             })
@@ -277,6 +281,10 @@ describe('About <FormControl /> component', () => {
                     </FormProvider>
                 ))
                 form = dom.find(FormTest2)
+            })
+
+            afterEach(() => {
+                dom.unmount()
             })
 
             test('Does not injects formCtrl property', () => {
@@ -437,6 +445,10 @@ describe('The controlledForm() decorator behaviour', () => {
             </FormProvider>
         ))
         form = dom.find(TestForm)
+    })
+
+    afterEach(() => {
+        dom.unmount()
     })
 
     test('Injects formCtrl property', () => {

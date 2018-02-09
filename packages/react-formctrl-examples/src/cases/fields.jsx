@@ -7,6 +7,22 @@ import { SubmitValuesPopup } from '../components/submit-values'
 const getInputClasses = ({ valid, dirty, invalid }) => {
     if (valid) return 'is-valid'
     if (dirty && invalid) return 'is-invalid'
+    return '';
+}
+
+function InputGroup({ name, label, children, after, ctrl }) {
+    return (
+        <FormGroup name={name} label={label} ctrl={ctrl}>
+            <div className={`input-group ${getInputClasses(ctrl)}`}>
+                {children}
+                {!!after && (
+                    <div className="input-group-append">
+                        {after}
+                    </div>
+                )}
+            </div>
+        </FormGroup>
+    )
 }
 
 function FormGroup({ name, label, children, ctrl: { invalid, dirty, errors } }) {
@@ -20,19 +36,41 @@ function FormGroup({ name, label, children, ctrl: { invalid, dirty, errors } }) 
         </div>
     )
 }
-let Input = ({ name, label, type, onChange, onBlur, value, ctrl }) => (
-    <FormGroup name={name} label={label} ctrl={ctrl}>
-        <input type={type} name={name} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} onChange={onChange} onBlur={onBlur} value={value}></input>
-    </FormGroup>
-)
-Input = controlledField()(Input)
+let Input = ({ name, label, type, after, onChange, onBlur, value, ctrl }) => {
+
+    const inp = (
+        <input 
+            type={type} 
+            name={name} 
+            placeholder={label} 
+            className={`form-control ${getInputClasses(ctrl)}`} 
+            onChange={onChange} 
+            onBlur={onBlur} 
+            value={value} 
+        />
+    )
+
+    if(!!after) {
+        return (
+            <InputGroup name={name} label={label} ctrl={ctrl} after={after}>
+                {inp}
+            </InputGroup>
+        )
+    } else {
+        return (
+            <FormGroup name={name} label={label} ctrl={ctrl}>
+                {inp}
+            </FormGroup>
+        )
+    }
+
+}
 
 let InputFile = ({ name, label, multiple = false, accept, onChange, ctrl }) => (
     <FormGroup name={name} label={label} ctrl={ctrl}>
         <input type="file" name={name} accept={accept} placeholder={label} className={`form-control ${getInputClasses(ctrl)}`} multiple={multiple} onChange={onChange}></input>
     </FormGroup>
 )
-InputFile = controlledField()(InputFile)
 
 let Select = ({ name, label, onChange, onBlur, value, ctrl, children }) => (
     <FormGroup name={name} label={label} ctrl={ctrl}>
@@ -42,7 +80,6 @@ let Select = ({ name, label, onChange, onBlur, value, ctrl, children }) => (
         </select>
     </FormGroup>
 )
-Select = controlledField()(Select)
 
 let Radio = ({ name, label, onChange, onBlur, value, groupValue }) => {
     const checked = value === groupValue
@@ -55,14 +92,76 @@ let Radio = ({ name, label, onChange, onBlur, value, groupValue }) => {
         </div>
     )
 }
+
+Input = controlledField()(Input)
+InputFile = controlledField()(InputFile)
+Select = controlledField()(Select)
 Radio = controlledField()(Radio)
+
+class InputPassword extends React.Component {
+
+    state = {
+        fieldType: 'password'
+    }
+
+    switchField() {
+        this.setState(state => {
+            if(state.fieldType === 'password') {
+                return {fieldType: 'text'}   
+            } else {
+                return {fieldType: 'password'}
+            }
+        })
+    }
+
+    render() {
+        const {form, name, required, minLength, match, label} = this.props
+        const {fieldType} = this.state
+        const iconClass = fieldType === 'password' ? 'eye' : 'eye-slash'
+        const showHidePasswordButton = (
+            <button 
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={this.switchField.bind(this)}
+            >
+                <i className={`fa fa-${iconClass}`} />
+            </button>
+        )
+
+        return (
+            <div>
+                <Input 
+                    label={label}
+                    form={form}
+                    name={name}
+                    type={fieldType}
+                    minLength={minLength}
+                    match={match}
+                    required={required}
+                    after={showHidePasswordButton}
+                />
+            </div>
+        )
+
+    }
+}
 
 let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
     <Form name={formName} onSubmit={onSubmit}>
+
         <Input
             label="Field text"
             form={formName}
             name="fieldText"
+            required
+        />
+        <Input
+            label="Field text (extra event handlers)"
+            form={formName}
+            name="fieldTextExtraHandlers"
+            onChange={ctrl => console.log(`Field.${ctrl.props.name}.onChange`)}
+            onBlur={ctrl => console.log(`Field.${ctrl.props.name}.onBlur`)}
+            onReset={ctrl => console.log(`Field.${ctrl.props.name}.onReset`)}
             required
         />
         <Input
@@ -121,10 +220,6 @@ let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
             required
         />
 
-
-
-
-
         <Input 
             label="Datetime field"
             form={formName}
@@ -156,10 +251,6 @@ let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
             initialValue={new Date().getTime()}
             required
         />
-
-
-
-
         <InputFile
             label="Field file (max size 50 kb)"
             form={formName}
@@ -179,19 +270,17 @@ let FieldsForm = ({ onSubmit, formCtrl: { formName, invalid, unchanged } }) => (
             extensions={['png', 'jpg', 'jpeg']}
             required
         />
-        <Input
+        <InputPassword
             label="Field password"
             form={formName}
             name="fieldPassword"
-            type="password"
             minLength="8"
             required
         />
-        <Input
+        <InputPassword
             label="Field password (match)"
             form={formName}
             name="fieldPasswordMatch"
-            type="password"
             minLength="8"
             match="fieldPassword"
             required

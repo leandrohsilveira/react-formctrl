@@ -63,6 +63,7 @@ export class Field extends React.Component {
         this.onBlur = this.onBlur.bind(this)
         this.onReset = this.onReset.bind(this)
         this.handleFieldChangeForward = this.handleFieldChangeForward.bind(this)
+        this.handleMatchFieldChangeForward = this.handleMatchFieldChangeForward.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleBlur = this.handleBlur.bind(this)
         this.getChildProps = this.getChildProps.bind(this)
@@ -88,11 +89,14 @@ export class Field extends React.Component {
     }
 
     componentWillMount() {
-        const { form, name, children } = this.props
+        const { form, name, children, match } = this.props
         if (Array.isArray(children) && children.length > 1) {
             throw `The Field component for "${form}#${name}" should have only one child, but has ${children.length}.`
         }
         document.addEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${name}`, this.handleFieldChangeForward)
+        if(match) {
+            document.addEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${match}`, this.handleMatchFieldChangeForward)
+        }
 
         FormEventDispatcher.dispatchRegisterField(form, name, this.state)
     }
@@ -106,8 +110,11 @@ export class Field extends React.Component {
     }
 
     componentWillUnmount() {
-        const { form, name } = this.props
+        const { form, name, match } = this.props
         document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${name}`, this.handleFieldChangeForward)
+        if(match) {
+            document.removeEventListener(`${REACT_FORMCTRL.EVENTS.FIELD_CHANGED}#${form}#${match}`, this.handleMatchFieldChangeForward)
+        }
         FormEventDispatcher.dispatchUnregisterField(form, name)
     }
 
@@ -156,17 +163,31 @@ export class Field extends React.Component {
         const payload = event.detail
         const fieldCtrl = payload.fieldCtrl
         const eventType = payload.eventType
-        this.setState(fieldCtrl)
-        switch(eventType) {
-            case 'blur':
-                this.onBlur(fieldCtrl)
-                break;
-            case 'reset':
-                this.onReset(fieldCtrl)
-                break;
-            default:
-                this.onChange(fieldCtrl)
-                break;
+        this.setState(
+            fieldCtrl, 
+            () => {
+                switch(eventType) {
+                    case 'blur':
+                        this.onBlur(fieldCtrl)
+                        break;
+                    case 'reset':
+                        this.onReset(fieldCtrl)
+                        break;
+                    default:
+                        this.onChange(fieldCtrl)
+                        break;
+                }
+            }
+        )
+    }
+
+    handleMatchFieldChangeForward(event) {
+        const {value, files, valid} = this.state
+        const {form, name} = this.props
+        const payload = event.detail
+        const fieldCtrl = payload.fieldCtrl
+        if(payload.eventType === 'change') {
+            FormEventDispatcher.dispatchFieldChanged(form, name, value, files, 'change')
         }
     }
 

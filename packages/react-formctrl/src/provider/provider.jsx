@@ -107,11 +107,10 @@ export class FormProvider extends React.Component {
 
     onEvent(event) {
         const action = event.detail
-        this.setState(state => {
-            const newState = formProviderReducer(state, action)
-            formProviderEffects(newState, action)
-            return newState
-        })
+        this.setState(
+            state => formProviderReducer(state, action),
+            () => formProviderEffects(this.state, action)
+        )
     }
 
     render() {
