@@ -389,7 +389,7 @@ describe('The controlledField() decorator', () => {
 
     })
 
-    describe('The field onChange interceptor', () => {
+    describe('The field afterChange interceptor', () => {
 
         const formName = "testForm"
         const fieldName = "testField"
@@ -402,7 +402,7 @@ describe('The controlledField() decorator', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <InputWrapper form={formName} name={fieldName} onChange={_fieldCtrl => fieldCtrl = _fieldCtrl} />
+                        <InputWrapper form={formName} name={fieldName} afterChange={_fieldCtrl => fieldCtrl = _fieldCtrl} />
                     </Form>
                 </FormProvider>
             ))
@@ -475,7 +475,7 @@ describe('The controlledField() decorator', () => {
 
     })
 
-    describe('The field onBlur interceptor', () => {
+    describe('The field afterBlur interceptor', () => {
 
         const formName = "testForm"
         const fieldName = "testField"
@@ -492,7 +492,7 @@ describe('The controlledField() decorator', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <InputWrapper form={formName} name={fieldName} onChange={onEvent} onBlur={onEvent} />
+                        <InputWrapper form={formName} name={fieldName} afterChange={onEvent} afterBlur={onEvent} />
                     </Form>
                 </FormProvider>
             ))
@@ -595,7 +595,7 @@ describe('The controlledField() decorator', () => {
 
     })
 
-    describe('The field onReset interceptor', () => {
+    describe('The field afterReset interceptor', () => {
 
         const formName = "testForm"
         const fieldName = "testField"
@@ -613,7 +613,7 @@ describe('The controlledField() decorator', () => {
             dom = mount((
                 <FormProvider>
                     <Form name={formName}>
-                        <InputWrapper form={formName} name={fieldName} onChange={onEvent} onReset={onEvent} />
+                        <InputWrapper form={formName} name={fieldName} afterChange={onEvent} afterReset={onEvent} />
                     </Form>
                 </FormProvider>
             ))
