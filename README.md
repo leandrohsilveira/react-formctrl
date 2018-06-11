@@ -5,11 +5,8 @@
 # React Form CTRL
 A declarative form controller and validator for ReactJS.
 
-## Usage.
+## Getting started
 Click <a href="./packages/react-formctrl">here</a> to read the Getting started guide.
 
 ## Live demo
 Click <a href="./docs">here</a> to access the live demo pages.
-
-## Contributors are wellcome
-The library developer docs will be available in github repo wiki soon.
