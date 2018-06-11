@@ -1,2 +1,2 @@
 theme: jekyll-theme-cayman
-baseurl: ./packages/react-formctrl
+source: ./packages/react-formctrl
