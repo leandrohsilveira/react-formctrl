@@ -33,7 +33,7 @@ class WrappedForm extends React.Component {
         const { name } = this.props
         event.preventDefault()
         this.dispatch(onResetForm(name, event.type))
-                .then(this.handleFormResetForward)
+            .then(this.handleFormResetForward)
     }
 
     componentWillMount() {
@@ -71,7 +71,6 @@ class WrappedForm extends React.Component {
     }
 
 }
-
 const Form = React.forwardRef((props, ref) => (
     <FormConsumer>
         {({ dispatch }) => {
@@ -144,7 +143,6 @@ class WrappedFormControl extends React.Component {
     }
 
 }
-
 const FormControl = React.createRef((props, ref) => (
     <FormConsumer>
         {({ forms, dispatch }) => {
@@ -157,7 +155,6 @@ const FormControl = React.createRef((props, ref) => (
         }}
     </FormConsumer>
 ))
-
 FormControl.propTypes = {
     form: PropTypes.string.isRequired,
     onChange: PropTypes.func,
