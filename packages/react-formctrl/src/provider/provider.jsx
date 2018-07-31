@@ -12,9 +12,7 @@ const DEFAULT_STATE = {
 
 const { Provider, Consumer: FormConsumer } = React.createContext(DEFAULT_STATE)
 
-export { FormConsumer };
-
-export class FormProvider extends React.Component {
+class FormProvider extends React.Component {
 
     static propTypes = {
         customValidators: PropTypes.arrayOf(PropTypes.shape({
@@ -58,3 +56,5 @@ export class FormProvider extends React.Component {
     }
 
 }
+
+export { FormConsumer, FormProvider };
