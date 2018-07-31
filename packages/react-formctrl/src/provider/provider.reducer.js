@@ -26,7 +26,7 @@ export function formProviderReducer(state = {forms: {}}, action) {
         case EVENTS.FIELD_BLURRED:
             return onFieldBlurred(state, payload.form, payload.field)
         case EVENTS.FORM_SUBMITED:
-            return onFormSubmited(state, payload.form, payload.formRef)
+            return onFormSubmited(state, payload.form)
         case EVENTS.FORM_RESETED:
             return onFormReseted(state, payload.form)
         case EVENTS.REGISTER_VALIDATORS:
@@ -156,7 +156,7 @@ function onFieldBlurred(state, formName, fieldName) {
     return {forms}
 }
 
-function onFormSubmited(state, formName, formRef) {
+function onFormSubmited(state, formName) {
     return state
 }
 
