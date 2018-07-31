@@ -10,9 +10,9 @@ const DEFAULT_STATE = {
     validators: {}
 }
 
-const { Provider, Consumer: FormConsumer } = React.createContext(DEFAULT_STATE)
+export const FormContext = React.createContext(DEFAULT_STATE)
 
-class FormProvider extends React.Component {
+export class FormProvider extends React.Component {
 
     static propTypes = {
         customValidators: PropTypes.arrayOf(PropTypes.shape({
@@ -49,12 +49,11 @@ class FormProvider extends React.Component {
     render() {
         const { children } = this.props
         return (
-            <Provider value={this.state}>
+            <FormContext.Provider value={this.state}>
                 {children}
-            </Provider>
+            </FormContext.Provider>
         )
+        // return children
     }
 
 }
-
-export { FormConsumer, FormProvider };

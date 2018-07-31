@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { ensureStringValue } from '../provider/provider.utils'
-import { FormConsumer } from '../provider/provider';
 import { onSubmitForm, onResetForm, onRegisterForm, onUnregisterForm, onFieldChanged } from './../provider/provider.actions';
+import { FormContext } from '../provider/provider';
 
 class WrappedForm extends React.Component {
 
@@ -71,23 +71,26 @@ class WrappedForm extends React.Component {
     }
 
 }
-const Form = React.forwardRef((props, ref) => (
-    <FormConsumer>
-        {({ dispatch }) => {
+
+export const Form = React.forwardRef(({children, ...rest}, ref) => (
+    <FormContext.Consumer>
+        {({ dispatch }) => (
             <WrappedForm
-                {...props}
+                {...rest}
                 ref={ref}
                 dispatch={dispatch}
-            />
-        }}
-    </FormConsumer>
+            >
+                {children}
+            </WrappedForm>
+        )}
+    </FormContext.Consumer>
 ))
-Form.propTypes = {
-    name: PropTypes.string.isRequired,
-    className: PropTypes.string,
-    onSubmit: PropTypes.func,
-    onReset: PropTypes.func
-}
+// Form.propTypes = {
+//     name: PropTypes.string.isRequired,
+//     className: PropTypes.string,
+//     onSubmit: PropTypes.func,
+//     onReset: PropTypes.func
+// }
 
 class WrappedFormControl extends React.Component {
 
@@ -129,8 +132,8 @@ class WrappedFormControl extends React.Component {
     }
 
     inject() {
-        const { inject, form, formCtrl } = this.props
-        const formCtrl = { ...formCtrl, formName: form, setFieldValue: this.setFieldValue, reset: this.reset }
+        const { inject, form, formCtrl:currentFormCtrl } = this.props
+        const formCtrl = { ...currentFormCtrl, formName: form, setFieldValue: this.setFieldValue, reset: this.reset }
         if (typeof inject === 'function') {
             return inject(formCtrl)
         }
@@ -143,25 +146,22 @@ class WrappedFormControl extends React.Component {
     }
 
 }
-const FormControl = React.createRef((props, ref) => (
-    <FormConsumer>
-        {({ forms, dispatch }) => {
+export const FormControl = React.createRef(({children, ...rest}, ref) => (
+    <FormContext.Consumer>
+        {({ forms, dispatch }) => (
             <WrappedFormControl
-                {...props}
+                {...rest}
                 ref={ref}
                 dispatch={dispatch}
                 formCtrl={forms[props.form]}
-            />
-        }}
-    </FormConsumer>
+            >
+                {children}
+            </WrappedFormControl>
+        )}
+    </FormContext.Consumer>
 ))
-FormControl.propTypes = {
-    form: PropTypes.string.isRequired,
-    onChange: PropTypes.func,
-    inject: PropTypes.func,
-}
-
-export {
-    Form,
-    FormControl
-}
+// FormControl.propTypes = {
+//     form: PropTypes.string.isRequired,
+//     onChange: PropTypes.func,
+//     inject: PropTypes.func,
+// }

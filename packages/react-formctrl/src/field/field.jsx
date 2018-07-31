@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { FormEventDispatcher } from '../provider/provider'
-import { REACT_FORMCTRL, onUnregisterField, onFieldChanged } from '../provider/provider.actions'
 import { compareFieldProps, ensureStringValue } from '../provider/provider.utils'
-import { onFieldPropsChanged, onRegisterField, onFieldBlur } from './../provider/provider.actions';
+import { onFieldPropsChanged, onRegisterField, onFieldBlur, onUnregisterField, onFieldChanged } from './../provider/provider.actions';
+import { FormContext } from '../provider/provider';
 
 class FieldWrapper extends React.Component {
 
@@ -15,8 +14,6 @@ class FieldWrapper extends React.Component {
         this.onBlur = this.onBlur.bind(this)
         this.onReset = this.onReset.bind(this)
         this.handleFormsChange = this.handleFormsChange.bind(this)
-        this.handleFieldChangeForward = this.handleFieldChangeForward.bind(this)
-        this.handleMatchFieldChangeForward = this.handleMatchFieldChangeForward.bind(this)
         this.handleChange = this.handleChange.bind(this)
         this.handleBlur = this.handleBlur.bind(this)
         this.getChildProps = this.getChildProps.bind(this)
@@ -167,78 +164,78 @@ class FieldWrapper extends React.Component {
     }
 
     render() {
-        const { inject } = this
         const { children } = this.props
-        return React.cloneElement(children, { ...children.props, ...inject() })
+        return React.cloneElement(children, { ...children.props, ...this.inject() })
     }
 }
 
-const Field = React.createRef((props, ref) => (
-    <FormConsumer>
+export const Field = ({children, ...rest}) => (
+    <FormContext.Consumer>
         {({ forms, dispatch }) => {
-            const formCtrl = forms[props.form]
+            const formCtrl = forms[rest.form]
             if (formCtrl) {
-                const fieldCtrl = formCtrl.fields[props.name]
-                const matchCtrl = formCtrl.fields[props.match]
+                const fieldCtrl = formCtrl.fields[rest.name]
+                const matchCtrl = formCtrl.fields[rest.match]
                 return (
                     <FieldWrapper
-                        {...props}
-                        ref={ref}
+                        {...rest}
                         dispatch={dispatch}
                         fieldCtrl={fieldCtrl}
                         matchCtrl={matchCtrl}
-                    />
+                    >
+                        {children}
+                    </FieldWrapper>
                 )
             }
             return null
         }}
-    </FormConsumer>
-))
-Field.propTypes = {
-    name: PropTypes.string.isRequired,
-    form: PropTypes.string.isRequired,
-    className: PropTypes.string,
-    required: PropTypes.bool,
-    pattern: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.instanceOf(RegExp)
-    ]),
-    type: PropTypes.string,
-    integer: PropTypes.bool,
-    inject: PropTypes.func,
-    match: PropTypes.string,
-    min: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string,
-    ]),
-    max: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string,
-    ]),
-    minLength: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string,
-    ]),
-    maxLength: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string,
-    ]),
-    accept: PropTypes.string,
-    extensions: PropTypes.arrayOf(PropTypes.string),
-    maxSize: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string
-    ]),
-    validate: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.arrayOf(PropTypes.string)
-    ]),
-    initialValue: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number,
-        PropTypes.instanceOf(Date)
-    ]),
-    afterChange: PropTypes.func,
-    afterBlur: PropTypes.func,
-    afterReset: PropTypes.func,
-}
+    </FormContext.Consumer>
+)
+// Field.propTypes = {
+//     name: PropTypes.string.isRequired,
+//     form: PropTypes.string.isRequired,
+//     className: PropTypes.string,
+//     required: PropTypes.bool,
+//     pattern: PropTypes.oneOfType([
+//         PropTypes.string,
+//         PropTypes.instanceOf(RegExp)
+//     ]),
+//     type: PropTypes.string,
+//     integer: PropTypes.bool,
+//     inject: PropTypes.func,
+//     match: PropTypes.string,
+//     min: PropTypes.oneOfType([
+//         PropTypes.number,
+//         PropTypes.string,
+//     ]),
+//     max: PropTypes.oneOfType([
+//         PropTypes.number,
+//         PropTypes.string,
+//     ]),
+//     minLength: PropTypes.oneOfType([
+//         PropTypes.number,
+//         PropTypes.string,
+//     ]),
+//     maxLength: PropTypes.oneOfType([
+//         PropTypes.number,
+//         PropTypes.string,
+//     ]),
+//     accept: PropTypes.string,
+//     extensions: PropTypes.arrayOf(PropTypes.string),
+//     maxSize: PropTypes.oneOfType([
+//         PropTypes.number,
+//         PropTypes.string
+//     ]),
+//     validate: PropTypes.oneOfType([
+//         PropTypes.string,
+//         PropTypes.arrayOf(PropTypes.string)
+//     ]),
+//     initialValue: PropTypes.oneOfType([
+//         PropTypes.string,
+//         PropTypes.number,
+//         PropTypes.instanceOf(Date)
+//     ]),
+//     afterChange: PropTypes.func,
+//     afterBlur: PropTypes.func,
+//     afterReset: PropTypes.func,
+// }
