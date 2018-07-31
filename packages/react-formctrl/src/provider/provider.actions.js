@@ -33,17 +33,17 @@ export function onUnregisterForm(form) {
     }
 }
 
-export function onSubmitForm(form, formRef) {
+export function onSubmitForm(form) {
     return { 
         type: REACT_FORMCTRL.EVENTS.FORM_SUBMITED, 
-        payload: {form, formRef}
+        payload: {form}
     }
 }
 
-export function onResetForm(form, formRef, eventType) {
+export function onResetForm(form, eventType) {
     return { 
         type: REACT_FORMCTRL.EVENTS.FORM_RESETED, 
-        payload: {form, formRef, eventType}
+        payload: {form, eventType}
     }
 }
 
