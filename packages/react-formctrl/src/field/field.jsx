@@ -39,16 +39,17 @@ class FieldWrapper extends React.Component {
             errors: [],
             value: '',
             files: [],
-            initialValue: ensureStringValue(props.initialValue || '', props.type),
-            props: this.getFieldProps(props)
+            initialValue: ensureStringValue(this.props.initialValue || '', this.props.type),
+            props: this.getFieldProps(this.props)
         }))
     }
 
     componentWillReceiveProps(nextProps) {
         const nextFieldProps = this.getFieldProps(nextProps)
-        if (!compareFieldProps(this.state.props, nextFieldProps)) {
+        const currentFieldProps = this.getFieldProps(this.props)
+        if (!compareFieldProps(currentFieldProps, nextFieldProps)) {
             const { dispatch } = nextProps
-            dispatch(onFieldPropsChanged(this.props.form, this.props.name, nextFieldProps))
+            dispatch(onFieldPropsChanged(currentFieldProps.form, currentFieldProps.name, nextFieldProps))
         }
     }
 
@@ -126,26 +127,26 @@ class FieldWrapper extends React.Component {
     }
 
     getChildProps() {
-        const { formCtrl } = this.props
+        const { fieldCtrl = {} } = this.props
         const props = {}
         props.name = this.props.name
         props.formName = this.props.form
         props.ctrl = {
-            valid: formCtrl.valid,
-            invalid: formCtrl.invalid,
-            untouched: formCtrl.untouched,
-            touched: formCtrl.touched,
-            pristine: formCtrl.pristine,
-            dirty: formCtrl.dirty,
-            unchanged: formCtrl.unchanged,
-            changed: formCtrl.changed,
-            errors: formCtrl.errors,
+            valid: fieldCtrl.valid,
+            invalid: fieldCtrl.invalid,
+            untouched: fieldCtrl.untouched,
+            touched: fieldCtrl.touched,
+            pristine: fieldCtrl.pristine,
+            dirty: fieldCtrl.dirty,
+            unchanged: fieldCtrl.unchanged,
+            changed: fieldCtrl.changed,
+            errors: fieldCtrl.errors,
         }
         props.accept = this.props.accept
         props.extensions = this.props.extensions
         props.maxSize = this.props.maxSize
         props.className = this.props.className
-        props.value = formCtrl.value
+        props.value = fieldCtrl.value
         props.required = this.props.required
         props.pattern = this.props.pattern
         props.type = this.props.type || 'text'
@@ -175,13 +176,11 @@ export const Field = ({children, ...rest}) => (
             const formCtrl = forms[rest.form]
             if (formCtrl) {
                 const fieldCtrl = formCtrl.fields[rest.name]
-                const matchCtrl = formCtrl.fields[rest.match]
                 return (
                     <FieldWrapper
                         {...rest}
                         dispatch={dispatch}
                         fieldCtrl={fieldCtrl}
-                        matchCtrl={matchCtrl}
                     >
                         {children}
                     </FieldWrapper>
