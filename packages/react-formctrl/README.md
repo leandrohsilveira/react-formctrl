@@ -3,9 +3,9 @@
 [![Known Vulnerabilities](https://snyk.io/test/github/leandrohsilveira/react-formctrl/badge.svg)](https://snyk.io/test/github/leandrohsilveira/react-formctrl)
 
 # React Form CTRL 
-A lightweight React form library inspired by Angular's forms and Redux-Form.
+A declarative form controller and validator for ReactJS.
 
-Bundle size: 32.6 KB (6.2 KB gzipped) (11/06/2017, v1.3.0)
+Bundle size: 6.9 KB gzipped
 
 ## Features
 
@@ -17,7 +17,7 @@ Bundle size: 32.6 KB (6.2 KB gzipped) (11/06/2017, v1.3.0)
 * Controlled inputs
 * With decorators
 
-## 1. Quick start
+## 1. Getting started
 
 `npm install --save react-formctrl`
 
@@ -283,7 +283,7 @@ QuickUserRegistrationForm = controlledForm(QuickUserRegistrationForm)
 FullUserForm = controlledForm(FullUserForm)
 ```
 
-# Components
+# Full documentation
 
 ## FormProvider
 
