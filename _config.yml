@@ -1,0 +1,6 @@
+theme: jekyll-theme-cayman
+source: ./packages/react-formctrl
+title: React Form CTRL
+description: A declarative form controller and validator for ReactJS
+plugins:
+  - jekyll-seo-tag
