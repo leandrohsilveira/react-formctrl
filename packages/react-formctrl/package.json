@@ -43,8 +43,8 @@
     "prepublish": "npm run build"
   },
   "dependencies": {
-    "prop-types": "^15.5.7",
-    "react": "^16.0.0"
+    "prop-types": "^15.6.2",
+    "react": "^16.5.0"
   },
   "devDependencies": {
     "@types/react": "^16.0.5",
